@@ -1,5 +1,6 @@
 Para rodar o projeto no eclipse.
 
-a. Crie um projeto Django no eclipse. (Criamos com o nome ListaOnline)
-b. Dentro do pacote ListaOnline gerado pelo eclipse, importe a pasta src.
+
+I. Crie um projeto Django no eclipse. (Criamos com o nome ListaOnline)
+II. Dentro do pacote ListaOnline gerado pelo eclipse, importe a pasta src.
 
