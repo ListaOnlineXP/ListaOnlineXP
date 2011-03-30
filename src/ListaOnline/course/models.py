@@ -14,7 +14,7 @@ class Course(models.Model):
     teacher = models.ForeignKey(Teacher)
     
     def __unicode__(self):
-        return self.name
+        return self.name 
 
 class Question(models.Model):
 
@@ -23,11 +23,20 @@ class Question(models.Model):
     def __unicode__(self):
         return self.text
         
-class Answer(models.Model):
 
-    text = models.TextField(blank=False)
-    question = models.ForeignKey(Question, related_name="question")
-    answer = models.OneToOneField(Question, related_name="answer")
+class MultipleChoiceQuestion(Question):
+    
+    def GetCorrectAnswer(self):
+    
+        pass
+    
+    pass
+
+class MultipleChoiceAnswer(models.Model):
+
+    text = models.CharField(blank=False, max_length=300)
+    question = models.ForeignKey(MultipleChoiceQuestion) 
+    correct = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.text        
@@ -42,3 +51,4 @@ class ExerciseList(models.Model):
     
     def __unicode__(self):
         return self.name
+        
