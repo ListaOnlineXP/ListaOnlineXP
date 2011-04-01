@@ -26,20 +26,23 @@ class Question(models.Model):
 
 class MultipleChoiceQuestion(Question):
     
-    def GetCorrectAnswer(self):
-    
-        pass
-    
     pass
 
-class MultipleChoiceAnswer(models.Model):
 
+class MultipleChoiceAnswer(models.Model):
     text = models.CharField(blank=False, max_length=300)
-    question = models.ForeignKey(MultipleChoiceQuestion) 
-    correct = models.BooleanField(default=False)
+    
 
     def __unicode__(self):
         return self.text        
+
+class MultipleChoiceCorrectAnswer(MultipleChoiceAnswer):
+    question = models.OneToOneField(MultipleChoiceQuestion) 
+    
+    
+class MultipleChoiceWrongAnswer(MultipleChoiceAnswer):
+    question = models.ForeignKey(MultipleChoiceQuestion)
+    
 
 class ExerciseList(models.Model):
     
