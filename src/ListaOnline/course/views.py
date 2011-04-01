@@ -1,8 +1,8 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
 from forms import NewStudentForm, StudentLoginForm
-from models import Student
+from models import Student, Teacher, Course
 
 def new_student(request):
 	values = {}
@@ -34,3 +34,11 @@ def student_login(request):
 			return HttpResponse('Ola, %s' % nusp)
 	values['form'] = form
 	return render_to_response('student_login.html', values)
+
+def index(request, course_id):
+    try:
+	course = Course.objects.get(pk=course_id)
+    except Course.DoesNotExist:
+	raise Http404
+    student_list = [course.teacher]
+    return render_to_response('course/students.html', {'student_list':  student_list, 'course': course})
