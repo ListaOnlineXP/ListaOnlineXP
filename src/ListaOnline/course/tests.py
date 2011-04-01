@@ -3,6 +3,8 @@
 from django.test import TestCase
 from ListaOnline.course.models import Course
 from ListaOnline.course.models import Teacher
+from ListaOnline.course.models import Question
+from ListaOnline.course.models import ExerciseList
 
 class CourseTestCase(TestCase):
     
@@ -13,6 +15,9 @@ class CourseTestCase(TestCase):
         self.course1 = Course.objects.create(code=u"MAC0110", name=u"Introdução à Computação", teacher=Teacher.objects.get(id=1))
         self.course2 = Course.objects.create(code=u"MAC0342", name=u"XP", teacher=Teacher.objects.get(id=1))
         self.course3 = Course.objects.create(code=u"MAC0122", name=u"Algoritmos", teacher=Teacher.objects.get(id=2))
+        self.question1 = Question.objects.create(text=u"1+1?")
+        self.question2 = Question.objects.create(text=u"O que é Refatoração?")
+        self.question3 = Question.objects.create(text=u"")
 
     def testTeacherDB(self):
         self.assertEqual(Teacher.objects.get(name=u"Alfredo").name, u"Alfredo")
@@ -43,9 +48,18 @@ class CourseTestCase(TestCase):
         self.assertNotEqual(Course.objects.get(id=1).teacher, Teacher.objects.get(name=u"Gerosa"))
         self.assertNotEqual(Course.objects.get(id=2).teacher, Teacher.objects.get(name=u"Flávio"))
         self.assertNotEqual(Course.objects.get(id=3).teacher, Teacher.objects.get(name=u"Alfredo"))
-	self.assertEqual(Course.objects.filter(teacher=Teacher.objects.get(name=u"Alfredo")).count(), 2)
-	self.assertEqual(Course.objects.filter(teacher=Teacher.objects.get(name=u"Gerosa")).count(), 1)
-	self.assertEqual(Course.objects.filter(teacher=Teacher.objects.get(name=u"Flávio")).count(), 0)
-	self.assertEqual([self.course1, self.course2], [self.course1, self.course2])
+    	self.assertEqual(Course.objects.filter(teacher=Teacher.objects.get(name=u"Alfredo")).count(), 2)
+    	self.assertEqual(Course.objects.filter(teacher=Teacher.objects.get(name=u"Gerosa")).count(), 1)
+    	self.assertEqual(Course.objects.filter(teacher=Teacher.objects.get(name=u"Flávio")).count(), 0)
+    	self.assertEqual([self.course1, self.course2], [self.course1, self.course2])
         self.assertEqual(list(Course.objects.filter(teacher=Teacher.objects.get(name=u"Alfredo"))), [self.course1, self.course2])
-	self.assertEqual(Course.objects.count(), 3)
+        self.assertEqual(Course.objects.count(), 3)
+
+    def testQuestionDB(self):
+        self.assertEqual (Question.objects.get(id=2).text, u"O que é Refatoração?")
+        self.assertEqual (Question.objects.get(id=3).text, u"")
+        self.assertNotEqual (Question.objects.get(text=u"1+1").id, 2)
+        self.assertNotEqual (Question.objects.get(id=3).text, "O que é Refatoração?")
+
+    def testExerciseListaDB(self):
+        pass
