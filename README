@@ -1,6 +1,13 @@
-Para rodar o projeto no eclipse.
 
+Para rodar o projeto no eclipse:
 
-I. Crie um projeto Django no eclipse. (Criamos com o nome ListaOnline)
-II. Dentro do pacote ListaOnline gerado pelo eclipse, importe a pasta src.
+Somente é necessário criar um novo projeto Django na própria pasta do git, a qual
+possui nosso projeto clonado.
+
+1. File -> New... -> Project
+2. Pydev -> Django Project
+3. Desmarque a opção de usar a pasta default, e escolha o diretório do git.
+
+Note que é necessário possuir instalado plugin do Pydev, além de um interpretador
+de python.
 
