@@ -58,7 +58,7 @@ class CourseTestCase(TestCase):
     def testQuestionDB(self):
         self.assertEqual (Question.objects.get(id=2).text, u"O que é Refatoração?")
         self.assertEqual (Question.objects.get(id=3).text, u"")
-        self.assertNotEqual (Question.objects.get(text=u"1+1").id, 2)
+        self.assertNotEqual (Question.objects.get(text=u"1+1?").id, 2)
         self.assertNotEqual (Question.objects.get(id=3).text, "O que é Refatoração?")
 
     def testExerciseListaDB(self):
