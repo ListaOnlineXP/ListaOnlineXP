@@ -1,0 +1,14 @@
+<html>
+	<body>
+		<h1>Cursos</h1>
+		{% if course_list %}
+			<ul>
+			{% for course in course_list %}
+				<li>{{ course.name }}</li>
+			{% endfor %}
+			</ul>
+		{% else %}
+			<p> Nenhum curso disponivel </p>
+		{% endif %}
+	</body>
+</html>
