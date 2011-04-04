@@ -35,10 +35,6 @@ def student_login(request):
 	values['form'] = form
 	return render_to_response('student_login.html', values)
 
-def index(request, course_id):
-    try:
-	course = Course.objects.get(pk=course_id)
-    except Course.DoesNotExist:
-	raise Http404
-    student_list = [course.teacher]
-    return render_to_response('course/students.html', {'student_list':  student_list, 'course': course})
+def course_list(request):
+	course_list = list(Course.objects.all())
+	return render_to_response('course_list.html', {'course_list':  course_list})

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from ListaOnline.course.models import Course, Teacher, ExerciseList, MultipleChoiceQuestion, MultipleChoiceCorrectAnswer, MultipleChoiceWrongAnswer
+from models import Course, Teacher, ExerciseList, MultipleChoiceQuestion, MultipleChoiceCorrectAnswer, MultipleChoiceWrongAnswer
 
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('code', 'name', 'teacher')

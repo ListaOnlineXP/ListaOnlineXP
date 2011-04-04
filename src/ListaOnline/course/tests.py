@@ -1,10 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from django.test import TestCase
-from ListaOnline.course.models import Course
-from ListaOnline.course.models import Teacher
-from ListaOnline.course.models import Question
-from ListaOnline.course.models import ExerciseList
+from models import Course, Teacher, Question, ExerciseList
 
 class CourseTestCase(TestCase):
     
@@ -48,10 +45,10 @@ class CourseTestCase(TestCase):
         self.assertNotEqual(Course.objects.get(id=1).teacher, Teacher.objects.get(name=u"Gerosa"))
         self.assertNotEqual(Course.objects.get(id=2).teacher, Teacher.objects.get(name=u"Flávio"))
         self.assertNotEqual(Course.objects.get(id=3).teacher, Teacher.objects.get(name=u"Alfredo"))
-    	self.assertEqual(Course.objects.filter(teacher=Teacher.objects.get(name=u"Alfredo")).count(), 2)
-    	self.assertEqual(Course.objects.filter(teacher=Teacher.objects.get(name=u"Gerosa")).count(), 1)
-    	self.assertEqual(Course.objects.filter(teacher=Teacher.objects.get(name=u"Flávio")).count(), 0)
-    	self.assertEqual([self.course1, self.course2], [self.course1, self.course2])
+        self.assertEqual(Course.objects.filter(teacher=Teacher.objects.get(name=u"Alfredo")).count(), 2)
+        self.assertEqual(Course.objects.filter(teacher=Teacher.objects.get(name=u"Gerosa")).count(), 1)
+        self.assertEqual(Course.objects.filter(teacher=Teacher.objects.get(name=u"Flávio")).count(), 0)
+        self.assertEqual([self.course1, self.course2], [self.course1, self.course2])
         self.assertEqual(list(Course.objects.filter(teacher=Teacher.objects.get(name=u"Alfredo"))), [self.course1, self.course2])
         self.assertEqual(Course.objects.count(), 3)
 
