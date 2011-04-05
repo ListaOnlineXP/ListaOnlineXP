@@ -2,3 +2,5 @@
 *.db
 .project
 .pydevproject
+*.tmproj
+*.komodoproject
