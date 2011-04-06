@@ -10,13 +10,16 @@ class Teacher(models.Model):
     def __unicode__(self):
         return self.name
 
-class Student(User):
 
-    name = models.CharField(max_length=100)
+class Student(models.Model):
 
-    def __unicode__(self):
-        return self.name
-    
+	user = models.ForeignKey(User, unique=True)
+	name = models.CharField(max_length=100)
+	
+	def __unicode__(self):
+		return self.name 
+
+
 class Course(models.Model):
     
     code = models.CharField(max_length=10)
@@ -26,6 +29,7 @@ class Course(models.Model):
     
     def __unicode__(self):
         return self.name 
+
 
 class Question(models.Model):
 
@@ -41,16 +45,20 @@ class MultipleChoiceQuestion(Question):
 
 
 class MultipleChoiceAnswer(models.Model):
+
     text = models.CharField(blank=False, max_length=300)    
 
     def __unicode__(self):
         return self.text        
 
+
 class MultipleChoiceCorrectAnswer(MultipleChoiceAnswer):
+
     question = models.OneToOneField(MultipleChoiceQuestion) 
     
     
 class MultipleChoiceWrongAnswer(MultipleChoiceAnswer):
+
     question = models.ForeignKey(MultipleChoiceQuestion)
     
 
@@ -64,4 +72,3 @@ class ExerciseList(models.Model):
     
     def __unicode__(self):
         return self.name
-        
