@@ -5,7 +5,7 @@ class CourseAdmin(admin.ModelAdmin):
     list_display = ('code', 'name', 'teacher')
     
 class ExerciseListAdmin(admin.ModelAdmin):
-    filter_horizontal = ('question',)
+    filter_horizontal = ('questions',)
     
 class MultipleChoiceCorrectAnswerInline(admin.StackedInline):
     model = MultipleChoiceCorrectAnswer

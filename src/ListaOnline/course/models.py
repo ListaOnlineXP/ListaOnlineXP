@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 
+
 class Teacher(models.Model):
 
     name = models.CharField(max_length=100)
@@ -60,7 +61,7 @@ class ExerciseList(models.Model):
     course = models.ForeignKey(Course)
     pub_date = models.DateField(default=datetime.datetime.today)
     due_date = models.DateField(default=(datetime.datetime.today()+datetime.timedelta(days=7)))
-    question = models.ManyToManyField(Question)
+    questions = models.ManyToManyField(Question)
     
     def __unicode__(self):
         return self.name

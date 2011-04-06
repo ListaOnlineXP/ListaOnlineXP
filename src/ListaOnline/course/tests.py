@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.test import TestCase
 from models import Course, Teacher, Question, ExerciseList
+import datetime
 
 class CourseTestCase(TestCase):
     
@@ -14,7 +15,23 @@ class CourseTestCase(TestCase):
         self.course3 = Course.objects.create(code=u"MAC0122", name=u"Algoritmos", teacher=Teacher.objects.get(id=2))
         self.question1 = Question.objects.create(text=u"1+1?")
         self.question2 = Question.objects.create(text=u"O que é Refatoração?")
-        self.question3 = Question.objects.create(text=u"")
+        self.question3 = Question.objects.create()
+        
+        
+        
+        #Setup for ExerciseList tests
+        self.exercise_list1 = ExerciseList.objects.create(name=u"Lista de exercícios 1", course=self.course1)
+        self.exercise_list1.questions.add(self.question1)
+        self.exercise_list1.questions.add(self.question2)
+        self.exercise_list2 = ExerciseList.objects.create(name=u"Lista de exercícios 2", course=self.course2)
+        self.exercise_list2.questions.add(self.question1)
+        self.exercise_list2.pub_date = datetime.datetime.today()+datetime.timedelta(days=2)
+        self.exercise_list2.due_date = datetime.datetime.today()+datetime.timedelta(days=30)
+        self.exercise_list3 = ExerciseList.objects.create(name=u"", course=self.course3)
+        self.exercise_list3.questions.add(self.question1)
+        self.exercise_list3.questions.add(self.question3)
+    
+        
 
     def testTeacherDB(self):
         self.assertEqual(Teacher.objects.get(name=u"Alfredo").name, u"Alfredo")
@@ -58,5 +75,13 @@ class CourseTestCase(TestCase):
         self.assertNotEqual (Question.objects.get(text=u"1+1?").id, 2)
         self.assertNotEqual (Question.objects.get(id=3).text, "O que é Refatoração?")
 
-    def testExerciseListaDB(self):
-        pass
+    def testExerciseListDB(self):
+        self.assertEqual(ExerciseList.objects.get(name="Lista de exercícios 1").name, u"Lista de exercícios 1")
+        self.assertEqual(ExerciseList.objects.get(name="Lista de exercícios 1").questions.filter(text__contains=u"Refatoração")[0], self.question2)
+        self.assertEqual(ExerciseList.objects.count(), 3)
+        self.exercise_list3.delete()
+        self.assertEqual(ExerciseList.objects.count(), 2)
+        for exercise_list in ExerciseList.objects.all():
+            exercise_list.delete()
+        
+        self.assertEqual(ExerciseList.objects.count(), 0)
