@@ -98,5 +98,4 @@ INSTALLED_APPS = (
     'course'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    '
 )
