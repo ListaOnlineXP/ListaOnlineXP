@@ -13,10 +13,6 @@ class CourseTestCase(TestCase):
         self.course1 = Course.objects.create(code=u"MAC0110", name=u"Introdução à Computação", teacher=Teacher.objects.get(id=1))
         self.course2 = Course.objects.create(code=u"MAC0342", name=u"XP", teacher=Teacher.objects.get(id=1))
         self.course3 = Course.objects.create(code=u"MAC0122", name=u"Algoritmos", teacher=Teacher.objects.get(id=2))
-        self.question1 = Question.objects.create(text=u"1+1?")
-        self.question2 = Question.objects.create(text=u"O que é Refatoração?")
-        self.question3 = Question.objects.create()
-        
         self.multichoicequestion1 = MultipleChoiceQuestion.objects.create(text=u"1+1?")
         self.multichoicequestion2 = MultipleChoiceQuestion.objects.create(text=u"O que é Refatoração?")
         self.multichoicequestion3 = MultipleChoiceQuestion.objects.create(text=u"")
@@ -26,15 +22,15 @@ class CourseTestCase(TestCase):
         
         #Setup for ExerciseList tests
         self.exercise_list1 = ExerciseList.objects.create(name=u"Lista de exercícios 1", course=self.course1)
-        self.exercise_list1.questions.add(self.question1)
-        self.exercise_list1.questions.add(self.question2)
+        self.exercise_list1.questions.add(self.multichoicequestion1)
+        self.exercise_list1.questions.add(self.multichoicequestion2)
         self.exercise_list2 = ExerciseList.objects.create(name=u"Lista de exercícios 2", course=self.course2)
-        self.exercise_list2.questions.add(self.question1)
+        self.exercise_list2.questions.add(self.multichoicequestion1)
         self.exercise_list2.pub_date = datetime.datetime.today()+datetime.timedelta(days=2)
         self.exercise_list2.due_date = datetime.datetime.today()+datetime.timedelta(days=30)
         self.exercise_list3 = ExerciseList.objects.create(name=u"", course=self.course3)
-        self.exercise_list3.questions.add(self.question1)
-        self.exercise_list3.questions.add(self.question3)
+        self.exercise_list3.questions.add(self.multichoicequestion1)
+        self.exercise_list3.questions.add(self.multichoicequestion3)
 
     def testTeacherDB(self):
         self.assertEqual(Teacher.objects.get(name=u"Alfredo").name, u"Alfredo")
@@ -78,7 +74,7 @@ class CourseTestCase(TestCase):
         self.assertNotEqual(MultipleChoiceQuestion.objects.get(text=u"1+1?").id, 2)
         self.assertNotEqual(MultipleChoiceQuestion.objects.get(id=1).text, u"")
         self.assertEqual(MultipleChoiceQuestion.objects.count(), 3)
-        
+
     def testMultipleChoiceCorrectAnswerDB(self):
         self.assertEqual(MultipleChoiceCorrectAnswer.objects.get(id=1).question, MultipleChoiceQuestion.objects.get(text=u"1+1?"))
         self.assertEqual(MultipleChoiceCorrectAnswer.objects.get(id=2).question, MultipleChoiceQuestion.objects.get(text=u"O que é Refatoração?"))
@@ -93,7 +89,7 @@ class CourseTestCase(TestCase):
 
     def testExerciseListDB(self):
         self.assertEqual(ExerciseList.objects.get(name="Lista de exercícios 1").name, u"Lista de exercícios 1")
-        self.assertEqual(ExerciseList.objects.get(name="Lista de exercícios 1").questions.filter(text__contains=u"Refatoração")[0], self.question2)
+        self.assertEqual(ExerciseList.objects.get(name="Lista de exercícios 1").questions.filter(text__contains=u"Refatoração")[0].text, self.multichoicequestion2.text)
         self.assertEqual(ExerciseList.objects.count(), 3)
         self.exercise_list3.delete()
         self.assertEqual(ExerciseList.objects.count(), 2)
