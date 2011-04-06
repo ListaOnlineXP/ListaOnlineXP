@@ -41,8 +41,7 @@ class MultipleChoiceQuestion(Question):
 
 
 class MultipleChoiceAnswer(models.Model):
-    text = models.CharField(blank=False, max_length=300)
-    
+    text = models.CharField(blank=False, max_length=300)    
 
     def __unicode__(self):
         return self.text        
