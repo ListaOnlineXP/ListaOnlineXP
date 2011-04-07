@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from forms import NewStudentForm, StudentLoginForm
+from forms import NewStudentForm, StudentLoginForm, CheckJavaForm
 from models import Student, Teacher, Course
 
 def student(request):
@@ -66,3 +67,23 @@ def student_logout(request):
 def course_list(request):
 	course_list = list(Course.objects.all())
 	return render_to_response('course_list.html', {'course_list':  course_list})
+	
+	
+	
+def check_java(request):
+    values = {}
+    values.update(csrf(request))
+    if request.method == 'GET':
+        form = CheckJavaForm()
+    else:
+        form = CheckJavaForm(request.POST)
+        if form.is_valid():
+            
+            
+            
+            return HttpResponseRedirect('/check_java/result')
+    values['form'] = form
+    return render_to_response('check_java.html', values)
+        
+
+    pass

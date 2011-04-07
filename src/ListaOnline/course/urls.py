@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns(
@@ -9,4 +10,6 @@ urlpatterns = patterns(
     (r'^student/login/$', 'student_login'),
 	(r'^student/logout/$', 'student_logout'),
     (r'^courses/$', 'course_list'),
+    (r'^check_java/$', 'check_java'),
+    
 )

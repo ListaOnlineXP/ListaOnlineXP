@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Django settings for ListaOnline project.
 
 import os.path
@@ -92,7 +93,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'django_hudson',
+    #'django_hudson',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     'course'
