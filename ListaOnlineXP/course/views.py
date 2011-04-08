@@ -14,9 +14,12 @@ import shlex
 
 def home(request):
 	if request.user.is_authenticated():
-		student = Student.objects.get(user=request.user)
-		if student is not None:
-			return render_to_response('student.html', {'student': student})
+		try:
+			student = Student.objects.get(user=request.user)
+			if student is not None:
+				return render_to_response('student.html', {'student': student})
+		except:
+			return HttpResponseRedirect('/admin/')
 	return render_to_response('home.html')
 
 def signup(request):
@@ -68,11 +71,38 @@ def logout(request):
 	auth.logout(request)
 	return HttpResponseRedirect('/')
 
+def course(request, course_id):
+	values = {}
+	values.update(csrf(request))
+	try:
+		course = Course.objects.get(id=int(course_id))
+	except:
+		return HttpResponse("Disciplina não existente.")
+	if course is not None:
+		if request.user.is_authenticated():
+			student = Student.objects.get(user=request.user)
+			if student is not None:
+				if course in student.courses.all():
+					subscribe = False
+				else:
+					subscribe = True
+				values['subscribe'] = subscribe
+				values['course'] = course
+				if request.method == 'POST':
+					student.courses.add(course)
+					student.save()
+					return HttpResponseRedirect('/')
+				else:
+					return render_to_response('course.html', values)
+			else:
+				return HttpResponse("Usuário não é um estudante.")
+		else:
+			return HttpResponseRedirect('/login/')
+	return HttpResponse("Disciplina não existente.")
+
 def course_list(request):
 	course_list = list(Course.objects.all())
 	return render_to_response('course_list.html', {'course_list':  course_list})
-	
-	
 	
 def get_code(request):
     values = {}
