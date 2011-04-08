@@ -1,5 +1,5 @@
-<html>
-	<body>
+{% extends "base.html" %}
+{% block content %}
 		<h1>Check Java</h1>
 		<form method="POST">
 			{% csrf_token %}
@@ -10,5 +10,4 @@
 			<p>Test output: <br /> {{ test_output|linebreaksbr }}</p><br />
 
 		</form>
-	</body>
-</html>
+{% endblock %}
