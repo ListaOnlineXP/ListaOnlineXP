@@ -8,15 +8,23 @@ import datetime
 class CourseTestCase(TestCase):
     
     def setUp(self):
+        
+        #Setup for Teacher tests
         self.teacher1 = Teacher.objects.create(name=u"Alfredo")
         self.teacher2 = Teacher.objects.create(name=u"Gerosa")
         self.teacher3 = Teacher.objects.create(name=u"Flávio")
+
+        #Setup for Course tests
         self.course1 = Course.objects.create(code=u"MAC0110", name=u"Introdução à Computação", teacher=Teacher.objects.get(id=1))
         self.course2 = Course.objects.create(code=u"MAC0342", name=u"XP", teacher=Teacher.objects.get(id=1))
         self.course3 = Course.objects.create(code=u"MAC0122", name=u"Algoritmos", teacher=Teacher.objects.get(id=2))
+
+        #Setup for MultipleChoiceQuestion tests
         self.multichoicequestion1 = MultipleChoiceQuestion.objects.create(text=u"1+1?")
         self.multichoicequestion2 = MultipleChoiceQuestion.objects.create(text=u"O que é Refatoração?")
         self.multichoicequestion3 = MultipleChoiceQuestion.objects.create(text=u"")
+
+	    #Setup for MultipleChoiceCorrectAnswer tests
         self.multichoicecorrectanswer1 = MultipleChoiceCorrectAnswer.objects.create(question=MultipleChoiceQuestion.objects.get(id=1))
         self.multichoicecorrectanswer2 = MultipleChoiceCorrectAnswer.objects.create(question=MultipleChoiceQuestion.objects.get(id=2))
         self.multichoicecorrectanswer3 = MultipleChoiceCorrectAnswer.objects.create(question=MultipleChoiceQuestion.objects.get(id=3))
