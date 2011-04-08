@@ -1,6 +1,7 @@
 <html>
 	<body>
-		<h1>Cursos</h1>
+		<p>Olá, {{ student.name }}</p>
+        <h1>Cursos</h1>
 		{% if course_list %}
 			<ul>
 			{% for course in course_list %}
@@ -9,6 +10,7 @@
 			</ul>
 		{% else %}
 			<p> Nenhum curso disponivel </p>
-		{% endif %}
+            {% endif %}
+        <p><a href="/logout">Logout</a></p>
 	</body>
 </html>

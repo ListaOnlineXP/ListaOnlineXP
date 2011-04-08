@@ -7,6 +7,6 @@ urlpatterns = patterns(
     (r'^login/$', 'login'),
 	(r'^logout/$', 'logout'),
     (r'^signup/$', 'signup'),
-    (r'^courses/$', 'course_list'),
+    (r'^course/$', 'course_list'),
     (r'^get_code/$', 'get_code'),    
 )
