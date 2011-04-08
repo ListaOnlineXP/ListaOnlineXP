@@ -1,16 +1,19 @@
 <html>
-	<body>
-		<p>Olá, {{ student.name }}</p>
+    <body>
+        {% extends "base.html" %}
+        {% block content %}
+        <p>Olá, {{ student.name }}</p>
         <h1>Cursos</h1>
-		{% if course_list %}
-			<ul>
-			{% for course in course_list %}
-				<li>{{ course.name }}</li>
-			{% endfor %}
-			</ul>
-		{% else %}
-			<p> Nenhum curso disponivel </p>
-            {% endif %}
+        {% if course_list %}
+        <ul>
+            {% for course in course_list %}
+            <li>{{ course.name }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p> Nenhum curso disponivel </p>
+        {% endif %}
         <p><a href="/logout">Logout</a></p>
-	</body>
+        {% endblock %}
+    </body>
 </html>
