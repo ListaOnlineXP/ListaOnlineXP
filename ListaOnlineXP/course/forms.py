@@ -33,6 +33,6 @@ class StudentLoginForm(forms.Form):
 
 class GetCodeForm(forms.Form):
     
-    code = forms.CharField(max_length=1000, label='Código', widget=forms.Textarea)
-    test = forms.CharField(max_length=1000, label='Teste', widget=forms.Textarea)
+    code = forms.CharField(max_length=1000, label='Código', widget=forms.Textarea(attrs={'class':'special'}) )
+    test = forms.CharField(max_length=1000, label='Teste', widget=forms.Textarea(attrs={'class':'special'}) )
     
