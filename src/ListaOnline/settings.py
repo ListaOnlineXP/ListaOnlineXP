@@ -5,6 +5,7 @@ import os.path
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+HUDSON = True
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -93,10 +94,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    #'django_hudson',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     'course'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+if HUDSON:
+    INSTALLED_APPS += (
+    'django_hudson',
+    )
