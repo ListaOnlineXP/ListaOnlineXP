@@ -2,6 +2,7 @@
 # Django settings for ListaOnline project.
 
 import os.path
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -101,7 +102,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 )
 
-if HUDSON:
+#if we're running under hudson/jenkins
+if 'HUDSON_URL' in os.environ.keys():
     INSTALLED_APPS += (
     'django_hudson',
     )
