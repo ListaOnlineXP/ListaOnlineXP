@@ -16,6 +16,7 @@ class Student(models.Model):
 
 	user = models.ForeignKey(User, unique=True)
 	name = models.CharField(max_length=100)
+	nusp = models.CharField(max_length=100)
 	
 	def __unicode__(self):
 		return self.name 

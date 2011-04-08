@@ -28,12 +28,13 @@ def new_student(request):
 		if form.is_valid():
 			name = form.cleaned_data['name']
 			username = form.cleaned_data['username']
+			nusp = form.cleaned_data['nusp']
 			passwd = form.cleaned_data['passwd']
 			try:
 				user = User.objects.create_user(username, 'teste@teste.com', passwd)
 				student = Student(name=name, user=user)
 				student.save()
-				user = authenticate(username=username, password=passwd)
+				user = authenticate(username=username, nusp=nusp, password=passwd)
 				login(request, user)
 				return HttpResponseRedirect('/student/')
 			except:
