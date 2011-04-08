@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from forms import NewStudentForm, StudentLoginForm, GetCodeForm
 from models import Student, Teacher, Course
+
+import os.path
 from subprocess import Popen, PIPE
 import shlex
 
@@ -89,26 +91,28 @@ def get_code(request):
             test_file.write(request.POST['test'])
             test_file.close()
             
+            junit_location = os.path.join(os.path.dirname(__file__), 'junit/junit.jar').replace('\\', '/')
+    
+            code_compile_command = "javac -classpath /tmp/:" + junit_location + " /tmp/Code.java"
+            test_compile_command = "javac -classpath /tmp/:" + junit_location + " /tmp/TestCode.java"
+            test_command = "java -classpath /tmp/:" + junit_location + " org.junit.runner.JUnitCore TestCode"
             
-            code_compile = Popen(["javac", "-classpath", "/tmp/:/Users/hugo/.ant/lib/junit.jar", "/tmp/Code.java"], shell=False, stdout=PIPE, stderr=PIPE)
+            code_compile_args = shlex.split(code_compile_command)
+            test_compile_args = shlex.split(test_compile_command)
+            test_args = shlex.split(test_command)
+            
+            code_compile = Popen(code_compile_args, stdout=PIPE, stderr=PIPE)
             code_compile_output = code_compile.stderr.read()
             
-            test_compile = Popen(["javac", "-classpath", "/tmp/:/Users/hugo/.ant/lib/junit.jar", "/tmp/TestCode.java"], shell=False, stdout=PIPE, stderr=PIPE)
+            test_compile = Popen(test_compile_args, stdout=PIPE, stderr=PIPE)
             test_compile_output = test_compile.stderr.read()
+            
+            test = Popen(test_args, stdout=PIPE, stderr=PIPE)            
+            test_output = test.stdout.read()
             
             values["code_compile_output"] = code_compile_output
             values["test_compile_output"] = test_compile_output
-            
-            test_command = "java -classpath /tmp/:/Users/hugo/.ant/lib/junit.jar org.junit.runner.JUnitCore TestCode"
-            test_args = shlex.split(test_command)
-            test = Popen(test_args, stdout=PIPE, stderr=PIPE)
-            
-            test_output = test.stdout.read()
-            
             values["test_output"] = test_output
-            
-            pass
-        
             
     values['form'] = form
     return render_to_response('get_code.html', values)
