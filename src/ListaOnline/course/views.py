@@ -95,7 +95,7 @@ def get_code(request):
     
             code_compile_command = "javac -classpath /tmp/:" + junit_location + " /tmp/Code.java"
             test_compile_command = "javac -classpath /tmp/:" + junit_location + " /tmp/TestCode.java"
-            test_command = "java -classpath /tmp/:" + junit_location + " org.junit.runner.JUnitCore TestCode"
+            test_command = "java -classpath /tmp/:" + junit_location + " -Djava.security.manager org.junit.runner.JUnitCore TestCode"
             
             code_compile_args = shlex.split(code_compile_command)
             test_compile_args = shlex.split(test_compile_command)
@@ -107,7 +107,7 @@ def get_code(request):
             test_compile = Popen(test_compile_args, stdout=PIPE, stderr=PIPE)
             test_compile_output = test_compile.stderr.read()
             
-            test = Popen(test_args, stdout=PIPE, stderr=PIPE)            
+            test = Popen(test_args, stdout=PIPE, stderr=PIPE)
             test_output = test.stdout.read()
             
             values["code_compile_output"] = code_compile_output
