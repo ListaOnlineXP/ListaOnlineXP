@@ -5,7 +5,7 @@ import os.path
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-HUDSON = True
+HUDSON = False
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -79,7 +79,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'ListaOnline.urls'
+ROOT_URLCONF = 'ListaOnlineXP.urls'
 
 TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'src/ListaOnline/template').replace('\\', '/'),
