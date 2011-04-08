@@ -1,0 +1,14 @@
+<html>
+	<body>
+		<h1>Check Java</h1>
+		<form method="POST">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<input type="submit" value="Testar" />
+			<p>Code compile output: {{ code_compile_output }}</p><br />
+			<p>Test compile output: {{ test_compile_output }}</p><br />
+			<p>Test output: {{ test_output }}</p><br />
+			
+		</form>
+	</body>
+</html>
