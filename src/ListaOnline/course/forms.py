@@ -31,8 +31,8 @@ class StudentLoginForm(forms.Form):
 	username = forms.CharField(max_length=20, label='Nome de usuario')
 	passwd = forms.CharField(max_length=20, widget=forms.PasswordInput)
 
-class CheckJavaForm(forms.Form):
+class GetCodeForm(forms.Form):
     
     code = forms.CharField(max_length=1000, label='Código', widget=forms.Textarea)
-    
+    test = forms.CharField(max_length=1000, label='Teste', widget=forms.Textarea)
     

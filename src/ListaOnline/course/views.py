@@ -4,8 +4,10 @@ from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from forms import NewStudentForm, StudentLoginForm, CheckJavaForm
+from forms import NewStudentForm, StudentLoginForm, GetCodeForm
 from models import Student, Teacher, Course
+from subprocess import Popen, PIPE
+import shlex
 
 def student(request):
 	student = Student.objects.get(user=request.user)
@@ -70,20 +72,49 @@ def course_list(request):
 	
 	
 	
-def check_java(request):
+def get_code(request):
     values = {}
     values.update(csrf(request))
     if request.method == 'GET':
-        form = CheckJavaForm()
+        form = GetCodeForm()
     else:
-        form = CheckJavaForm(request.POST)
+        form = GetCodeForm(request.POST)
         if form.is_valid():
+                                    
+            code_file = open("/tmp/Code.java", 'w')
+            code_file.write(request.POST['code'])
+            code_file.close()
+                
+            test_file = open("/tmp/TestCode.java", 'w')
+            test_file.write(request.POST['test'])
+            test_file.close()
             
             
+            code_compile = Popen(["javac", "-classpath", "/tmp/:/Users/hugo/.ant/lib/junit.jar", "/tmp/Code.java"], shell=False, stdout=PIPE, stderr=PIPE)
+            code_compile_output = code_compile.stderr.read()
             
-            return HttpResponseRedirect('/check_java/result')
+            test_compile = Popen(["javac", "-classpath", "/tmp/:/Users/hugo/.ant/lib/junit.jar", "/tmp/TestCode.java"], shell=False, stdout=PIPE, stderr=PIPE)
+            test_compile_output = test_compile.stderr.read()
+            
+            values["code_compile_output"] = code_compile_output
+            values["test_compile_output"] = test_compile_output
+            
+            test_command = "java -classpath /tmp/:/Users/hugo/.ant/lib/junit.jar org.junit.runner.JUnitCore TestCode"
+            test_args = shlex.split(test_command)
+            test = Popen(test_args, stdout=PIPE, stderr=PIPE)
+            
+            test_output = test.stdout.read()
+            
+            values["test_output"] = test_output
+            
+            pass
+        
+            
     values['form'] = form
-    return render_to_response('check_java.html', values)
+    return render_to_response('get_code.html', values)
         
 
-    pass
+
+        
+        
+        
