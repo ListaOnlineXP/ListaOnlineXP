@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+
 from django import forms
 
-class NewStudentForm(forms.Form):
+class SignUpForm(forms.Form):
 
 	name = forms.CharField(max_length=100)
-	username = forms.CharField(max_length=20, label='Nome de usuario')
+	username = forms.CharField(max_length=20, label='Nome de usuário')
 	nusp = forms.CharField(max_length=100)
 	passwd = forms.CharField(max_length=20, widget=forms.PasswordInput)
 	confirm_passwd = forms.CharField(max_length=20, widget=forms.PasswordInput)
@@ -13,7 +14,7 @@ class NewStudentForm(forms.Form):
 		nusp = self.cleaned_data['nusp']
 		for char in nusp:
 			if char not in [str(i) for i in range(0, 10)]:
-				raise forms.ValidationError("NUSP invalido.")
+				raise forms.ValidationError("NUSP inválido.")
 		return nusp
 
 	def clean(self):
@@ -21,12 +22,12 @@ class NewStudentForm(forms.Form):
 		passwd = cleaned_data['passwd']
 		confirm_passwd = cleaned_data['confirm_passwd']
 		if passwd != confirm_passwd:
-			self._errors['confirm_passwd'] = self.error_class(["Confirmacao de senha invalida."])
+			self._errors['confirm_passwd'] = self.error_class(["Confirmação de senha inválida."])
 			del cleaned_data['confirm_passwd']
 		return cleaned_data
 
 
-class StudentLoginForm(forms.Form):
+class LoginForm(forms.Form):
 
 	username = forms.CharField(max_length=20, label='Nome de usuario')
 	passwd = forms.CharField(max_length=20, widget=forms.PasswordInput)

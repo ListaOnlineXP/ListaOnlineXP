@@ -1,72 +1,72 @@
 # -*- coding: utf-8 -*-
+
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
+from django.contrib import auth
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
-from forms import NewStudentForm, StudentLoginForm, GetCodeForm
+from forms import SignUpForm, LoginForm, GetCodeForm
 from models import Student, Teacher, Course
 
 import os.path
 from subprocess import Popen, PIPE
 import shlex
 
-def student(request):
-	student = Student.objects.get(user=request.user)
-	if student is not None:
-		return render_to_response('student.html', {'student': student})
-	else:
-		return HttpResponse('Estudante invalido.')
+def home(request):
+	if request.user.is_authenticated():
+		student = Student.objects.get(user=request.user)
+		if student is not None:
+			return render_to_response('student.html', {'student': student})
+	return render_to_response('home.html')
 
-def new_student(request):
+def signup(request):
 	values = {}
 	values.update(csrf(request))
 	if request.method == 'GET':
-		form = NewStudentForm()
+		form = SignUpForm()
 	else:
-		form = NewStudentForm(request.POST)
+		form = SignUpForm(request.POST)
 		if form.is_valid():
 			name = form.cleaned_data['name']
 			username = form.cleaned_data['username']
+			nusp = form.cleaned_data['nusp']
 			passwd = form.cleaned_data['passwd']
 			try:
-				user = User.objects.create_user(username, 'teste@teste.com', passwd)
-				student = Student(name=name, user=user)
+				user = User.objects.create_user(username, '', passwd)
+				student = Student(name=name, nusp=nusp, user=user)
 				student.save()
-				user = authenticate(username=username, password=passwd)
-				login(request, user)
-				return HttpResponseRedirect('/student/')
+				return HttpResponseRedirect('/login/')
 			except:
-				form._errors["username"] = form.error_class(["Usuario ja cadastrado."])
+				form._errors["username"] = form.error_class(["Usuário já cadastrado."])
 	values['form'] = form
-	return render_to_response('new_student.html', values)
+	return render_to_response('signup.html', values)
 
-def student_login(request):
+def login(request):
 	values = {}
 	values.update(csrf(request))
 	if request.method == 'GET':
-		form = StudentLoginForm()
+		form = LoginForm()
 	else:
-		form = StudentLoginForm(request.POST)
+		form = LoginForm(request.POST)
 		if form.is_valid():
 			username = form.cleaned_data['username']
 			passwd = form.cleaned_data['passwd']
 			try:
 				user = User.objects.get(username=username)
 				if user.check_password(passwd):
-					user = authenticate(username=username, password=passwd)
-					login(request, user)
-					return HttpResponseRedirect('/student/')
+					user = auth.authenticate(username=username, password=passwd)
+					auth.login(request, user)
+					return HttpResponseRedirect('/')
 				else:
 					form._errors['passwd'] = form.error_class(['Senha incorreta.'])
 			except:
-				form._errors['username'] = form.error_class(['Usuario nao cadastrado.'])
+				form._errors['username'] = form.error_class(['Usuário não cadastrado.'])
 	values['form'] = form
-	return render_to_response('student_login.html', values)
+	return render_to_response('login.html', values)
 
-def student_logout(request):
-	logout(request)
-	return HttpResponseRedirect('/student/login/')
+def logout(request):
+	auth.logout(request)
+	return HttpResponseRedirect('/')
 
 def course_list(request):
 	course_list = list(Course.objects.all())
