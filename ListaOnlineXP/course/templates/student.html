@@ -1,6 +1,5 @@
-<html>
-	<body>
+{% extends "base.html" %}
+{% block content %}
 		<p>Ola, {{ student.name }}</p>
 		<p><a href="/student/logout">Logout</a></p>
-	</body>
-</html>
+{% endblock %}
