@@ -1,0 +1,21 @@
+#sidebar {
+    position: absolute;
+    width: 150px;
+    background: yellow;
+    color: black;
+    left: 0;
+    right: 0;
+    height: 100%;
+}
+
+#content_sidebar {
+    position: absolute;
+    margin-left: 150px;
+    background: blue;
+    color: black;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    left: 0;
+    right: 0;
+}
