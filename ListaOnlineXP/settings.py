@@ -2,6 +2,7 @@
 # Django settings for ListaOnline project.
 
 import os.path
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -64,6 +65,9 @@ ADMIN_MEDIA_PREFIX = '/media/'
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'es#e8egerq2u$oa4)c_l5k#5oj0227t8lfz^5i6d_0dwskv6xb'
 
+#Serving media files with django dev server, if DEBUG = True
+STATIC_DOC_ROOT = os.path.join(os.path.dirname(__file__), 'site_media/').replace('\\', '/')
+
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -101,7 +105,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 )
 
-if HUDSON:
+#if we're running under hudson/jenkins
+if 'HUDSON_URL' in os.environ.keys():
     INSTALLED_APPS += (
     'django_hudson',
     )
