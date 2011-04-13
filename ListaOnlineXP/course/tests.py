@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from django.test import TestCase
-from models import Course, Teacher, MultipleChoiceQuestion, MultipleChoiceCorrectAnswer, ExerciseList, Student
+from models import Course, Teacher, MultipleChoiceQuestion, MultipleChoiceCorrectAnswer, ExerciseList, Student, JavaQuestion
 from django.contrib.auth.models import User
 import datetime
 
@@ -48,7 +48,11 @@ class CourseTestCase(TestCase):
         self.student1 = Student.objects.create(name=u"Steven Koiti Tsukamoto", nusp=u"6431089", user=User.objects.get(id=1))
         self.student2 = Student.objects.create(name=u"Thiago da Silva Pinheiro", nusp=u"6797000", user=User.objects.get(id=2))
         self.student3 = Student.objects.create(name=u"Bruno Milan Perfetto", nusp=u"123456", user=User.objects.get(id=3))
-
+        
+        #Setup for JavaQuestion tests
+        self.javaquestion = JavaQuestion.objects.create(text=u"Crie o helloworld.", criteria=u"Hello World!")
+        self.javaquestion = JavaQuestion.objects.create(text=u"Crie um programa que some dois números.", criteria=u"1+2=3")
+        
     def testTeacherDB(self):
         self.assertEqual(Teacher.objects.get(name=u"Alfredo").name, u"Alfredo")
         self.assertEqual(Teacher.objects.get(name=u"Gerosa").id, 2)
@@ -122,3 +126,8 @@ class CourseTestCase(TestCase):
         self.assertNotEqual(Student.objects.get(id=u"3").name,u"Steven Koiti Tsukamoto")
         self.assertNotEqual(Student.objects.get(id=u"3").name,u"Thiago da Silva Pinheiro")
         self.assertEqual(Student.objects.count(), 3)
+
+    def testJavaQuestion(self):
+        self.assertEqual(JavaQuestion.objects.get(text=u"Crie o helloworld.").criteria, u"Hello World!")
+        self.assertEqual(JavaQuestion.objects.get(criteria=u"1+2=3").text, u"Crie um programa que some dois números.")
+        self.assertEqual(JavaQuestion.objects.count(), 2)
