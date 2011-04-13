@@ -8,6 +8,6 @@ urlpatterns = patterns(
 	(r'^logout/$', 'logout'),
     (r'^signup/$', 'signup'),
 	(r'^course/([0-9]+)/$', 'course'),
-    (r'^courses/$', 'course_list'),
+    (r'^course/$', 'course_list'),
     (r'^get_code/$', 'get_code'), 
 )
