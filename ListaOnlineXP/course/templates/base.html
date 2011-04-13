@@ -1,10 +1,51 @@
+{% load url from future %}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
-	<head>
-		<link rel="stylesheet" type="text/css" href="/site_media/style.css" />
-	</head>
-	<body>
-	{% block content %}	
-	
-	{% endblock %}
-	</body>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" type="text/css" href="/site_media/base.css" />
+  {% block extrastyle %}{% endblock %}
+</head>
+
+{% load i18n %}
+
+<body class="{% block bodyclass %}{% endblock %}">
+  <!-- Header -->
+  <div id="header">
+    <div id="branding">
+      {% block branding %}<h1>Lista On-line</h1>{% endblock %}
+    </div>
+    {% if student or user %}
+      <div id="user-tools">
+	{% trans 'Welcome,' %}
+	<strong>{% firstof user.name user.login student.name student.login %}</strong>
+	<a href="/logout">{% trans 'Log out' %}</a>
+      </div>
+    {% else %}
+      <div id="user-tools">
+	<a href="/login">{% trans 'Log in' %}</a>
+      </div>
+    {% endif %}
+  </div>
+<!-- END Header -->
+
+<!-- Content -->
+  <div id="content" class="{% block coltype %}colM{% endblock %}">
+    {% block pretitle %}{% endblock %}
+    {% block content_title %}{% if title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
+    {% block content %}
+      {% block object-tools %}{% endblock %}
+      {{ content }}
+    {% endblock %}
+    {% block sidebar %}{% endblock %}
+    <br class="clear" />
+  </div>
+<!-- END Content -->
+
+<!-- Footer -->
+  <div id="footer">
+    {% block footer %}{% endblock %}
+  </div>
+<!-- END Footer -->
+
+</body>
 </html>
