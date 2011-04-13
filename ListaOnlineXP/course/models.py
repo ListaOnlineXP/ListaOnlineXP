@@ -36,7 +36,7 @@ class Student(models.Model):
 
 class Question(models.Model):
 
-    text = models.TextField(blank=False)
+    text = models.TextField()
 
     def __unicode__(self):
         return self.text
@@ -45,6 +45,11 @@ class Question(models.Model):
 class MultipleChoiceQuestion(Question):
     
     pass
+
+
+class JavaQuestion(Question):
+
+	criteria = models.TextField()
 
 
 class MultipleChoiceAnswer(models.Model):
