@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+<!-- New CSS -->
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="/site_media/base_site.css" />
+{% endblock %}
+
+{% load i18n %}
+
+<!--Content -->
+{% block content %}
+<div id="sidebar">{% block sidebar3 %}poipoipopo{% endblock %}</div>
+<div id="content_sidebar">{% block content_sidebar %}asgagdga{% endblock %}</div>
+{% endblock %}
