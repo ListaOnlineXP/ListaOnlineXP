@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+
 from django.contrib import admin
 from models import Course, Teacher, ExerciseList, MultipleChoiceQuestion
 from models import MultipleChoiceCorrectAnswer, MultipleChoiceWrongAnswer
-from models import JavaQuestion
+from models import JavaQuestion, Student
 
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('code', 'name', 'teacher')
@@ -23,8 +24,12 @@ class MultipleChoiceQuestionAdmin(admin.ModelAdmin):
         MultipleChoiceWrongAnswerInline,
     ]
 
+class StudentAdmin(admin.ModelAdmin):
+    fields = ('name', 'nusp', 'courses')
+
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Teacher)
 admin.site.register(ExerciseList, ExerciseListAdmin)
 admin.site.register(MultipleChoiceQuestion, MultipleChoiceQuestionAdmin)
 admin.site.register(JavaQuestion)
+admin.site.register(Student, StudentAdmin)
