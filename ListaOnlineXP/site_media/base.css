@@ -654,7 +654,7 @@ table#change-history tbody th {
 }
 
 #content {
-    margin: 10px 15px;
+    margin: 0px 15px;
 }
 
 #header {
@@ -715,9 +715,12 @@ table#change-history tbody th {
 /* HEADER */
 
 #header {
-    background: #417690;
+    background: #7799dd;
     color: #ffc;
     overflow: hidden;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #0000ff;
 }
 
 #header a:link, #header a:visited {
