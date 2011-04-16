@@ -48,7 +48,6 @@ public class JavaTester {
         
         try {
             JavaTester javaTester = new JavaTester();
-//            javaTester.setPath("/Users/hugo/ListaOnlineXP/ListaOnlineXP/java/");
             System.out.println(javaTester.executeTest(codigo,criterio));
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -151,16 +150,10 @@ public class JavaTester {
                     RuntimeExecutor r = new RuntimeExecutor(3000);
                     String resp = "";
                     if (path.startsWith("/")) { // Linux
-                        resp = r.execute("java -cp "+path+" -Djava.security.manager "+testClass, null);
+                        resp = r.execute("java -cp "+path+" -Djava.security.manager -Dfile.encoding=utf-8 "+testClass, null);
                 } else { // Windows 
-                    resp = r.execute("java -cp \""+path+";\" -Djava.security.manager "+testClass, null); // Para teste stand alone o ; foi necessário
+                    resp = r.execute("java -cp \""+path+";\" -Djava.security.manager -Dfile.encoding=utf-8 "+testClass, null); // Para teste stand alone o ; foi necessário
             }
-            //System.out.println("java -cp \""+(new File(".")).getCanonicalPath()+"\" -Djava.security.manager "+testClass);
-
-            //toDelete = new File(path+testClass + ".java");
-            //toDelete.delete();
-            //toDelete = new File (path+testClass + ".class");
-            //toDelete.delete();
             toDelete = new File (path+nomeClasse + ".java");
             toDelete.delete();
             toDelete = new File (path+nomeClasse + ".class");
@@ -181,12 +174,11 @@ public class JavaTester {
         private void generateTestFile(String path, String className, String criterio) throws Exception {
             PrintWriter saida = new PrintWriter(new FileWriter(path+className));
             BufferedReader template;
-            // try {
-            //                 template = new BufferedReader(new FileReader(path+"TestTemplate.java"));
-            //             } catch (Exception ex) {
-            //                 throw new Exception ("Arquivo TestTemplate.java não encontrado no diretório " + path);
-            //             }
-            template = new BufferedReader(new FileReader(path+"TestTemplate.java"));
+            try {
+                            template = new BufferedReader(new FileReader(path+"TestTemplate.java"));
+                        } catch (Exception ex) {
+                            throw new Exception ("Arquivo TestTemplate.java não encontrado no diretório " + path);
+                        }
             String linha;
             while ((linha = template.readLine()) != null) {
                 if (linha.indexOf("/* Insert code here */") != -1) {

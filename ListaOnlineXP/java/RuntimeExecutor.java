@@ -133,7 +133,7 @@ public class RuntimeExecutor {
 		RuntimeExecutor r = new RuntimeExecutor(4000);
 		try {
 			//String saida = r.execute(System.getenv("windir") +"\\system32\\"+"tree.com /A", null);
-		    String saida = r.execute("java -Dfile.encoding=cp850 -Djava.security.manager Teste", null);
+		    String saida = r.execute("java -Dfile.encoding=utf-8 -Djava.security.manager Teste", null);
 			//String saida = r.execute("rundll32 url.dll,FileProtocolHandler c:/00291294.pdf", null);
 			//String saida = r.execute("cmd /c start excel.exe", null);
 			
