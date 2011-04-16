@@ -1,12 +1,12 @@
 /* ----------------------------------------------- *
- *				Marco AurÈlio Gerosa               *
+ *				Marco Aur√©lio Gerosa               *
  * ----------------------------------------------- *
 
- HistÛrico de Versıes
+ Hist√≥rico de Vers√µes
  --------------------
- Vers„o	Autor		ModificaÁ„o
+ Vers√£o	Autor		Modifica√ß√£o
  ------	-----		-----------
- 1.0	Gerosa 		ImportaÁ„o e adaptaÁ„o da classe
+ 1.0	Gerosa 		Importa√ß√£o e adapta√ß√£o da classe
  * 
  */
 

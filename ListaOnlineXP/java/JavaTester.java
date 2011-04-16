@@ -32,7 +32,7 @@ public class JavaTester {
             }
             codigo_buffer.close();
         } catch(IOException e) {
-            System.out.println("Falha ao abrir arquivo de cÛdigo.");
+            System.out.println("Falha ao abrir arquivo de c√≥digo.");
         }
         
         try {
@@ -43,7 +43,7 @@ public class JavaTester {
             }
             criterio_buffer.close();
         } catch(IOException e) {
-            System.out.println("Falha ao abrir arquivo de critÈrio.");
+            System.out.println("Falha ao abrir arquivo de crit√©rio.");
         }
         
         try {
@@ -56,18 +56,18 @@ public class JavaTester {
 
     public synchronized String executeTest(String codigo, String criterio) throws Exception {
         // Path
-        if (!(new File(path).exists())) throw new Exception("DiretÛrio de execuÁ„o n„o encontrado.");
+        if (!(new File(path).exists())) throw new Exception("Diret√≥rio de execu√ß√£o n√£o encontrado.");
 
         // ----- Gera o arquivo do aluno ------
         // descobre o nome da classe
         int pos = codigo.indexOf("class ");
-        if (pos == -1) return "N„o h· classe definida.";
+        if (pos == -1) return "N√£o h√° classe definida.";
         pos = pos + "class ".length();
         while (pos < codigo.length() && codigo.charAt(pos) == ' ') pos++;
         int posFim = pos;
         while (posFim < codigo.length() && 
             (Character.isLetterOrDigit(codigo.charAt(posFim)) || codigo.charAt(posFim) == '_')) posFim++;
-        if (posFim == pos) return "N„o h· classe definida.";
+        if (posFim == pos) return "N√£o h√° classe definida.";
         String nomeClasse = codigo.substring(pos, posFim);
         // Compila
         File toDelete;
@@ -77,13 +77,13 @@ public class JavaTester {
         toDelete.delete();
         String resultCompilacao = Compilar.compilar(path, nomeClasse, codigo);
         if (!resultCompilacao.equals("")) {
-            return "Falha ao compilar o cÛdigo.\n"+resultCompilacao;
+            return "Falha ao compilar o c√≥digo.\n"+resultCompilacao;
         }
 
         // Trata o codigo de teste
         criterio = StringConverter.replace(criterio, "\r", "");
 
-        // Acrescenta parametro String no AssertEquals que n„o tiver
+        // Acrescenta parametro String no AssertEquals que n√£o tiver
         pos = criterio.indexOf("assert");
         while (pos != -1) {
             // Encontra o primeiro parametro
@@ -94,8 +94,8 @@ public class JavaTester {
             while (qtdeParentesesAberto != 0 || criterio.charAt(posFim) != ',') {
                 if (criterio.charAt(posFim) == '(') qtdeParentesesAberto++;
                 if (criterio.charAt(posFim) == ')') qtdeParentesesAberto--;
-                if (qtdeParentesesAberto > 1000) return "Problema no cÛdigo de teste. Notifique o professor. N„o foi possÌvel identificar o primeiro par‚metro. Excesso de parÍnteses abertos.";
-                if (posFim == criterio.length()-1) return "Problema no cÛdigo de teste. Notifique o professor. N„o foi possÌvel identificar o primeiro par‚metro. Fim do arquivo encontrado.";
+                if (qtdeParentesesAberto > 1000) return "Problema no c√≥digo de teste. Notifique o professor. N√£o foi poss√≠vel identificar o primeiro par√¢metro. Excesso de par√™nteses abertos.";
+                if (posFim == criterio.length()-1) return "Problema no c√≥digo de teste. Notifique o professor. N√£o foi poss√≠vel identificar o primeiro par√¢metro. Fim do arquivo encontrado.";
                 posFim++;
             }
             String parametro = criterio.substring(pos, posFim);
@@ -105,12 +105,12 @@ public class JavaTester {
             while (qtdeParentesesAberto != 0 || (criterio.charAt(posFim) != ',' && criterio.charAt(posFim) != ')')) {
                 if (criterio.charAt(posFim) == '(') qtdeParentesesAberto++;
                 if (criterio.charAt(posFim) == ')') qtdeParentesesAberto--;
-                if (qtdeParentesesAberto > 1000) return "Problema no cÛdigo de teste. Notifique o professor. N„o foi possÌvel identificar o ˙ltimo par‚metro. Excesso de parÍnteses abertos.";
-                if (posFim == criterio.length()-1) return "Problema no cÛdigo de teste. Notifique o professor. N„o foi possÌvel identificar o ˙ltimo par‚metro. Fim do arquivo encontrado.";
+                if (qtdeParentesesAberto > 1000) return "Problema no c√≥digo de teste. Notifique o professor. N√£o foi poss√≠vel identificar o √∫ltimo par√¢metro. Excesso de par√™nteses abertos.";
+                if (posFim == criterio.length()-1) return "Problema no c√≥digo de teste. Notifique o professor. N√£o foi poss√≠vel identificar o √∫ltimo par√¢metro. Fim do arquivo encontrado.";
                 posFim++;
             }
             if (criterio.charAt(posFim) == ')') {
-                // N„o tem o ultimo parametro
+                // N√£o tem o ultimo parametro
                 criterio = criterio.substring(0, posFim) + ",\"" + StringConverter.replace(parametro, "\"", "\\\"") + "\"" + criterio.substring(posFim);
             }
             pos = criterio.indexOf("assert", pos); 
@@ -129,21 +129,21 @@ public class JavaTester {
             if (resultCompilacao.indexOf("cannot find symbol") != -1) {
                 if (resultCompilacao.indexOf("symbol  : class ") != -1) {
                     String nome = extraiPalavraSeguinte(resultCompilacao, "symbol  : class");
-                    return "N„o foi encontrada a classe "+nome+".";
+                    return "N√£o foi encontrada a classe "+nome+".";
                     } else if (resultCompilacao.indexOf("symbol  : method") != -1) {
                         String nomeMetodo = extraiPalavraSeguinte(resultCompilacao, "symbol  : method");
                         String nomeLocal = extraiPalavraSeguinte(resultCompilacao, "location: class ");
-                        return "N„o foi encontrado o mÈtodo "+nomeMetodo+" na classe "+nomeLocal+".";
+                        return "N√£o foi encontrado o m√©todo "+nomeMetodo+" na classe "+nomeLocal+".";
                     }
                     } else if (resultCompilacao.indexOf("cannot be applied to ") != -1) {
                         String mensagem = extraiPalavraSeguinte(resultCompilacao,": ");
-                        return "Problema com par‚metros: the method "+mensagem;
+                        return "Problema com par√¢metros: the method "+mensagem;
                         } else if (resultCompilacao.indexOf("incompatible types") != -1) {
                             String found = extraiPalavraSeguinte(resultCompilacao, "found :");
                             String required = extraiPalavraSeguinte(resultCompilacao, "required: ");
-                            return "Tipos de dados incompatÌveis. Foi encontrado "+found+" e era requerido "+required+".";
+                            return "Tipos de dados incompat√≠veis. Foi encontrado "+found+" e era requerido "+required+".";
                         }
-                        return "Falha ao compilar o cÛdigo de teste.\n"+resultCompilacao;
+                        return "Falha ao compilar o c√≥digo de teste.\n"+resultCompilacao;
                     }
 
                     // Executa o teste
@@ -152,7 +152,7 @@ public class JavaTester {
                     if (path.startsWith("/")) { // Linux
                         resp = r.execute("java -cp "+path+" -Djava.security.manager -Dfile.encoding=utf-8 "+testClass, null);
                 } else { // Windows 
-                    resp = r.execute("java -cp \""+path+";\" -Djava.security.manager -Dfile.encoding=utf-8 "+testClass, null); // Para teste stand alone o ; foi necess·rio
+                    resp = r.execute("java -cp \""+path+";\" -Djava.security.manager -Dfile.encoding=utf-8 "+testClass, null); // Para teste stand alone o ; foi necess√°rio
             }
             toDelete = new File (path+nomeClasse + ".java");
             toDelete.delete();
@@ -177,7 +177,7 @@ public class JavaTester {
             try {
                             template = new BufferedReader(new FileReader(path+"TestTemplate.java"));
                         } catch (Exception ex) {
-                            throw new Exception ("Arquivo TestTemplate.java n„o encontrado no diretÛrio " + path);
+                            throw new Exception ("Arquivo TestTemplate.java n√£o encontrado no diret√≥rio " + path);
                         }
             String linha;
             while ((linha = template.readLine()) != null) {

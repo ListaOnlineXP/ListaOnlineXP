@@ -86,7 +86,7 @@ public class RuntimeExecutor {
 			Runtime.getRuntime().runFinalization();
 			stdin.interrupt();
 			stderr.interrupt();
-			return "O programa excedeu o tempo limite de execução ("+ this.timeout + " milisegundos)";
+			return "O programa excedeu o tempo limite de execuÃ§Ã£o ("+ this.timeout + " milisegundos)";
 		} finally {
 			// Stop the timer
 			timer.cancel();
