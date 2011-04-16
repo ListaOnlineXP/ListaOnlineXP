@@ -24,7 +24,7 @@ class CourseTestCase(TestCase):
         self.multichoicequestion2 = MultipleChoiceQuestion.objects.create(text=u"O que é Refatoração?")
         self.multichoicequestion3 = MultipleChoiceQuestion.objects.create(text=u"")
 
-	    #Setup for MultipleChoiceCorrectAnswer tests
+        #Setup for MultipleChoiceCorrectAnswer tests
         self.multichoicecorrectanswer1 = MultipleChoiceCorrectAnswer.objects.create(question=MultipleChoiceQuestion.objects.get(id=1))
         self.multichoicecorrectanswer2 = MultipleChoiceCorrectAnswer.objects.create(question=MultipleChoiceQuestion.objects.get(id=2))
         self.multichoicecorrectanswer3 = MultipleChoiceCorrectAnswer.objects.create(question=MultipleChoiceQuestion.objects.get(id=3))

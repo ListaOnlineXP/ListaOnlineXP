@@ -25,13 +25,13 @@ class Course(models.Model):
 
 class Student(models.Model):
 
-	user = models.ForeignKey(User, unique=True)
-	name = models.CharField(max_length=100)
-	nusp = models.CharField(max_length=100)
-	courses = models.ManyToManyField(Course)
-	
-	def __unicode__(self):
-		return self.name 
+    user = models.ForeignKey(User, unique=True)
+    name = models.CharField(max_length=100)
+    nusp = models.CharField(max_length=100)
+    courses = models.ManyToManyField(Course)
+    
+    def __unicode__(self):
+        return self.name 
 
 
 class Question(models.Model):
@@ -49,7 +49,7 @@ class MultipleChoiceQuestion(Question):
 
 class JavaQuestion(Question):
 
-	criteria = models.TextField()
+    criteria = models.TextField()
 
 
 class MultipleChoiceAnswer(models.Model):

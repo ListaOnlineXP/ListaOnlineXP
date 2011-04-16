@@ -16,13 +16,13 @@
     </div>
     {% if student or user %}
       <div id="user-tools">
-	{% trans 'Welcome,' %}
-	<strong>{% firstof user.name user.login student.name student.login %}</strong>
-	<a href="/logout">{% trans 'Log out' %}</a>
+    {% trans 'Welcome,' %}
+    <strong>{% firstof user.name user.login student.name student.login %}</strong>
+    <a href="/logout">{% trans 'Log out' %}</a>
       </div>
     {% else %}
       <div id="user-tools">
-	<a href="/login">{% trans 'Log in' %}</a>
+    <a href="/login">{% trans 'Log in' %}</a>
       </div>
     {% endif %}
   </div>

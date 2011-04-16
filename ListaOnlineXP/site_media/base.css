@@ -377,9 +377,9 @@ input[type=text], input[type=password], textarea, select, .vTextField {
 }
 
 .button[disabled], input[type=submit][disabled], input[type=button][disabled] {
-	background-image: url(../img/admin/nav-bg.gif);
-	background-position: bottom;
-	opacity: 0.4;
+    background-image: url(../img/admin/nav-bg.gif);
+    background-position: bottom;
+    opacity: 0.4;
 }
 
 .button.default, input[type=submit].default, .submit-row input.default {
@@ -396,9 +396,9 @@ input[type=text], input[type=password], textarea, select, .vTextField {
 }
 
 .button[disabled].default, input[type=submit][disabled].default, input[type=button][disabled].default {
-	background-image: url(../img/admin/default-bg.gif);
-	background-position: bottom;
-	opacity: 0.4;
+    background-image: url(../img/admin/default-bg.gif);
+    background-position: bottom;
+    opacity: 0.4;
 }
 
 
@@ -492,7 +492,7 @@ ul.errorlist {
 }
 
 .errorlist li a {
- 	color: white;
+     color: white;
     text-decoration: underline;
 }
 
