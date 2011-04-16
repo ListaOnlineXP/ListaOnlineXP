@@ -1,57 +1,57 @@
 /* ----------------------------------------------- *
- *                Marco Aurélio Gerosa               *
- * ----------------------------------------------- *
+*                Marco Aurélio Gerosa               *
+* ----------------------------------------------- *
 
- Histórico de Versões
- --------------------
- Versão    Autor        Modificação
- ------    -----        -----------
- 1.0    Gerosa         Importação e adaptação da classe
- * 
- */
+Histórico de Versões
+--------------------
+Versão    Autor        Modificação
+------    -----        -----------
+1.0    Gerosa         Importação e adaptação da classe
+* 
+*/
 
 public class StringConverter {
-    
 
-public static String concatenateWithoutRepetion(String palavra, String str) throws Exception {
 
-    if ((palavra == null) || palavra.equals("")) {
-        return str;
-    } 
-    
-    if ((str == null) || str.equals("")) {
-        return palavra;
-    } 
+    public static String concatenateWithoutRepetion(String palavra, String str) throws Exception {
 
-    if ((str.startsWith(inicialMinuscula(palavra))) || (str.startsWith(inicialMaiuscula(palavra)))) {
-        return str;
+        if ((palavra == null) || palavra.equals("")) {
+            return str;
+        } 
+
+        if ((str == null) || str.equals("")) {
+            return palavra;
+        } 
+
+        if ((str.startsWith(inicialMinuscula(palavra))) || (str.startsWith(inicialMaiuscula(palavra)))) {
+            return str;
+        }
+
+        return palavra+" "+str;
+
     }
+    public static String convertSpaces(String aString) throws Exception {
+        String returnStr = aString;
+        StringChanger strChange = new StringChanger();
 
-    return palavra+" "+str;
-    
-}
-public static String convertSpaces(String aString) throws Exception {
-    String returnStr = aString;
-    StringChanger strChange = new StringChanger();
+        if (returnStr == null)
+            returnStr = "";
 
-    if (returnStr == null)
-        returnStr = "";
+        else
+            returnStr = strChange.changeSubstring(returnStr, " ", "%20");
 
-    else
-        returnStr = strChange.changeSubstring(returnStr, " ", "%20");
+        return returnStr;
 
-    return returnStr;
-
-}
-/**
- * fromDataBaseNotation method
- *
- * changes the Html &; notation (used just to store in DB)
- * to special letters of an input string
- *
- * @return java.lang.String
- * @param aString java.lang.String    input string
- */
+    }
+    /**
+    * fromDataBaseNotation method
+    *
+    * changes the Html &; notation (used just to store in DB)
+    * to special letters of an input string
+    *
+    * @return java.lang.String
+    * @param aString java.lang.String    input string
+    */
 public static String fromDataBaseNotation(String aString) throws Exception {
     String returnStr = aString;
     StringChanger strChange = new StringChanger();
@@ -70,10 +70,10 @@ public static String fromDataBaseNotation(String aString) throws Exception {
     return returnStr;
 }
 /**
- * This method was created in VisualAge.
- * @return java.lang.String
- * @param aString java.lang.String
- */
+* This method was created in VisualAge.
+* @return java.lang.String
+* @param aString java.lang.String
+*/
 public static String fromHtmlNotation(String aString) throws Exception {
     String returnStr = aString;
     StringChanger strChange = new StringChanger();
@@ -141,10 +141,10 @@ public static String fromHtmlNotation(String aString) throws Exception {
     return returnStr;
 }
 /**
- * This method was created in VisualAge.
- * @return java.lang.String
- * @param aString java.lang.String
- */
+* This method was created in VisualAge.
+* @return java.lang.String
+* @param aString java.lang.String
+*/
 public static String fromHtmlNotationWithoutLineBreak(String aString) throws Exception {
     String returnStr = aString;
     StringChanger strChange = new StringChanger();
@@ -206,7 +206,7 @@ public static String fromHtmlNotationWithoutLineBreak(String aString) throws Exc
         returnStr = strChange.changeSubstring(returnStr, "&#63;", "?");
         returnStr = strChange.changeSubstring(returnStr, "&quot;", "\"");
         returnStr = strChange.changeSubstring(returnStr, "&#39;", "'");
-//        returnStr = strChange.changeSubstring(returnStr, "<br>", "\n");
+        //        returnStr = strChange.changeSubstring(returnStr, "<br>", "\n");
     }
 
     return returnStr;
@@ -220,7 +220,7 @@ public static String inicialMaiuscula(String str) throws Exception {
     if (str.equals("")) return "";
 
     return str.substring(0,1).toUpperCase() + str.substring(1);
-    
+
 }
 // Coloca a inicial de uma string em letra minuscula
 
@@ -231,7 +231,7 @@ public static String inicialMinuscula(String str) throws Exception {
     if (str.equals("")) return "";
 
     return str.substring(0,1).toLowerCase() + str.substring(1);
-    
+
 }
 
 
@@ -242,7 +242,7 @@ public static String removeAcentos(String aString) throws Exception {
     if (returnStr == null) {
         returnStr = "";
     } else {
-        
+
         returnStr = strChange.changeSubstring(returnStr, "à", "a");
         returnStr = strChange.changeSubstring(returnStr, "á", "a");
         returnStr = strChange.changeSubstring(returnStr, "â", "a");
@@ -311,7 +311,7 @@ public static String removeUnecessarySpaces(String aString) throws Exception {
     while (returnStr.endsWith(" ")) {
         returnStr = returnStr.substring(0,returnStr.length()-1);
     }
-    
+
     return returnStr;
 
 }
@@ -328,14 +328,14 @@ public static String replace(String aString, String txtToFind, String txtToRepla
     return returnStr;
 }
 /**
- * toDataBaseNotation method
- *
- * changes the special letters of an input string
- * to Html &; notation (just to store in DB)
- *
- * @return java.lang.String
- * @param aString java.lang.String    input string
- */
+* toDataBaseNotation method
+*
+* changes the special letters of an input string
+* to Html &; notation (just to store in DB)
+*
+* @return java.lang.String
+* @param aString java.lang.String    input string
+*/
 public static String toDataBaseNotation(String aString) throws Exception {
     String returnStr = aString;
     StringChanger strChange = new StringChanger();
@@ -359,14 +359,14 @@ public static String toDataBaseNotation(String aString) throws Exception {
     return returnStr;
 }
 /**
- * toHtmlNotation method
- *
- * changes the stressed and the special letters of an input string
- * to Html &; notation
- *
- * @return java.lang.String
- * @param aString java.lang.String    input string
- */
+* toHtmlNotation method
+*
+* changes the stressed and the special letters of an input string
+* to Html &; notation
+*
+* @return java.lang.String
+* @param aString java.lang.String    input string
+*/
 public static String toHtmlNotation(String aString) throws Exception {
     String returnStr = aString;
     StringChanger strChange = new StringChanger();
@@ -440,14 +440,14 @@ public static String toHtmlNotation(String aString) throws Exception {
     return returnStr;
 }
 /**
- * toHtmlNotation method
- *
- * changes the [\n] caracter to [\n" + "] string to avoid the "Unterminated string constant"
- * JavaScript error
- *
- * @return java.lang.String
- * @param aString java.lang.String    input string
- */
+* toHtmlNotation method
+*
+* changes the [\n] caracter to [\n" + "] string to avoid the "Unterminated string constant"
+* JavaScript error
+*
+* @return java.lang.String
+* @param aString java.lang.String    input string
+*/
 public static String toJavaScriptNotation(String aString) throws Exception {
     String returnStr = aString;
     StringChanger strChange = new StringChanger();
@@ -465,14 +465,14 @@ public static String toJavaScriptNotation(String aString) throws Exception {
     return returnStr;
 }
 /**
- * toUnStressedNotation method
- *
- * changes the stressed, the special letters and the Html &; notation
- * to unstressed letters in an input string
- *
- * @return java.lang.String
- * @param aString java.lang.String    input string
- */
+* toUnStressedNotation method
+*
+* changes the stressed, the special letters and the Html &; notation
+* to unstressed letters in an input string
+*
+* @return java.lang.String
+* @param aString java.lang.String    input string
+*/
 public static String toUnStressedNotation(String aString) throws Exception {
     String returnStr = aString;
     StringChanger strChange = new StringChanger();

@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 public class Compilar {
 
     public synchronized static String compilar(String path, String nomeClasse, String codigo)
-            throws Exception {
+    throws Exception {
         /* grava o codigo-fonte no disco */
         String arquivoFonte = nomeClasse + ".java";
         FileWriter arq = new FileWriter(path + arquivoFonte);
@@ -24,15 +24,15 @@ public class Compilar {
         if (file.exists()) file.delete();
 
         if (!(new File(path+fileName).exists())) throw new Exception("Arquivo "+fileName+" não encontrado.");
-        
+
         /* deixa um log da compilacao num arquivo chamado logCompilacao.txt */
         PrintWriter saida = new PrintWriter(new FileWriter(path+"logCompilacao.txt"));
         StringBuffer txtResultados = new StringBuffer();
-        
+
         int resultadoCompilacao = com.sun.tools.javac.Main.compile(
-                new String[] { "-classpath", (new File(path)).getCanonicalPath(), path+fileName}, saida);
+            new String[] { "-classpath", (new File(path)).getCanonicalPath(), path+fileName}, saida);
         saida.close();
-        
+
         /* le o arquivo de resultados e imprime na tela */
         BufferedReader result = new BufferedReader(new FileReader(path+"logCompilacao.txt"));
         String linha;

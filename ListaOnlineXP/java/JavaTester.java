@@ -18,12 +18,12 @@ public class JavaTester {
     }
 
     public static void main(String[] args) {
-        
+
         String codigo_filename = args[0];
         String criterio_filename = args[1];
         String codigo = "";
         String criterio = "";
-        
+
         try {
             BufferedReader codigo_buffer = new BufferedReader(new FileReader(codigo_filename));
             String codigo_line;
@@ -34,7 +34,7 @@ public class JavaTester {
         } catch(IOException e) {
             System.out.println("Falha ao abrir arquivo de código.");
         }
-        
+
         try {
             BufferedReader criterio_buffer = new BufferedReader(new FileReader(criterio_filename));
             String criterio_line;
@@ -45,7 +45,7 @@ public class JavaTester {
         } catch(IOException e) {
             System.out.println("Falha ao abrir arquivo de critério.");
         }
-        
+
         try {
             JavaTester javaTester = new JavaTester();
             System.out.println(javaTester.executeTest(codigo,criterio));
@@ -175,10 +175,10 @@ public class JavaTester {
             PrintWriter saida = new PrintWriter(new FileWriter(path+className));
             BufferedReader template;
             try {
-                            template = new BufferedReader(new FileReader(path+"TestTemplate.java"));
-                        } catch (Exception ex) {
-                            throw new Exception ("Arquivo TestTemplate.java não encontrado no diretório " + path);
-                        }
+                template = new BufferedReader(new FileReader(path+"TestTemplate.java"));
+            } catch (Exception ex) {
+                throw new Exception ("Arquivo TestTemplate.java não encontrado no diretório " + path);
+            }
             String linha;
             while ((linha = template.readLine()) != null) {
                 if (linha.indexOf("/* Insert code here */") != -1) {

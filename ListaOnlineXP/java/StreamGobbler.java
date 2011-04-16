@@ -15,7 +15,7 @@ public class StreamGobbler implements Runnable {
         thread = new Thread(this);
         thread.start();
     }
-    
+
     public void interrupt() {
         thread.interrupt();
     }
