@@ -23,7 +23,7 @@ public class Compilar {
         File file = new File(path+"logCompilacao.txt");
         if (file.exists()) file.delete();
 
-        if (!(new File(path+fileName).exists())) throw new Exception("Arquivo "+fileName+" não encontrado.");
+        if (!(new File(path+fileName).exists())) throw new Exception("TEST_ERROR : Arquivo "+fileName+" não encontrado.");
 
         /* deixa um log da compilacao num arquivo chamado logCompilacao.txt */
         PrintWriter saida = new PrintWriter(new FileWriter(path+"logCompilacao.txt"));

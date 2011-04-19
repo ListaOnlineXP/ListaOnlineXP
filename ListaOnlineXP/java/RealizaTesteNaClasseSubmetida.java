@@ -77,10 +77,10 @@ Circulo circulo = new Circulo();assertEquals(circulo.calculaArea(0.0),0.0,"circu
             System.out.println(ex.getMessage());
             System.exit(1);
         } catch (Exception ex) {
-            System.out.println("Ocorreu um erro!!! ");
-            System.out.println("Erro: "+ ex.getMessage());
-            System.out.println("Tipo: " + ex.getClass());
-            System.out.println("Local: "+ ex.getStackTrace()[0]);
+            System.out.println("TEST_ERROR : Ocorreu um erro!!! ");
+            System.out.println("TEST_ERROR : Erro: "+ ex.getMessage());
+            System.out.println("TEST_ERROR : Tipo: " + ex.getClass());
+            System.out.println("TEST_ERROR : Local: "+ ex.getStackTrace()[0]);
             System.exit(1);
             //ex.printStackTrace(System.out);
             //ex.printStackTrace();
