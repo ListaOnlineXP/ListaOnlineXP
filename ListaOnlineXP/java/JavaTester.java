@@ -10,7 +10,7 @@ public class JavaTester {
     private String path;
 
     public JavaTester() {
-        this.path = "/Users/hugo/ListaOnlineXP/ListaOnlineXP/java/";
+        this.path = "";
     }
 
     public void setPath(String path) {
@@ -21,6 +21,7 @@ public class JavaTester {
 
         String codigo_filename = args[0];
         String criterio_filename = args[1];
+        String sandbox_path = args[2];
         String codigo = "";
         String criterio = "";
 
@@ -48,6 +49,7 @@ public class JavaTester {
 
         try {
             JavaTester javaTester = new JavaTester();
+            javaTester.setPath(sandbox_path);
             System.out.println(javaTester.executeTest(codigo,criterio));
         } catch (Exception ex) {
             ex.printStackTrace();

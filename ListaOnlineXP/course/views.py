@@ -133,36 +133,25 @@ def get_code(request):
         form = GetCodeForm(request.POST)
         if form.is_valid():
 
-            code_file = open("/tmp/Code.java", 'w')
+            code_file = open("/Users/hugo/ListaOnlineXP/ListaOnlineXP/java/Code.java", 'w')
             code_file.write(request.POST['code'])
             code_file.close()
 
-            test_file = open("/tmp/TestCode.java", 'w')
+            test_file = open("/Users/hugo/ListaOnlineXP/ListaOnlineXP/java/TestCode.java", 'w')
             test_file.write(request.POST['test'])
             test_file.close()
 
-            junit_location = os.path.join(os.path.dirname(__file__), 'junit/junit.jar').replace('\\', '/')
+            path = "/Users/hugo/ListaOnlineXP/ListaOnlineXP/java/"
 
-            code_compile_command = "javac -classpath /tmp/:" + junit_location + " /tmp/Code.java"
-            test_compile_command = "javac -classpath /tmp/:" + junit_location + " /tmp/TestCode.java"
-            test_command = "java -classpath /tmp/:" + junit_location + " -Djava.security.manager org.junit.runner.JUnitCore TestCode"
+            test_command = "java -Dfile.encoding=utf-8 -classpath " + path +  " JavaTester  /Users/hugo/ListaOnlineXP/ListaOnlineXP/java/Code.java /Users/hugo/ListaOnlineXP/ListaOnlineXP/java/TestCode.java " + path
 
-            code_compile_args = shlex.split(code_compile_command)
-            test_compile_args = shlex.split(test_compile_command)
             test_args = shlex.split(test_command)
-
-            code_compile = Popen(code_compile_args, stdout=PIPE, stderr=PIPE)
-            code_compile_output = code_compile.stderr.read()
-
-            test_compile = Popen(test_compile_args, stdout=PIPE, stderr=PIPE)
-            test_compile_output = test_compile.stderr.read()
 
             test = Popen(test_args, stdout=PIPE, stderr=PIPE)
             test_output = test.stdout.read()
 
-            values["code_compile_output"] = code_compile_output
-            values["test_compile_output"] = test_compile_output
             values["test_output"] = test_output
+            values["test_command"] = test_command
 
     values['form'] = form
     return render_to_response('get_code.html', values)

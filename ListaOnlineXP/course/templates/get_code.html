@@ -6,8 +6,7 @@
   {% csrf_token %}
   {{ form.as_p }}
     <input type="submit" value="Testar" />
-    <p>Code compile output: <br /> {{ code_compile_output|linebreaksbr }}</p><br />
-    <p>Test compile output: <br /> {{ test_compile_output|linebreaksbr }}</p><br />
+	<p>Test command: <br /> {{ test_command }}</p><br />
     <p>Test output: <br /> {{ test_output|linebreaksbr }}</p><br />
   </form>
 {% endblock %}
