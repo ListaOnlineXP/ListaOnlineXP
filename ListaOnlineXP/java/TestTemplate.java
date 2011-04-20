@@ -77,10 +77,10 @@ public class RealizaTesteNaClasseSubmetida {
             System.out.println(ex.getMessage());
             System.exit(1);
         } catch (Exception ex) {
-            System.out.println("TEST_ERROR : Ocorreu um erro!!! ");
-            System.out.println("TEST_ERROR : Erro: "+ ex.getMessage());
-            System.out.println("TEST_ERROR : Tipo: " + ex.getClass());
-            System.out.println("TEST_ERROR : Local: "+ ex.getStackTrace()[0]);
+            System.out.println("SYSTEM_ERROR : Ocorreu um erro!!! ");
+            System.out.println("SYSTEM_ERROR : Erro: "+ ex.getMessage());
+            System.out.println("SYSTEM_ERROR : Tipo: " + ex.getClass());
+            System.out.println("SYSTEM_ERROR : Local: "+ ex.getStackTrace()[0]);
             System.exit(1);
             //ex.printStackTrace(System.out);
             //ex.printStackTrace();

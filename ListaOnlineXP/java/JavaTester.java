@@ -32,7 +32,7 @@ public class JavaTester {
             }
             codigo_buffer.close();
         } catch(IOException e) {
-            System.out.println("TEST_ERROR : Falha ao abrir arquivo de código.");
+            System.out.println("SYSTEM_ERROR : Falha ao abrir arquivo de código.");
         }
 
         try {
@@ -43,7 +43,7 @@ public class JavaTester {
             }
             criterio_buffer.close();
         } catch(IOException e) {
-            System.out.println("TEST_ERROR : Falha ao abrir arquivo de critério.");
+            System.out.println("SYSTEM_ERROR : Falha ao abrir arquivo de critério.");
         }
 
         try {
@@ -56,7 +56,7 @@ public class JavaTester {
 
     public synchronized String executeTest(String codigo, String criterio) throws Exception {
         // Path
-        if (!(new File(path).exists())) throw new Exception("TEST_ERROR : Diretório de execução não encontrado.");
+        if (!(new File(path).exists())) throw new Exception("SYSTEM_ERROR : Diretório de execução não encontrado.");
 
         // ----- Gera o arquivo do aluno ------
         // descobre o nome da classe
@@ -67,7 +67,7 @@ public class JavaTester {
         int posFim = pos;
         while (posFim < codigo.length() && 
             (Character.isLetterOrDigit(codigo.charAt(posFim)) || codigo.charAt(posFim) == '_')) posFim++;
-        if (posFim == pos) return "TEST_ERROR : Não há classe definida.";
+        if (posFim == pos) return "CODECOMPILE_ERROR : Não há classe definida.";
         String nomeClasse = codigo.substring(pos, posFim);
         // Compila
         File toDelete;
@@ -77,7 +77,7 @@ public class JavaTester {
         toDelete.delete();
         String resultCompilacao = Compilar.compilar(path, nomeClasse, codigo);
         if (!resultCompilacao.equals("")) {
-            return "TEST_ERROR : Falha ao compilar o código.\n"+resultCompilacao;
+            return "CODECOMPILE_ERROR : Falha ao compilar o código.\n"+resultCompilacao;
         }
 
         // Trata o codigo de teste
@@ -94,8 +94,8 @@ public class JavaTester {
             while (qtdeParentesesAberto != 0 || criterio.charAt(posFim) != ',') {
                 if (criterio.charAt(posFim) == '(') qtdeParentesesAberto++;
                 if (criterio.charAt(posFim) == ')') qtdeParentesesAberto--;
-                if (qtdeParentesesAberto > 1000) return "TEST_ERROR : Problema no código de teste. Notifique o professor. Não foi possível identificar o primeiro parâmetro. Excesso de parênteses abertos.";
-                if (posFim == criterio.length()-1) return "TEST_ERROR : Problema no código de teste. Notifique o professor. Não foi possível identificar o primeiro parâmetro. Fim do arquivo encontrado.";
+                if (qtdeParentesesAberto > 1000) return "TESTCODE_ERROR : Problema no código de teste. Notifique o professor. Não foi possível identificar o primeiro parâmetro. Excesso de parênteses abertos.";
+                if (posFim == criterio.length()-1) return "TESTCODE_ERROR : Problema no código de teste. Notifique o professor. Não foi possível identificar o primeiro parâmetro. Fim do arquivo encontrado.";
                 posFim++;
             }
             String parametro = criterio.substring(pos, posFim);
@@ -105,8 +105,8 @@ public class JavaTester {
             while (qtdeParentesesAberto != 0 || (criterio.charAt(posFim) != ',' && criterio.charAt(posFim) != ')')) {
                 if (criterio.charAt(posFim) == '(') qtdeParentesesAberto++;
                 if (criterio.charAt(posFim) == ')') qtdeParentesesAberto--;
-                if (qtdeParentesesAberto > 1000) return "TEST_ERROR : Problema no código de teste. Notifique o professor. Não foi possível identificar o último parâmetro. Excesso de parênteses abertos.";
-                if (posFim == criterio.length()-1) return "TEST_ERROR : Problema no código de teste. Notifique o professor. Não foi possível identificar o último parâmetro. Fim do arquivo encontrado.";
+                if (qtdeParentesesAberto > 1000) return "TESTCODE_ERROR : Problema no código de teste. Notifique o professor. Não foi possível identificar o último parâmetro. Excesso de parênteses abertos.";
+                if (posFim == criterio.length()-1) return "TESTCODE_ERROR : Problema no código de teste. Notifique o professor. Não foi possível identificar o último parâmetro. Fim do arquivo encontrado.";
                 posFim++;
             }
             if (criterio.charAt(posFim) == ')') {
@@ -177,7 +177,7 @@ public class JavaTester {
             try {
                 template = new BufferedReader(new FileReader(path+"TestTemplate.java"));
             } catch (Exception ex) {
-                throw new Exception ("TEST_ERROR : Arquivo TestTemplate.java não encontrado no diretório " + path);
+                throw new Exception ("SYSTEM_ERROR : Arquivo TestTemplate.java não encontrado no diretório " + path);
             }
             String linha;
             while ((linha = template.readLine()) != null) {

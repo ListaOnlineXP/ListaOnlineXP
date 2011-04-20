@@ -61,7 +61,7 @@ public RuntimeExecutor(long timeout) {
 public String execute(String command, String[] env) throws Exception {
     Process p;
 
-    System.setProperty("file.encoding", "cp850"); 
+    System.setProperty("file.encoding", "utf-8"); 
 
     if (env == null) {
         p = Runtime.getRuntime().exec(command, env);
@@ -86,7 +86,7 @@ public String execute(String command, String[] env) throws Exception {
         Runtime.getRuntime().runFinalization();
         stdin.interrupt();
         stderr.interrupt();
-        return "TEST_ERROR : O programa excedeu o tempo limite de execução ("+ this.timeout + " milisegundos)";
+        return "TIMEOUT_ERROR : O programa excedeu o tempo limite de execução ("+ this.timeout + " milisegundos)";
     } finally {
         // Stop the timer
         timer.cancel();
@@ -142,7 +142,7 @@ public static void main(String[] args) {
         e.printStackTrace();
     }
 
-    System.out.println("TEST_ERROR : STOPPED");
+    System.out.println("TIMEOUT_ERROR : STOPPED");
 }
 }
 

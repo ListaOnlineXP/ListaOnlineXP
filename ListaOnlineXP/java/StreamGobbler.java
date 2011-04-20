@@ -36,7 +36,7 @@ public class StreamGobbler implements Runnable {
             is.close();
 
         } catch (Exception ex) {
-            System.out.println("TEST_ERROR : Problem reading stream " + name + "... :" + ex);
+            System.out.println("SYSTEM_ERROR : Problem reading stream " + name + "... :" + ex);
             ex.printStackTrace();
         }
     }
