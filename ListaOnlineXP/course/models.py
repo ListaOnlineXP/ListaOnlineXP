@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.auth.models import User
-import datetime
 
 
 class Teacher(models.Model):
@@ -22,7 +21,6 @@ class Course(models.Model):
     def __unicode__(self):
         return self.name 
 
-
 class Student(models.Model):
 
     user = models.ForeignKey(User, unique=True)
@@ -34,49 +32,13 @@ class Student(models.Model):
         return self.name 
 
 
-class Question(models.Model):
-
-    text = models.TextField()
-
-    def __unicode__(self):
-        return self.text
-        
-
-class MultipleChoiceQuestion(Question):
-    
-    pass
-
-
-class JavaQuestion(Question):
-
-    criteria = models.TextField()
-
-
-class MultipleChoiceAnswer(models.Model):
-
-    text = models.CharField(blank=False, max_length=300)    
-
-    def __unicode__(self):
-        return self.text        
-
-
-class MultipleChoiceCorrectAnswer(MultipleChoiceAnswer):
-
-    question = models.OneToOneField(MultipleChoiceQuestion) 
-    
-    
-class MultipleChoiceWrongAnswer(MultipleChoiceAnswer):
-
-    question = models.ForeignKey(MultipleChoiceQuestion)
     
 
-class ExerciseList(models.Model):
     
-    name = models.CharField(blank=False, max_length=100)
-    course = models.ForeignKey(Course)
-    pub_date = models.DateField(default=datetime.datetime.today)
-    due_date = models.DateField(default=(datetime.datetime.today()+datetime.timedelta(days=7)))
-    questions = models.ManyToManyField(Question)
     
-    def __unicode__(self):
-        return self.name
+    
+    
+    
+    
+    
+    

@@ -9,5 +9,4 @@ urlpatterns = patterns(
     (r'^signup/$', 'signup'),
     (r'^course/([0-9]+)/$', 'course'),
     (r'^course/$', 'course_list'),
-    (r'^get_code/$', 'get_code'), 
 )

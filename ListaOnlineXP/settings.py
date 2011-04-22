@@ -86,11 +86,13 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'ListaOnlineXP.urls'
 
 TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(__file__), 'src/ListaOnline/template').replace('\\', '/'),
+    os.path.join(os.path.dirname(__file__), 'templates/').replace('\\', '/'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
+
+AUTH_PROFILE_MODULE = "course.student"
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -100,7 +102,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    'course'
+    'course',
+    'exerciselist',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

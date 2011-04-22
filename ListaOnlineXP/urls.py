@@ -2,20 +2,20 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
 
-# Uncomment the next two lines to enable the admin:
+# Enable admin site
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
 
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
+    #Enable admin site
     (r'^admin/', include(admin.site.urls)),
     (r'', include('course.urls')),
+    (r'', include('exerciselist.urls')),
 )
 
+
+#Serve the static files in the development environment
 if settings.DEBUG:
     urlpatterns += patterns('',
         (r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
