@@ -52,7 +52,7 @@ class ExerciseList(models.Model):
 
 class ExerciseListSolution(models.Model):
     
-    student = models.ForeignKey('course.Student')
+    student = models.ForeignKey('authentication.Student')
     exercise_list = models.ForeignKey(ExerciseList)
     
 class Answer(models.Model):

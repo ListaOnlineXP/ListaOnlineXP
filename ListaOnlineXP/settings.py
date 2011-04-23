@@ -92,7 +92,7 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-AUTH_PROFILE_MODULE = "course.student"
+#AUTH_PROFILE_MODULE = "authentication.student"
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -104,6 +104,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'course',
     'exerciselist',
+    'authentication',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
