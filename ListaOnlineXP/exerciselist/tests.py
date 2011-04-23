@@ -4,6 +4,7 @@ from django.test import TestCase
 import datetime
 from models import *
 from course.models import *
+from authentication.models import *
 
 class ExerciseListTestCase(TestCase):
 
