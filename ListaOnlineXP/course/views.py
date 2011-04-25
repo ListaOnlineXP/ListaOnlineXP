@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
 from models import Teacher, Course
+from exerciselist.models import ExerciseList
 from authentication.models import Student
 from authentication.views import get_student, get_admin
 
@@ -20,7 +21,10 @@ def course(request, course_id):
         admin = get_admin(request)
         values['course'] = course
         if student is not None:
+            values['student'] = student
             if course in student.courses.all():
+                exercise_list = ExerciseList.objects.filter(course=course)
+                values['exercise_list'] = list(exercise_list)
                 subscribe = False
             else:
                 subscribe = True
@@ -32,6 +36,7 @@ def course(request, course_id):
             else:
                 return render_to_response('course.html', values)
         elif admin is not None:
+            values['admin'] = admin
             values['students'] = course.student_set.all()
             return render_to_response('teacher_course.html', values)
         else:

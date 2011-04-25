@@ -1,4 +1,4 @@
-{% load url from future %}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
 <html>
 <head>
   <title>{% block title %}{% endblock %}</title>
@@ -14,10 +14,10 @@
     <div id="branding">
       <h1>{% block branding %}Lista On-line{% endblock %}</h1>
     </div>
-    {% if student or user %}
+    {% if student or user or admin %}
       <div id="user-tools">
     {% trans 'Welcome,' %}
-    <strong>{% firstof user.name user.login student.name student.login %}</strong>
+    <strong>{% firstof user.name user.login student.name student.login admin.name admin.login %}</strong>
     <a href="/logout">{% trans 'Log out' %}</a>
       </div>
     {% else %}

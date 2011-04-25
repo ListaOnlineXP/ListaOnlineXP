@@ -5,10 +5,10 @@
     {% if course_list %}
     <ul>
     {% for course in course_list %}
-        <li>{{ course.name }}</li>
+        <li> <a href={{ course.id }}>{{ course.name }}</a> </li>
     {% endfor %}
     </ul>
     {% else %}
-    <p> Nenhum curso disponivel </p>
+    <p> Nenhum curso disponível </p>
     {% endif %}
 {% endblock %}

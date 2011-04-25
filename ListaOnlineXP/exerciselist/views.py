@@ -2,6 +2,9 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
 from forms import GetCodeForm
+from models import ExerciseList
+from course.models import Course
+from authentication.views import get_student, get_admin
 
 import os.path
 from subprocess import Popen, PIPE
@@ -39,4 +42,38 @@ def get_code(request):
 
     values['form'] = form
     return render_to_response('get_code.html', values)
+    
+def exercise_list(request, course_id, list_id):
+    values = {}
+    values.update(csrf(request))
+    try:
+        course = Course.objects.get(id=int(course_id))
+        exercise_list = ExerciseList.objects.get(id=int(list_id))
+    except:
+        raise Http404
+    if (exercise_list is not None) and (course is not None):
+        if (exercise_list.course == course):
+            student = get_student(request)
+            admin = get_admin(request)
+            course = exercise_list.course
+            questions = list(exercise_list.questions.all())
+            values['exercise_list'] = exercise_list
+            values['questions'] = questions
+            values['student'] = student
+            if student is not None:
+                if course in student.courses.all():
+                    return render_to_response('exercise_list.html', values)
+                else:
+                    return HttpResponseRedirect('/')                
+#           elif admin is not None:
+#               values['admin'] = admin 
+#               values['students'] = course.student_set.all()
+#               return render_to_response('teacher_course.html', values)
+            else:
+                return HttpResponseRedirect('/login')
+        else:
+            return HttpResponseRedirect('/')   
+    raise Http404            
+    
+    
 

@@ -1,11 +1,17 @@
-<html>
-    <body>
-        <h1>{{ course.code }} - {{ course.name }}</h1>
-        {% if subscribe %}
-        <form action="." method="post">
-            {% csrf_token %}
-            <input type="submit" value="Cadastrar" />
-        </form>
-        {% endif %}
-    </body>
-</html>
+{% extends "base_site.html" %}
+
+{% block content_sidebar %}
+    <h1>{{ course.code }} - {{ course.name }}</h1>
+    {% if subscribe %}
+    <form action="." method="post">
+        {% csrf_token %}
+        <input type="submit" value="Cadastrar" />
+    </form>
+    {% else %}
+    <ul>
+    {% for list in exercise_list %}
+        <li> <a href={{ list.id }}>{{ list.name }}</a> </li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+{% endblock %}
