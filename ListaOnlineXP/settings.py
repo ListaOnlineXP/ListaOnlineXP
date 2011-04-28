@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 # Django settings for ListaOnline project.
 
 import os.path
@@ -92,7 +92,12 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+#Authentication settings
 #AUTH_PROFILE_MODULE = "authentication.student"
+LOGIN_URL="/login/"
+LOGIN_REDIRECT_URL = '/course/'
+
+
 
 INSTALLED_APPS = (
     'django.contrib.auth',

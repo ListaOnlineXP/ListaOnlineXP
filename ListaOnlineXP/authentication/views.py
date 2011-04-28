@@ -54,32 +54,3 @@ def signup(request):
     values['form'] = form
     return render_to_response('signup.html', values)
 
-def login(request):
-    if get_student(request) is not None:
-        return HttpResponseRedirect('/')
-    values = {}
-    values.update(csrf(request))
-    if request.method == 'GET':
-        form = LoginForm()
-    else:
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            passwd = form.cleaned_data['passwd']
-            try:
-                user = User.objects.get(username=username)
-                if user.check_password(passwd):
-                    user = auth.authenticate(username=username, password=passwd)
-                    auth.login(request, user)
-                    return HttpResponseRedirect('/course')
-                else:
-                    form._errors['passwd'] = form.error_class(['Senha incorreta.'])
-            except:
-                form._errors['username'] = form.error_class(['Usuário não cadastrado.'])
-    values['form'] = form
-    return render_to_response('login.html', values)
-
-def logout(request):
-    if get_student(request) is not None:
-        auth.logout(request)
-    return HttpResponseRedirect('/')

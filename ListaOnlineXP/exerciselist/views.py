@@ -1,15 +1,21 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.core.context_processors import csrf
 from forms import GetCodeForm
-from models import ExerciseList
+from django.views.generic import ListView
+
 from course.models import Course
-from authentication.views import get_student, get_admin
+from exerciselist.models import ExerciseList
+from views import *
+
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 import os.path
 from subprocess import Popen, PIPE
 import shlex
 
+from authentication.views import get_student, get_admin
 
 def get_code(request):
     values = {}
@@ -42,7 +48,21 @@ def get_code(request):
 
     values['form'] = form
     return render_to_response('get_code.html', values)
+
+
+class GetStudentsExerciseList(ListView):
+    context_object_name = 'exercise_list_list'
+    template_name = 'students_exercise_lists.html'
     
+    def get_queryset(self):
+        student = get_student(self.request)
+
+        return ExerciseList.objects.filter(course__student=student) 
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kargs):
+        return super(GetStudentsExerciseList, self).dispatch(*args, **kargs)
+
 def exercise_list(request, course_id, list_id):
     values = {}
     values.update(csrf(request))
@@ -74,6 +94,5 @@ def exercise_list(request, course_id, list_id):
         else:
             return HttpResponseRedirect('/')   
     raise Http404            
-    
-    
+
 
