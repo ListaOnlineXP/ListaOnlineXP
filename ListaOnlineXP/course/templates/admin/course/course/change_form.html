@@ -2,10 +2,12 @@
 
 {% block after_field_sets %}{{ block.super }}
   {% if change %}
-    <p>Lista de Alunos de {{ original }}:</p>
+    <h3>Lista de Alunos de {{ original }}:</h3>
     {% if original.student_set.all %}
       <ul>
-         {% for student in original.student_set.all %}<li>{{ student }}</li>{% endfor %}
+         {% for student in original.student_set.all %}
+           <li><a href="{{student.get_absolute_url}}">{{student}}</a></li>
+         {% endfor %}
       </ul>
     {% else %}
       <p>Nenhum aluno matriculado</p>
