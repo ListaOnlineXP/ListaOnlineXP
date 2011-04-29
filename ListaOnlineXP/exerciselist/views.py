@@ -5,11 +5,13 @@ from forms import GetCodeForm
 from django.views.generic import ListView
 
 from course.models import Course
-from exerciselist.models import ExerciseList
+from exerciselist.models import ExerciseList, MultipleChoiceCorrectAnswer, MultipleChoiceWrongAnswer, MultipleChoiceQuestion
 from views import *
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+
+import itertools, random
 
 import os.path
 from subprocess import Popen, PIPE
@@ -77,22 +79,24 @@ def exercise_list(request, course_id, list_id):
             admin = get_admin(request)
             course = exercise_list.course
             questions = list(exercise_list.questions.all())
+            answers = []
+            for question in questions:
+                question_answers = list(MultipleChoiceCorrectAnswer.objects.filter(question=question))
+                question_answers.extend(MultipleChoiceWrongAnswer.objects.filter(question=question))
+                random.shuffle(question_answers)
+                answers.append(question_answers)
+            print answers
+
             values['exercise_list'] = exercise_list
-            values['questions'] = questions
+            values['questions'] = itertools.izip(questions, answers)
             values['student'] = student
             if student is not None:
                 if course in student.courses.all():
                     return render_to_response('exercise_list.html', values)
                 else:
                     return HttpResponseRedirect('/')                
-#           elif admin is not None:
-#               values['admin'] = admin 
-#               values['students'] = course.student_set.all()
-#               return render_to_response('teacher_course.html', values)
             else:
                 return HttpResponseRedirect('/login')
         else:
             return HttpResponseRedirect('/')   
     raise Http404            
-
-

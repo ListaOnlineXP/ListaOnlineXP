@@ -6,8 +6,14 @@
     {% csrf_token %}
     {% if exercise_list %}
       <ul>
-	{% for question in questions %}
-	  <li>{{ question.text }}</li>
+	{% for question, answers in questions %}
+	  <li>{{ question.text }}
+            <ul>
+              {% for answer in answers %}
+                <li>{{ answer.text }}</li>
+              {% endfor %}
+            </ul>
+          </li>
 	{% endfor %}
       </ul>
     {% else %}
