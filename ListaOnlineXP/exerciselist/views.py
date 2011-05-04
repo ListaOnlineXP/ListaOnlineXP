@@ -14,8 +14,8 @@ from django.utils.decorators import method_decorator
 
 import itertools, random
 
-import os.path
-from subprocess import Popen, PIPE, check_output
+import os.path, sys
+from subprocess import Popen, PIPE
 import shlex
 
 from authentication.views import get_student, get_admin
@@ -28,7 +28,9 @@ def get_code(request):
     else:
         form = GetCodeForm(request.POST)
         if form.is_valid():
-            path = "/Users/mika/ime/2011/mac342/lista/ListaOnlineXP/ListaOnlineXP/exerciselist/java/"
+            path = os.path.dirname(__file__) + "/java/"
+            
+            print path
 
             code_file = open(path + "Code.java", 'w')
             code_file.write(request.POST['code'])
