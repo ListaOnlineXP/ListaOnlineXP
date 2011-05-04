@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.context_processors import csrf
@@ -5,11 +6,13 @@ from forms import GetCodeForm
 from django.views.generic import ListView
 
 from course.models import Course
-from exerciselist.models import ExerciseList
+from exerciselist.models import ExerciseList, MultipleChoiceCorrectAnswer, MultipleChoiceWrongAnswer, MultipleChoiceQuestion
 from views import *
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+
+import itertools, random
 
 import os.path
 from subprocess import Popen, PIPE, check_output
@@ -52,19 +55,6 @@ def get_code(request):
     return render_to_response('get_code.html', values)
 
 
-class GetStudentsExerciseList(ListView):
-    context_object_name = 'exercise_list_list'
-    template_name = 'students_exercise_lists.html'
-    
-    def get_queryset(self):
-        student = get_student(self.request)
-
-        return ExerciseList.objects.filter(course__student=student) 
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kargs):
-        return super(GetStudentsExerciseList, self).dispatch(*args, **kargs)
-
 def exercise_list(request, course_id, list_id):
     values = {}
     values.update(csrf(request))
@@ -79,22 +69,78 @@ def exercise_list(request, course_id, list_id):
             admin = get_admin(request)
             course = exercise_list.course
             questions = list(exercise_list.questions.all())
+            answers = []
+            for question in questions:
+                question_answers = list(MultipleChoiceCorrectAnswer.objects.filter(question=question))
+                question_answers.extend(MultipleChoiceWrongAnswer.objects.filter(question=question))
+                random.shuffle(question_answers)
+                answers.append(question_answers)
+            print answers
+
             values['exercise_list'] = exercise_list
-            values['questions'] = questions
+            values['questions'] = itertools.izip(questions, answers)
             values['student'] = student
             if student is not None:
                 if course in student.courses.all():
                     return render_to_response('exercise_list.html', values)
                 else:
                     return HttpResponseRedirect('/')                
-#           elif admin is not None:
-#               values['admin'] = admin 
-#               values['students'] = course.student_set.all()
-#               return render_to_response('teacher_course.html', values)
             else:
                 return HttpResponseRedirect('/login')
         else:
             return HttpResponseRedirect('/')   
     raise Http404            
+
+
+class GetStudentsExerciseList(ListView):
+    context_object_name = 'exercise_list_list'
+    template_name = 'students_exercise_lists.html'
+    
+    def get_queryset(self):
+        student = get_student(self.request)
+
+        return ExerciseList.objects.filter(course__student=student) 
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kargs):
+        return super(GetStudentsExerciseList, self).dispatch(*args, **kargs)
+
+
+
+
+@login_required
+def view_exercise_list(request):
+    values={}
+    exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
+    #Check if the user is enrolled in the course for this exercise list
+    if course not in student.courses.all():
+        values["error"] =  "Você não está matriculado no curso " + exercise_list.course
+        return render_to_response('exercise_list.html')
+
+  
+    questions = list(exercise_list.questions.all())
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
