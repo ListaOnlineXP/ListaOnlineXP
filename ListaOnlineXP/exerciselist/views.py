@@ -43,10 +43,7 @@ def get_code(request):
             test_args = shlex.split(test_command)
 
             test = Popen(test_args, stdout=PIPE, stderr=PIPE)
-#            test = check_output(test_args)
-#            test = check_output(test_command)
             test_output = test.stdout.read()
-#            test_output = "lalala"
 
             values["test_output"] = test_output
             values["test_command"] = test_command
