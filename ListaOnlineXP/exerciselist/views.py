@@ -119,27 +119,21 @@ def view_exercise_list(request):
   
     questions = list(exercise_list.questions.all())
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
+@login_required    
+def view_java_questions(request, exercise_list_id):
+    values = {}
+    values.update(csrf(request))
+    try:
+        exercise_list = ExerciseList.objects.get(id=int(exercise_list_id))
+        course = exercise_list.course
+    except:
+        raise Http404
+    if (exercise_list is not None) and (course is not None):
+        if (exercise_list.course == course):
+            student = get_student(request)
+            admin = get_admin(request)
+            values["java_questions"] = JavaQuestions.objects.filter(exerciselist=exercise_list)
+        else:
+            return HttpResponseRedirect('/')   
+    raise Http404
