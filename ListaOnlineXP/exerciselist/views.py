@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 import os.path
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, check_output
 import shlex
 
 from authentication.views import get_student, get_admin
@@ -25,23 +25,25 @@ def get_code(request):
     else:
         form = GetCodeForm(request.POST)
         if form.is_valid():
+            path = "/Users/mika/ime/2011/mac342/lista/ListaOnlineXP/ListaOnlineXP/exerciselist/java/"
 
-            code_file = open("/Users/hugo/ListaOnlineXP/ListaOnlineXP/java/Code.java", 'w')
+            code_file = open(path + "Code.java", 'w')
             code_file.write(request.POST['code'])
             code_file.close()
 
-            test_file = open("/Users/hugo/ListaOnlineXP/ListaOnlineXP/java/TestCode.java", 'w')
+            test_file = open(path + "TestCode.java", 'w')
             test_file.write(request.POST['test'])
             test_file.close()
 
-            path = "/Users/hugo/ListaOnlineXP/ListaOnlineXP/java/"
-
-            test_command = "java -Dfile.encoding=utf-8 -classpath " + path +  " JavaTester  /Users/hugo/ListaOnlineXP/ListaOnlineXP/java/Code.java /Users/hugo/ListaOnlineXP/ListaOnlineXP/java/TestCode.java " + path
+            test_command = "java -Dfile.encoding=utf-8 -classpath " + path +  " JavaTester  " + path + "Code.java " + path + "TestCode.java " + path
 
             test_args = shlex.split(test_command)
 
             test = Popen(test_args, stdout=PIPE, stderr=PIPE)
+#            test = check_output(test_args)
+#            test = check_output(test_command)
             test_output = test.stdout.read()
+#            test_output = "lalala"
 
             values["test_output"] = test_output
             values["test_command"] = test_command
