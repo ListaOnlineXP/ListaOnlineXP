@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 {% load url from future %}
 
+{% block extrastyle %}
+    <script type="text/javascript">
+        window.onload =
+            function() { document.getElementById("user-tools").style.visibility = 'hidden'; };
+    </script>
+{% endblock %}
+
 {% block content %}
 
 {% if form.errors %}
