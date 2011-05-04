@@ -3,7 +3,7 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.context_processors import csrf
-from forms import GetCodeForm
+from forms import GetCodeForm, MultipleChoiceQuestionAnswersForm
 from django.views.generic import ListView
 
 from authentication.models import Student

@@ -2,22 +2,23 @@
 
 {% block content_sidebar %}
   <h1>{{ exercise_list.course.name }} - {{ exercise_list.name }}</h1>
+  {% csrf_token %}
+  {% if exercise_list %}
   <form action="." method="post">
-    {% csrf_token %}
-    {% if exercise_list %}
-      <ul>
-	{% for question, answers in questions_answers %}
-	  <li><pre>{{ question.text }}</pre>
-            <ul>
-              {% for answer in answers %}
-                <li>{{ answer.text }}</li>
-              {% endfor %}
-            </ul>
-          </li>
-	{% endfor %}
-      </ul>
-    {% else %}
-      <p> Nenhuma lista disponível </p>
-    {% endif %}
+    <ul>
+      {% for question, answers in questions_answers %}
+      <li><pre>{{ question.text }}</pre>
+         <ul>
+           {% for answer in answers %}
+             <li>{{ answer.text }}</li>
+           {% endfor %}
+         </ul>
+      </li>
+    {% endfor %}
+    </ul>
+    <p><input type="submit" value="Submit"></p>
   </form>
+  {% else %}
+    <p> Nenhuma lista disponível </p>
+  {% endif %}
 {% endblock %}
