@@ -7,7 +7,7 @@
     {% if exercise_list %}
       <ul>
 	{% for question, answers in questions %}
-	  <li>{{ question.text }}
+	  <li><pre>{{ question.text }}</pre>
             <ul>
               {% for answer in answers %}
                 <li>{{ answer.text }}</li>
