@@ -5,30 +5,15 @@ from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
 from django.contrib import auth
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from forms import SignUpForm, LoginForm
 from models import Student
 
-
-def get_student(request):
-    if request.user.is_authenticated():
-        try:
-            student = Student.objects.get(user=request.user)
-            if student is not None:
-                return student
-        except:
-            return None
-    return None
-
-def get_admin(request):
-    if request.user.is_authenticated() and request.user.is_staff:
-        return request.user
-    return None
-
+@login_required
 def home(request):
-    if get_student(request) is not None:
+    if request.user.is_authenticated() and Student.objects.get(user=request.user) is not None:
         return HttpResponseRedirect('/course')
     return HttpResponseRedirect('/login')
-
 
 def signup(request):
     if get_student(request) is not None:

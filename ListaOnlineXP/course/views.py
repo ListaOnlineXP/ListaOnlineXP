@@ -3,12 +3,12 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
+from django.contrib.auth.decorators import login_required 
 from models import Teacher, Course
 from exerciselist.models import ExerciseList
 from authentication.models import Student
-from authentication.views import get_student, get_admin
 
-
+@login_required
 def course(request, course_id):
     values = {}
     values.update(csrf(request))
@@ -17,37 +17,29 @@ def course(request, course_id):
     except:
         raise Http404
     if course is not None:
-        student = get_student(request)
-        admin = get_admin(request)
+        student = Student.objects.get(user=request.user)
         values['course'] = course
-        if student is not None:
-            values['student'] = student
-            if course in student.courses.all():
-                exercise_list = ExerciseList.objects.filter(course=course)
-                values['exercise_list'] = list(exercise_list)
-                subscribe = False
-            else:
-                subscribe = True
-            values['subscribe'] = subscribe
-            if request.method == 'POST':
-                student.courses.add(course)
-                student.save()
-                return HttpResponseRedirect('/')
-            else:
-                return render_to_response('course.html', values)
-        elif admin is not None:
-            values['admin'] = admin
-            values['students'] = course.student_set.all()
-            return render_to_response('teacher_course.html', values)
+        values['student'] = student
+        if course in student.courses.all():
+            exercise_list = ExerciseList.objects.filter(course=course)
+            values['exercise_list'] = list(exercise_list)
+            subscribe = False
         else:
-            return HttpResponseRedirect('/login')
+            subscribe = True
+        values['subscribe'] = subscribe
+        if request.method == 'POST':
+            student.courses.add(course)
+            student.save()
+            return HttpResponseRedirect('/')
+        else:
+            return render_to_response('course.html', values)
     raise Http404
 
+@login_required
 def course_list(request):
-    if get_student(request) is None:
-        return HttpResponseRedirect('/')
-    student = Student.objects.get(user=request.user)
-    course_list = list(Course.objects.all())
-    return render_to_response('course_list.html', {'course_list':  course_list, 'student': student})
+    values = {}
+    values['student'] = Student.objects.get(user=request.user)
+    values['course_list'] = list(Course.objects.all())
+    return render_to_response('course_list.html', values)
 
 

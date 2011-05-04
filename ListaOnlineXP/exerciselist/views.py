@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
+
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.context_processors import csrf
 from forms import GetCodeForm
 from django.views.generic import ListView
 
+from authentication.models import Student
 from course.models import Course
 from exerciselist.models import ExerciseList, MultipleChoiceCorrectAnswer, MultipleChoiceWrongAnswer, MultipleChoiceQuestion
 from views import *
@@ -18,7 +20,6 @@ import os.path, sys
 from subprocess import Popen, PIPE
 import shlex
 
-from authentication.views import get_student, get_admin
 
 def get_code(request):
     values = {}
@@ -53,7 +54,18 @@ def get_code(request):
     values['form'] = form
     return render_to_response('get_code.html', values)
 
+# auxiliar method
+def get_questions_answers(exercise_list):
+    questions = list(exercise_list.questions.all())
+    answers = []
+    for question in questions:
+        question_answers = list(MultipleChoiceCorrectAnswer.objects.filter(question=question))
+        question_answers.extend(MultipleChoiceWrongAnswer.objects.filter(question=question))
+        random.shuffle(question_answers)
+        answers.append(question_answers)
+    return itertools.izip(questions, answers)
 
+@login_required
 def exercise_list(request, course_id, list_id):
     values = {}
     values.update(csrf(request))
@@ -64,28 +76,14 @@ def exercise_list(request, course_id, list_id):
         raise Http404
     if (exercise_list is not None) and (course is not None):
         if (exercise_list.course == course):
-            student = get_student(request)
-            admin = get_admin(request)
-            course = exercise_list.course
-            questions = list(exercise_list.questions.all())
-            answers = []
-            for question in questions:
-                question_answers = list(MultipleChoiceCorrectAnswer.objects.filter(question=question))
-                question_answers.extend(MultipleChoiceWrongAnswer.objects.filter(question=question))
-                random.shuffle(question_answers)
-                answers.append(question_answers)
-            print answers
-
-            values['exercise_list'] = exercise_list
-            values['questions'] = itertools.izip(questions, answers)
+            student = Student.objects.get(user=request.user)
             values['student'] = student
-            if student is not None:
-                if course in student.courses.all():
-                    return render_to_response('exercise_list.html', values)
-                else:
-                    return HttpResponseRedirect('/')                
+            values['exercise_list'] = exercise_list
+            values['questions_answers'] = get_questions_answers(exercise_list) 
+            if course in student.courses.all():
+                return render_to_response('exercise_list.html', values)
             else:
-                return HttpResponseRedirect('/login')
+                return HttpResponseRedirect('/')                
         else:
             return HttpResponseRedirect('/')   
     raise Http404            
@@ -96,50 +94,11 @@ class GetStudentsExerciseList(ListView):
     template_name = 'students_exercise_lists.html'
     
     def get_queryset(self):
-        student = get_student(self.request)
+        student = Student.objects.get(user=self.request.user)
 
         return ExerciseList.objects.filter(course__student=student) 
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kargs):
         return super(GetStudentsExerciseList, self).dispatch(*args, **kargs)
-
-
-
-
-@login_required
-def view_exercise_list(request):
-    values={}
-    exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
-    #Check if the user is enrolled in the course for this exercise list
-    if course not in student.courses.all():
-        values["error"] =  "Você não está matriculado no curso " + exercise_list.course
-        return render_to_response('exercise_list.html')
-
-  
-    questions = list(exercise_list.questions.all())
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

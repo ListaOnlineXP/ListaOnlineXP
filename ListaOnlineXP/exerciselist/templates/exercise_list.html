@@ -6,7 +6,7 @@
     {% csrf_token %}
     {% if exercise_list %}
       <ul>
-	{% for question, answers in questions %}
+	{% for question, answers in questions_answers %}
 	  <li><pre>{{ question.text }}</pre>
             <ul>
               {% for answer in answers %}
