@@ -1,0 +1,2 @@
+bugs:
+- "bem vindo, encerrar" aparece na tela de login (devia aparecer só depois de logar)
