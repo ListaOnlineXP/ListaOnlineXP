@@ -21,7 +21,7 @@ class SignUpForm(forms.Form):
         cleaned_data = self.cleaned_data
         passwd = cleaned_data.get('passwd', '')
         confirm_passwd = cleaned_data.get('confirm_passwd', '')
-        if passwd and passwd != confirm_passwd:
+        if passwd and confirm_passwd and passwd != confirm_passwd:
             self._errors['confirm_passwd'] = self.error_class(["Confirmação de senha inválida."])
             del cleaned_data['confirm_passwd']
         return cleaned_data
