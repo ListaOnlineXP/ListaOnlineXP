@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.context_processors import csrf
@@ -105,7 +106,7 @@ class GetStudentsExerciseList(ListView):
 
 
 
-@requires_login
+@login_required
 def view_exercise_list(request):
     values={}
     exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
@@ -141,5 +142,3 @@ def view_exercise_list(request):
 
 
 
-=======
->>>>>>> 253ab932a13227499ae08d0cc277b34f026dd0ef
