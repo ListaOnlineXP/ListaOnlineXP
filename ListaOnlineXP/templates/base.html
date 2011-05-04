@@ -14,7 +14,7 @@
     <div id="branding">
       <h1>{% block branding %}Lista On-line{% endblock %}</h1>
     </div>
-    {% if student or user or admin %}
+    {% if student or admin %}
       <div id="user-tools">
     {% trans 'Welcome,' %}
     <strong>{% firstof user.name user.login student.name student.login admin.name admin.login %}</strong>
