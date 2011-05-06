@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.db.models import Q
 import datetime
 
 class Question(models.Model):
@@ -11,8 +12,16 @@ class Question(models.Model):
         
 
 class MultipleChoiceQuestion(Question):
+
+    def get_correct_answer(self):
+        #Returns the multiple choice question's correct answer object
+        return MultipleChoiceCorrectAnswer.objects.get(question=self)
+
+    def get_answers(self):
+        #Returns a QuerySet with all of the multiplechoice question's answers
+        return MultipleChoiceAnswer.objects.filter(Q(multiplechoicecorrectanswer__question=self) | Q(multiplechoicewronganswer__question=self))
+        pass
     
-    pass
 
 
 class JavaQuestion(Question):
