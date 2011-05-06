@@ -18,9 +18,8 @@ class MultipleChoiceQuestion(Question):
         return MultipleChoiceCorrectAlternative.objects.get(question=self)
 
     def get_alternatives(self):
-        #Returns a QuerySet with all of the multiplechoice question's answers
-        return MultipleChoiceAlternative.objects.filter(Q(multiplechoicecorrectanswer__question=self) | Q(multiplechoicewronganswer__question=self))
-        pass
+        #Returns a QuerySet with all of the multiplechoice question's alternatives
+        return MultipleChoiceAlternative.objects.filter(Q(multiplechoicecorrectalternative__question=self) | Q(multiplechoicewrongalternative__question=self))
     
 
 

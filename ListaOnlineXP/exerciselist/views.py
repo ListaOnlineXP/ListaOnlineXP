@@ -8,13 +8,14 @@ from django.views.generic import ListView
 
 from authentication.models import Student
 from course.models import Course
-from exerciselist.models import ExerciseList, MultipleChoiceCorrectAlternative, MultipleChoiceWrongAlternative, MultipleChoiceQuestion
+from exerciselist.models import ExerciseList, Question, MultipleChoiceQuestion
 from views import *
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-import itertools, random
+from itertools import izip
+from random import shuffle
 
 import os.path, sys
 from subprocess import Popen, PIPE
@@ -55,15 +56,13 @@ def get_code(request):
     return render_to_response('get_code.html', values)
 
 # auxiliar method
-def get_questions_answers(exercise_list):
-    questions = list(exercise_list.questions.all())
-    answers = []
+def get_questions_alternatives(exercise_list):
+    questions = exercise_list.questions.all()
+    alternatives = []
     for question in questions:
-        question_answers = list(MultipleChoiceCorrectAlternative.objects.filter(question=question))
-        question_answers.extend(MultipleChoiceWrongAlternative.objects.filter(question=question))
-        random.shuffle(question_answers)
-        answers.append(question_answers)
-    return itertools.izip(questions, answers)
+        multiple_choice_question = MultipleChoiceQuestion.objects.get(pk=question.pk)
+        alternatives.append(list(multiple_choice_question.get_alternatives()))
+    return izip(questions, alternatives)
 
 @login_required
 def exercise_list(request, course_id, list_id):
@@ -79,8 +78,8 @@ def exercise_list(request, course_id, list_id):
             student = Student.objects.get(user=request.user)
             values['student'] = student
             values['exercise_list'] = exercise_list
-            values['questions_answers'] = get_questions_answers(exercise_list) 
-            if course in student.courses.all():
+            values['questions_alternatives'] = get_questions_alternatives(exercise_list) 
+            if student.is_enrolled(course):
                 return render_to_response('exercise_list.html', values)
             else:
                 return HttpResponseRedirect('/')                
