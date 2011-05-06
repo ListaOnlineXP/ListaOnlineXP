@@ -16,7 +16,7 @@ def home(request):
     return HttpResponseRedirect('/login')
 
 def signup(request):
-    if get_student(request) is not None:
+    if request.user.is_authenticated():
         return HttpResponseRedirect('/')
     values = {}
     values.update(csrf(request))
