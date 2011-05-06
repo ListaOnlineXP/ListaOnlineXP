@@ -8,12 +8,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from forms import SignUpForm, LoginForm
 from models import Student
+from decorators import student_required
 
-@login_required
+@student_required
 def home(request):
-    if request.user.is_authenticated() and Student.objects.get(user=request.user) is not None:
-        return HttpResponseRedirect('/course')
-    return HttpResponseRedirect('/login')
+    return HttpResponseRedirect('/course')
 
 def signup(request):
     if request.user.is_authenticated():
