@@ -15,4 +15,8 @@ class Student(models.Model):
     def __unicode__(self):
         return self.name 
 
-
+    def is_enrolled(self, course):
+        if (course in self.courses.all()):
+            return True
+        else:
+            return False
