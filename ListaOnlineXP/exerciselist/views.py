@@ -11,7 +11,7 @@ from course.models import Course
 from exerciselist.models import ExerciseList, Question, MultipleChoiceQuestion
 from views import *
 
-from django.contrib.auth.decorators import login_required
+from authentication.decorators import student_required
 from django.utils.decorators import method_decorator
 
 from itertools import izip
@@ -64,7 +64,7 @@ def get_questions_alternatives(exercise_list):
         alternatives.append(list(multiple_choice_question.get_alternatives()))
     return izip(questions, alternatives)
 
-@login_required
+@student_required
 def exercise_list(request, course_id, list_id):
     values = {}
     values.update(csrf(request))
@@ -97,12 +97,12 @@ class GetStudentsExerciseList(ListView):
 
         return ExerciseList.objects.filter(course__student=student) 
 
-    @method_decorator(login_required)
+    @method_decorator(student_required)
     def dispatch(self, *args, **kargs):
         return super(GetStudentsExerciseList, self).dispatch(*args, **kargs)
     
     
-@login_required    
+@student_required    
 def view_java_questions(request, exercise_list_id):
     values = {}
     values.update(csrf(request))
