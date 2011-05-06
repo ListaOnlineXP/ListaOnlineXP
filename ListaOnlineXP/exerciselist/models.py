@@ -13,13 +13,13 @@ class Question(models.Model):
 
 class MultipleChoiceQuestion(Question):
 
-    def get_correct_answer(self):
+    def get_correct_alternative(self):
         #Returns the multiple choice question's correct answer object
-        return MultipleChoiceCorrectAnswer.objects.get(question=self)
+        return MultipleChoiceCorrectAlternative.objects.get(question=self)
 
-    def get_answers(self):
+    def get_alternatives(self):
         #Returns a QuerySet with all of the multiplechoice question's answers
-        return MultipleChoiceAnswer.objects.filter(Q(multiplechoicecorrectanswer__question=self) | Q(multiplechoicewronganswer__question=self))
+        return MultipleChoiceAlternative.objects.filter(Q(multiplechoicecorrectanswer__question=self) | Q(multiplechoicewronganswer__question=self))
         pass
     
 
@@ -29,7 +29,7 @@ class JavaQuestion(Question):
     criteria = models.TextField()
 
 
-class MultipleChoiceAnswer(models.Model):
+class MultipleChoiceAlternative(models.Model):
 
     text = models.CharField(blank=False, max_length=300)    
 
@@ -37,12 +37,12 @@ class MultipleChoiceAnswer(models.Model):
         return self.text        
 
 
-class MultipleChoiceCorrectAnswer(MultipleChoiceAnswer):
+class MultipleChoiceCorrectAlternative(MultipleChoiceAlternative):
 
     question = models.OneToOneField(MultipleChoiceQuestion) 
     
     
-class MultipleChoiceWrongAnswer(MultipleChoiceAnswer):
+class MultipleChoiceWrongAlternative(MultipleChoiceAlternative):
 
     question = models.ForeignKey(MultipleChoiceQuestion)
     

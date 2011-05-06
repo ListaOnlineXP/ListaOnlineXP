@@ -34,10 +34,10 @@ class ExerciseListTestCase(TestCase):
         self.multichoicequestion2 = MultipleChoiceQuestion.objects.create(text=u"O que é Refatoração?")
         self.multichoicequestion3 = MultipleChoiceQuestion.objects.create(text=u"")
 
-        #Setup for MultipleChoiceCorrectAnswer tests
-        self.multichoicecorrectanswer1 = MultipleChoiceCorrectAnswer.objects.create(question=MultipleChoiceQuestion.objects.get(id=1))
-        self.multichoicecorrectanswer2 = MultipleChoiceCorrectAnswer.objects.create(question=MultipleChoiceQuestion.objects.get(id=2))
-        self.multichoicecorrectanswer3 = MultipleChoiceCorrectAnswer.objects.create(question=MultipleChoiceQuestion.objects.get(id=3))
+        #Setup for MultipleChoiceCorrectAlternative tests
+        self.multichoicecorrectalternative1 = MultipleChoiceCorrectAlternative.objects.create(question=MultipleChoiceQuestion.objects.get(id=1))
+        self.multichoicecorrectalternative2 = MultipleChoiceCorrectAlternative.objects.create(question=MultipleChoiceQuestion.objects.get(id=2))
+        self.multichoicecorrectalternative3 = MultipleChoiceCorrectAlternative.objects.create(question=MultipleChoiceQuestion.objects.get(id=3))
         
         #Setup for ExerciseList tests
         self.exercise_list1 = ExerciseList.objects.create(name=u"Lista de exercícios 1", course=self.course1)
@@ -61,17 +61,17 @@ class ExerciseListTestCase(TestCase):
         self.assertNotEqual(MultipleChoiceQuestion.objects.get(id=1).text, u"")
         self.assertEqual(MultipleChoiceQuestion.objects.count(), 3)
 
-    def testMultipleChoiceCorrectAnswerDB(self):
-        self.assertEqual(MultipleChoiceCorrectAnswer.objects.get(id=1).question, MultipleChoiceQuestion.objects.get(text=u"1+1?"))
-        self.assertEqual(MultipleChoiceCorrectAnswer.objects.get(id=2).question, MultipleChoiceQuestion.objects.get(text=u"O que é Refatoração?"))
-        self.assertEqual(MultipleChoiceCorrectAnswer.objects.get(id=3).question, MultipleChoiceQuestion.objects.get(text=u""))
-        self.assertEqual(MultipleChoiceCorrectAnswer.objects.get(question=MultipleChoiceQuestion.objects.get(text=u"1+1?")).id, 1)
-        self.assertEqual(MultipleChoiceCorrectAnswer.objects.get(question=MultipleChoiceQuestion.objects.get(text=u"")).id, 3)
-        self.assertEqual(MultipleChoiceCorrectAnswer.objects.filter(question=MultipleChoiceQuestion.objects.get(text=u"1+1?"))[0].id, 1)
-        self.assertEqual(MultipleChoiceCorrectAnswer.objects.filter(question=MultipleChoiceQuestion.objects.get(text=u"O que é Refatoração?"))[0].id, 2)
-        self.assertNotEqual(MultipleChoiceCorrectAnswer.objects.get(id=1).question, MultipleChoiceQuestion.objects.get(text=u""))
-        self.assertEqual(MultipleChoiceCorrectAnswer.objects.filter(question=MultipleChoiceQuestion.objects.get(text=u"1+1?")).count(), 1)
-        self.assertEqual(MultipleChoiceCorrectAnswer.objects.count(), 3)
+    def testMultipleChoiceCorrectAlternativeDB(self):
+        self.assertEqual(MultipleChoiceCorrectAlternative.objects.get(id=1).question, MultipleChoiceQuestion.objects.get(text=u"1+1?"))
+        self.assertEqual(MultipleChoiceCorrectAlternative.objects.get(id=2).question, MultipleChoiceQuestion.objects.get(text=u"O que é Refatoração?"))
+        self.assertEqual(MultipleChoiceCorrectAlternative.objects.get(id=3).question, MultipleChoiceQuestion.objects.get(text=u""))
+        self.assertEqual(MultipleChoiceCorrectAlternative.objects.get(question=MultipleChoiceQuestion.objects.get(text=u"1+1?")).id, 1)
+        self.assertEqual(MultipleChoiceCorrectAlternative.objects.get(question=MultipleChoiceQuestion.objects.get(text=u"")).id, 3)
+        self.assertEqual(MultipleChoiceCorrectAlternative.objects.filter(question=MultipleChoiceQuestion.objects.get(text=u"1+1?"))[0].id, 1)
+        self.assertEqual(MultipleChoiceCorrectAlternative.objects.filter(question=MultipleChoiceQuestion.objects.get(text=u"O que é Refatoração?"))[0].id, 2)
+        self.assertNotEqual(MultipleChoiceCorrectAlternative.objects.get(id=1).question, MultipleChoiceQuestion.objects.get(text=u""))
+        self.assertEqual(MultipleChoiceCorrectAlternative.objects.filter(question=MultipleChoiceQuestion.objects.get(text=u"1+1?")).count(), 1)
+        self.assertEqual(MultipleChoiceCorrectAlternative.objects.count(), 3)
 
     def testExerciseListDB(self):
         self.assertEqual(ExerciseList.objects.get(name="Lista de exercícios 1").name, u"Lista de exercícios 1")

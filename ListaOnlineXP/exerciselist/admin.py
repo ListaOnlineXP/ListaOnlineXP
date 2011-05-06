@@ -6,17 +6,17 @@ from models import *
 class ExerciseListAdmin(admin.ModelAdmin):
     filter_horizontal = ('questions',)
     
-class MultipleChoiceCorrectAnswerInline(admin.StackedInline):
-    model = MultipleChoiceCorrectAnswer
+class MultipleChoiceCorrectAlternativeInline(admin.StackedInline):
+    model = MultipleChoiceCorrectAlternative
     
-class MultipleChoiceWrongAnswerInline(admin.StackedInline):
-    model = MultipleChoiceWrongAnswer
+class MultipleChoiceWrongAlternativeInline(admin.StackedInline):
+    model = MultipleChoiceWrongAlternative
     extra = 1
     
 class MultipleChoiceQuestionAdmin(admin.ModelAdmin):
     inlines = [
-        MultipleChoiceCorrectAnswerInline,
-        MultipleChoiceWrongAnswerInline,
+        MultipleChoiceCorrectAlternativeInline,
+        MultipleChoiceWrongAlternativeInline,
     ]
 
 admin.site.register(ExerciseList, ExerciseListAdmin)

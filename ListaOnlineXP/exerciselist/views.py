@@ -8,7 +8,7 @@ from django.views.generic import ListView
 
 from authentication.models import Student
 from course.models import Course
-from exerciselist.models import ExerciseList, MultipleChoiceCorrectAnswer, MultipleChoiceWrongAnswer, MultipleChoiceQuestion
+from exerciselist.models import ExerciseList, MultipleChoiceCorrectAlternative, MultipleChoiceWrongAlternative, MultipleChoiceQuestion
 from views import *
 
 from django.contrib.auth.decorators import login_required
@@ -59,8 +59,8 @@ def get_questions_answers(exercise_list):
     questions = list(exercise_list.questions.all())
     answers = []
     for question in questions:
-        question_answers = list(MultipleChoiceCorrectAnswer.objects.filter(question=question))
-        question_answers.extend(MultipleChoiceWrongAnswer.objects.filter(question=question))
+        question_answers = list(MultipleChoiceCorrectAlternative.objects.filter(question=question))
+        question_answers.extend(MultipleChoiceWrongAlternative.objects.filter(question=question))
         random.shuffle(question_answers)
         answers.append(question_answers)
     return itertools.izip(questions, answers)
