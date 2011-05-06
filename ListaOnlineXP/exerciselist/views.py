@@ -114,9 +114,12 @@ def view_java_questions(request, exercise_list_id):
         raise Http404
     if (exercise_list is not None) and (course is not None):
         if (exercise_list.course == course):
-            student = get_student(request)
+            student = Student.objects.get(user=request.user) 
             admin = get_admin(request)
             values["java_questions"] = JavaQuestions.objects.filter(exerciselist=exercise_list)
         else:
             return HttpResponseRedirect('/')   
     raise Http404
+
+
+
