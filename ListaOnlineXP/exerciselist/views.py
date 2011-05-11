@@ -14,9 +14,6 @@ from views import *
 from authentication.decorators import student_required
 from django.utils.decorators import method_decorator
 
-from itertools import izip
-from random import shuffle
-
 import os.path, sys
 from subprocess import Popen, PIPE
 import shlex
@@ -55,15 +52,6 @@ def get_code(request):
     values['form'] = form
     return render_to_response('get_code.html', values)
 
-# auxiliar method
-def get_questions_alternatives(exercise_list):
-    questions = exercise_list.questions.all()
-    alternatives = []
-    for question in questions:
-        multiple_choice_question = MultipleChoiceQuestion.objects.get(pk=question.pk)
-        alternatives.append(list(multiple_choice_question.get_alternatives()))
-    return izip(questions, alternatives)
-
 @student_required
 def exercise_list(request, course_id, list_id):
     values = {}
@@ -78,7 +66,7 @@ def exercise_list(request, course_id, list_id):
             student = Student.objects.get(user=request.user)
             values['student'] = student
             values['exercise_list'] = exercise_list
-            values['questions_alternatives'] = get_questions_alternatives(exercise_list) 
+            values['questions_alternatives'] = exercise_list.get_questions_alternatives() 
             if student.is_enrolled(course):
                 return render_to_response('exercise_list.html', values)
             else:
@@ -119,6 +107,4 @@ def view_java_questions(request, exercise_list_id):
         else:
             return HttpResponseRedirect('/')   
     raise Http404
-
-
 

@@ -3,6 +3,9 @@ from django.db import models
 from django.db.models import Q
 import datetime
 
+from itertools import izip
+from random import shuffle
+
 class Question(models.Model):
 
     text = models.TextField()
@@ -53,7 +56,15 @@ class ExerciseList(models.Model):
     pub_date = models.DateField(default=datetime.datetime.today)
     due_date = models.DateField(default=(datetime.datetime.today()+datetime.timedelta(days=7)))
     questions = models.ManyToManyField(Question)
-    
+
+    def get_questions_alternatives(self):
+        questions = self.questions.all()
+        alternatives = []
+        for question in questions:
+            multiple_choice_question = MultipleChoiceQuestion.objects.get(pk=question.pk)
+            alternatives.append(list(multiple_choice_question.get_alternatives()))
+        return izip(questions, alternatives)
+
     def __unicode__(self):
         return self.name
 
