@@ -6,12 +6,17 @@ import datetime
 from itertools import izip
 from random import shuffle
 
+#Exercise List
 class Question(models.Model):
 
     text = models.TextField()
 
     def __unicode__(self):
         return self.text
+
+class DiscursiveQuestion(Question):
+    pass
+
         
 
 class MultipleChoiceQuestion(Question):
@@ -57,6 +62,15 @@ class ExerciseList(models.Model):
     due_date = models.DateField(default=(datetime.datetime.today()+datetime.timedelta(days=7)))
     questions = models.ManyToManyField(Question)
 
+    def get_multiple_choice_questions(self):
+        return MultipleChoiceQuestion.objects.filter(exerciselist=self)
+
+    def get_java_questions(self):
+        return JavaQuestion.objects.filter(exerciselist=self)
+
+    def get_discursive_questions(self):
+        return DiscursiveQuestion.objects.filter(exerciselist=self)
+
     def get_questions_alternatives(self):
         questions = self.questions.all()
         alternatives = []
@@ -76,11 +90,16 @@ class ExerciseListSolution(models.Model):
     
 class Answer(models.Model):
     
-    exercise_list_solution = models.ForeignKey(ExerciseListSolution)
+    exercise_list_solution = models.ForeignKey(ExerciseListSolution, editable=False)
+    question_answered = models.ForeignKey(Question, editable=False)
+
+class DiscursiveQuestionAnswer(Answer):
+
+    text = models.TextField(blank=False)
 
 class MultipleChoiceQuestionAnswer(Answer):
     
-    question_answered = models.ForeignKey(MultipleChoiceQuestion)
+    chosen_alternative = models.ForeignKey(MultipleChoiceAlternative)
     
 class JavaQuestionAnswer(Answer):
     

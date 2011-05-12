@@ -3,12 +3,12 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.context_processors import csrf
-from forms import GetCodeForm, MultipleChoiceQuestionAnswersForm
+from forms import *
 from django.views.generic import ListView
 
 from authentication.models import Student
 from course.models import Course
-from exerciselist.models import ExerciseList, Question, MultipleChoiceQuestion
+from exerciselist.models import ExerciseList, Question, MultipleChoiceQuestion, ExerciseListSolution
 from views import *
 
 from authentication.decorators import student_required
@@ -102,11 +102,16 @@ def view_exercise_list(request, exercise_list_id):
     #We have also verified that the student is enrolled in the
     #course
 
-    multiple_choice_questions = MultipleChoiceQuestions.objects.filter(exercise_list=exercise_list)
-    java_question = JavaQuestion.objects.filter(exercise_list=exercise_list)
+    #Multiple choice section
+    if request.method == 'GET':
+       # formset = MultipleChoiceQuestionAnswerFormset(queryset=MultipleChoiceQuestionAnswer.objects.filter(question_answered=exercise_list.get_multiple_choice_questions()))
+        multiple_choice_question = MultipleChoiceQuestion.objects.get(pk=2)
+        form = MultipleChoiceQuestionAnswerForm(multiple_choice_question=multiple_choice_question)
+        values['form'] = form
 
-    values['questions'] = questions.all()
-    
+    if request.method == 'POST':
+        pass
+    #End Multiple Choice section
     
     
 
