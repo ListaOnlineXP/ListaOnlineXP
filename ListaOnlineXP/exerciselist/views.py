@@ -100,16 +100,22 @@ def view_exercise_list(request, exercise_list_id):
 
     #Here, we have the student, the exercise_list and the course.
     #We have also verified that the student is enrolled in the
-    #course
+    #course, so the basic checks are done and we're ready to roll.
 
-    #Multiple choice section
     if request.method == 'GET':
+        #Multiple choice section
+
+        #Get the multiple choice questions associated with this exercise list. The exercise list has a method that returns its multiple choice questions as a queryset.
         multiple_choice_questions = exercise_list.get_multiple_choice_questions()
-    multiple_choice_questions_and_forms = {}
-    for multiple_choice_question in multiple_choice_questions:
-        multiple_choice_questions_and_forms[multiple_choice_question] = MultipleChoiceQuestionForm(multiple_choice_question=multiple_choice_question)
-    print multiple_choice_questions_and_forms
-    values['multiple_choice_questions_and_forms'] = multiple_choice_questions_and_forms
+
+        #Initialize a dictionary which will hold the multiple choice questions and its form. The question will act as the key for the dictionary, while the form will act as the value for a particular key(question).
+        multiple_choice_questions_and_forms = {}
+        #Start populating the multiple_choice_questions_and_forms (long name, huh....) with multiple_choice_question as keys, MultipleChoiceQuestionForm as the value
+        for multiple_choice_question in multiple_choice_questions:
+            multiple_choice_questions_and_forms[multiple_choice_question] = MultipleChoiceQuestionForm(multiple_choice_question=multiple_choice_question)
+
+        #Once the dictionary is populated, send it to the values dictionary (a dictionary inside a dictionary works fine in the template, and is very useful)
+        values['multiple_choice_questions_and_forms'] = multiple_choice_questions_and_forms
         
 
     if request.method == 'POST':
