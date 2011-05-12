@@ -3,12 +3,12 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
-from django.contrib.auth.decorators import login_required 
+from authentication.decorators import student_required 
 from models import Teacher, Course
 from exerciselist.models import ExerciseList
 from authentication.models import Student
 
-@login_required
+@student_required
 def course(request, course_id):
     values = {}
     values.update(csrf(request))
@@ -35,7 +35,7 @@ def course(request, course_id):
             return render_to_response('course.html', values)
     raise Http404
 
-@login_required
+@student_required
 def course_list(request):
     values = {}
     values['student'] = Student.objects.get(user=request.user)

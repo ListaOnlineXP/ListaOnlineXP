@@ -6,7 +6,7 @@
   {% if exercise_list %}
   <form action="." method="post">
     <ul>
-      {% for question, answers in questions_answers %}
+      {% for question, answers in questions_alternatives %}
       <li><pre>{{ question.text }}</pre>
          <ul>
            {% for answer in answers %}

@@ -8,13 +8,11 @@ from django.views.generic import ListView
 
 from authentication.models import Student
 from course.models import Course
-from exerciselist.models import ExerciseList, MultipleChoiceCorrectAnswer, MultipleChoiceWrongAnswer, MultipleChoiceQuestion
+from exerciselist.models import ExerciseList, Question, MultipleChoiceQuestion
 from views import *
 
-from django.contrib.auth.decorators import login_required
+from authentication.decorators import student_required
 from django.utils.decorators import method_decorator
-
-import itertools, random
 
 import os.path, sys
 from subprocess import Popen, PIPE
@@ -54,18 +52,7 @@ def get_code(request):
     values['form'] = form
     return render_to_response('get_code.html', values)
 
-# auxiliar method
-def get_questions_answers(exercise_list):
-    questions = list(exercise_list.questions.all())
-    answers = []
-    for question in questions:
-        question_answers = list(MultipleChoiceCorrectAnswer.objects.filter(question=question))
-        question_answers.extend(MultipleChoiceWrongAnswer.objects.filter(question=question))
-        random.shuffle(question_answers)
-        answers.append(question_answers)
-    return itertools.izip(questions, answers)
-
-@login_required
+@student_required
 def exercise_list(request, course_id, list_id):
     values = {}
     values.update(csrf(request))
@@ -79,8 +66,8 @@ def exercise_list(request, course_id, list_id):
             student = Student.objects.get(user=request.user)
             values['student'] = student
             values['exercise_list'] = exercise_list
-            values['questions_answers'] = get_questions_answers(exercise_list) 
-            if course in student.courses.all():
+            values['questions_alternatives'] = exercise_list.get_questions_alternatives() 
+            if student.is_enrolled(course):
                 return render_to_response('exercise_list.html', values)
             else:
                 return HttpResponseRedirect('/')                
@@ -98,7 +85,7 @@ class GetStudentsExerciseList(ListView):
 
         return ExerciseList.objects.filter(course__student=student) 
 
-    @method_decorator(login_required)
+    @method_decorator(student_required)
     def dispatch(self, *args, **kargs):
         return super(GetStudentsExerciseList, self).dispatch(*args, **kargs)
 
@@ -126,7 +113,7 @@ def view_exercise_list(request, exercise_list_id):
     return render_to_response('view_exercise_list.html', values)
 
     
-@login_required    
+@student_required    
 def view_java_questions(request, exercise_list_id):
     values = {}
     values.update(csrf(request))
@@ -143,6 +130,4 @@ def view_java_questions(request, exercise_list_id):
         else:
             return HttpResponseRedirect('/')   
     raise Http404
-
-
 
