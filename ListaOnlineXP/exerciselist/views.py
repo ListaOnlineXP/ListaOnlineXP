@@ -89,7 +89,7 @@ class GetStudentsExerciseList(ListView):
     def dispatch(self, *args, **kargs):
         return super(GetStudentsExerciseList, self).dispatch(*args, **kargs)
 
-@login_required
+@student_required
 def view_exercise_list(request, exercise_list_id):
     values = {}
     student = Student.objects.get(user=request.user)
