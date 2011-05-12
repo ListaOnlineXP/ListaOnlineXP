@@ -2,7 +2,9 @@
 
 {% block content_sidebar %}
     <h1>Responser lista de exercícios</h1>
-    {{ form.as_table }}
+    {% for multiple_choice_question, multiple_choice_question_form in multiple_choice_questions_and_forms.iteritems %}
+    <p>Questão: {{ multiple_choice_question.text }}</p>
+    {{ multiple_choice_question_form.as_p }}
+    <br />
+    {% endfor %}
 {% endblock %}
-
-

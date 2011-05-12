@@ -104,10 +104,13 @@ def view_exercise_list(request, exercise_list_id):
 
     #Multiple choice section
     if request.method == 'GET':
-       # formset = MultipleChoiceQuestionAnswerFormset(queryset=MultipleChoiceQuestionAnswer.objects.filter(question_answered=exercise_list.get_multiple_choice_questions()))
-        multiple_choice_question = MultipleChoiceQuestion.objects.get(pk=2)
-        form = MultipleChoiceQuestionAnswerForm(multiple_choice_question=multiple_choice_question)
-        values['form'] = form
+        multiple_choice_questions = exercise_list.get_multiple_choice_questions()
+    multiple_choice_questions_and_forms = {}
+    for multiple_choice_question in multiple_choice_questions:
+        multiple_choice_questions_and_forms[multiple_choice_question] = MultipleChoiceQuestionForm(multiple_choice_question=multiple_choice_question)
+    print multiple_choice_questions_and_forms
+    values['multiple_choice_questions_and_forms'] = multiple_choice_questions_and_forms
+        
 
     if request.method == 'POST':
         pass

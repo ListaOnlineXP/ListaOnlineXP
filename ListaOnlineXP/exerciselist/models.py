@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import Q
 import datetime
 
+
 from itertools import izip
 from random import shuffle
 
@@ -28,7 +29,6 @@ class MultipleChoiceQuestion(Question):
     def get_alternatives(self):
         #Returns a QuerySet with all of the multiplechoice question's alternatives
         return MultipleChoiceAlternative.objects.filter(Q(multiplechoicecorrectalternative__question=self) | Q(multiplechoicewrongalternative__question=self))
-    
 
 
 class JavaQuestion(Question):
