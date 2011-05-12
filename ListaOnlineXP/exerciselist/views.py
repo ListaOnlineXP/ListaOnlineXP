@@ -101,7 +101,30 @@ class GetStudentsExerciseList(ListView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kargs):
         return super(GetStudentsExerciseList, self).dispatch(*args, **kargs)
+
+@login_required
+def view_exercise_list(request, exercise_list_id):
+    values = {}
+    student = Student.objects.get(user=request.user)
+    exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
+    course = exercise_list.course
+    if not student.is_enrolled(course):
+        return HttpResponseRedirect('/')
+
+    #Here, we have the student, the exercise_list and the course.
+    #We have also verified that the student is enrolled in the
+    #course
+
+    multiple_choice_questions = MultipleChoiceQuestions.objects.filter(exercise_list=exercise_list)
+    java_question = JavaQuestion.objects.filter(exercise_list=exercise_list)
+
+    values['questions'] = questions.all()
     
+    
+    
+
+    return render_to_response('view_exercise_list.html', values)
+
     
 @login_required    
 def view_java_questions(request, exercise_list_id):

@@ -1,0 +1,21 @@
+{% extends "base_site.html" %}
+
+{% block content_sidebar %}
+    <h1>Responser lista de exercícios</h1>
+    {% if questions %}
+    <ul>
+    {% for question in questions %}
+    <li>{{ question.text }}</li>
+        <ul>
+        {% for answer in question.get_answers.all %}
+        <li> {{ answer }}
+        {% endfor %}
+        <ul>
+    {% endfor %}
+    </ul>
+    {% else %}
+    <p> Nenhuma questão na lista </p>
+    {% endif %}
+{% endblock %}
+
+
