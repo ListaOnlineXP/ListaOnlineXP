@@ -8,9 +8,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from forms import SignUpForm, LoginForm
 from models import Student
-from decorators import student_required
+from decorators import profile_required
 
-@student_required
+@profile_required
 def home(request):
     return HttpResponseRedirect('/course')
 

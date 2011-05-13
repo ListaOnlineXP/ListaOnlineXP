@@ -11,7 +11,7 @@ from course.models import Course
 from exerciselist.models import ExerciseList, Question, MultipleChoiceQuestion, ExerciseListSolution
 from views import *
 
-from authentication.decorators import student_required
+from authentication.decorators import profile_required
 from django.utils.decorators import method_decorator
 
 import os.path, sys
@@ -52,7 +52,7 @@ def get_code(request):
     values['form'] = form
     return render_to_response('get_code.html', values)
 
-@student_required
+@profile_required
 def exercise_list(request, course_id, list_id):
     values = {}
     values.update(csrf(request))
@@ -85,15 +85,16 @@ class GetStudentsExerciseList(ListView):
 
         return ExerciseList.objects.filter(course__student=student) 
 
-    @method_decorator(student_required)
+    @method_decorator(profile_required)
     def dispatch(self, *args, **kargs):
         return super(GetStudentsExerciseList, self).dispatch(*args, **kargs)
 
-@student_required
+@profile_required
 def view_exercise_list(request, exercise_list_id):
     values = {}
     values.update(csrf(request))
     student = Student.objects.get(user=request.user)
+    values['student'] = student
     exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
     course = exercise_list.course
     if not student.is_enrolled(course):
@@ -137,7 +138,7 @@ def view_exercise_list(request, exercise_list_id):
     return render_to_response('view_exercise_list.html', values)
 
     
-@student_required    
+@profile_required    
 def view_java_questions(request, exercise_list_id):
     values = {}
     values.update(csrf(request))
