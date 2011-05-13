@@ -5,12 +5,11 @@ from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
 from django.contrib import auth
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
 from forms import SignUpForm, LoginForm
-from models import Student
-from decorators import student_required
+from models import Profile
+from decorators import profile_required
 
-@student_required
+@profile_required
 def home(request):
     return HttpResponseRedirect('/course')
 
@@ -30,11 +29,10 @@ def signup(request):
             passwd = form.cleaned_data['passwd']
             try:
                 user = User.objects.create_user(username, '', passwd)
-                student = Student(name=name, nusp=nusp, user=user)
-                student.save()
+                profile = Profile(name=name, nusp=nusp, user=user)
+                profile.save()
                 return HttpResponseRedirect('/login')
             except:
                 form._errors["username"] = form.error_class(["Usuário já cadastrado."])
     values['form'] = form
     return render_to_response('signup.html', values)
-

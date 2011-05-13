@@ -93,7 +93,7 @@ TEMPLATE_DIRS = (
 )
 
 #Authentication settings
-#AUTH_PROFILE_MODULE = "authentication.student"
+AUTH_PROFILE_MODULE = "authentication.Profile"
 LOGIN_URL="/login/"
 LOGIN_REDIRECT_URL = '/course/'
 
@@ -107,8 +107,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    'course',
-    'exerciselist',
+    #'course',
+    #'exerciselist',
     'authentication',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
