@@ -22,4 +22,4 @@ class MultipleChoiceQuestionAdmin(admin.ModelAdmin):
 admin.site.register(ExerciseList, ExerciseListAdmin)
 admin.site.register(MultipleChoiceQuestion, MultipleChoiceQuestionAdmin)
 admin.site.register(JavaQuestion)
-
+admin.site.register(DiscursiveQuestion)
