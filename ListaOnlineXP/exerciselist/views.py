@@ -92,6 +92,7 @@ class GetStudentsExerciseList(ListView):
 @student_required
 def view_exercise_list(request, exercise_list_id):
     values = {}
+    values.update(csrf(request))
     student = Student.objects.get(user=request.user)
     exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
     course = exercise_list.course

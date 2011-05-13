@@ -2,9 +2,12 @@
 
 {% block content_sidebar %}
     <h1>Responder lista de exercícios</h1>
+    <form action="." method="post"> {% csrf_token %}
     {% for question, question_form in questions_and_forms.iteritems %}
     <p>Questão: {{ question.text }}</p>
     {{ question_form.as_p }}
     <br />
     {% endfor %}
+    <input type="submit" value="Enviar" />
+    </form>
 {% endblock %}
