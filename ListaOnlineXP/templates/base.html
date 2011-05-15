@@ -14,10 +14,10 @@
     <div id="branding">
       <h1>{% block branding %}Lista On-line{% endblock %}</h1>
     </div>
-    {% if student or user or admin %}
+    {% if user %}
       <div id="user-tools">
     {% trans 'Welcome,' %}
-    <strong>{% firstof user.name user.login student.name student.login admin.name admin.login %}</strong>
+	<strong>{{ user.username }}</strong>
     <a href="/logout">{% trans 'Log out' %}</a>
       </div>
     {% else %}
@@ -31,7 +31,7 @@
 <!-- Content -->
   <div id="content" class="{% block coltype %}colM{% endblock %}">
     {% block pretitle %}{% endblock %}
-    {% block content_title %}{% if title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
+    {% block content_title %}{% if title %}<h1 class="page-title">{{ title }}</h1>{% endif %}{% endblock %}
     {% block content %}
       {% block object-tools %}{% endblock %}
       {{ content }}

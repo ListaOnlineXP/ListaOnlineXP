@@ -3,10 +3,7 @@
 {% block content_sidebar %}
     <h1>{{ course.code }} - {{ course.name }}</h1>
     {% if subscribe %}
-    <form action="." method="post">
-        {% csrf_token %}
-        <input type="submit" value="Cadastrar" />
-    </form>
+	<p><a href="{{ course.enroll_link }}">Cadastrar</a></p>
     {% else %}
     <ul>
     {% for list in exercise_list %}

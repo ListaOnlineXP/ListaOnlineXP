@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
 
+import shlex
+import sys
+import os.path
+from subprocess import Popen, PIPE
+from django.core.context_processors import csrf
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
-from django.core.context_processors import csrf
-from forms import *
+from django.utils.decorators import method_decorator
 from django.views.generic import ListView
-
-from authentication.models import Student
-from course.models import Course
+from authentication.models import Profile
+from course.models import Course, CourseMember
 from exerciselist.models import ExerciseList, Question, MultipleChoiceQuestion, ExerciseListSolution
 from views import *
-
+from forms import *
 from authentication.decorators import profile_required
-from django.utils.decorators import method_decorator
-
-import os.path, sys
-from subprocess import Popen, PIPE
-import shlex
 
 
 def get_code(request):
@@ -63,7 +61,7 @@ def exercise_list(request, course_id, list_id):
         raise Http404
     if (exercise_list is not None) and (course is not None):
         if (exercise_list.course == course):
-            student = Student.objects.get(user=request.user)
+            student = request.user.get_profile()
             values['student'] = student
             values['exercise_list'] = exercise_list
             values['questions_alternatives'] = exercise_list.get_questions_alternatives() 
@@ -81,7 +79,7 @@ class GetStudentsExerciseList(ListView):
     template_name = 'students_exercise_lists.html'
     
     def get_queryset(self):
-        student = Student.objects.get(user=self.request.user)
+        student = self.request.user.get_profile()
 
         return ExerciseList.objects.filter(course__student=student) 
 
@@ -93,11 +91,11 @@ class GetStudentsExerciseList(ListView):
 def view_exercise_list(request, exercise_list_id):
     values = {}
     values.update(csrf(request))
-    student = Student.objects.get(user=request.user)
+    student = request.user.get_profile()
     values['student'] = student
     exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
     course = exercise_list.course
-    if not student.is_enrolled(course):
+    if not CourseMember.is_member_of_course(student, course):
         return HttpResponseRedirect('/')
 
     #Here, we have the student, the exercise_list and the course.
@@ -149,10 +147,9 @@ def view_java_questions(request, exercise_list_id):
         raise Http404
     if (exercise_list is not None) and (course is not None):
         if (exercise_list.course == course):
-            student = Student.objects.get(user=request.user) 
+            student = request.user.get_profile()
             admin = get_admin(request)
             values["java_questions"] = JavaQuestions.objects.filter(exerciselist=exercise_list)
         else:
             return HttpResponseRedirect('/')   
     raise Http404
-

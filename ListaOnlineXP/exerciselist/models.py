@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.db import models
-from django.db.models import Q
+
 import datetime
-
-
 from itertools import izip
 from random import shuffle
+from django.db import models
+from django.db.models import Q
+
 
 #Exercise List
 class Question(models.Model):
@@ -15,9 +15,9 @@ class Question(models.Model):
     def __unicode__(self):
         return self.text
 
+
 class DiscursiveQuestion(Question):
     pass
-
         
 
 class MultipleChoiceQuestion(Question):
@@ -85,23 +85,26 @@ class ExerciseList(models.Model):
 
 class ExerciseListSolution(models.Model):
     
-    student = models.ForeignKey('authentication.Student')
+    student = models.ForeignKey('authentication.Profile')
     exercise_list = models.ForeignKey(ExerciseList)
     
+
 class Answer(models.Model):
     
     exercise_list_solution = models.ForeignKey(ExerciseListSolution, editable=False)
     question_answered = models.ForeignKey(Question, editable=False)
 
+
 class DiscursiveQuestionAnswer(Answer):
 
     text = models.TextField(blank=False)
+
 
 class MultipleChoiceQuestionAnswer(Answer):
     
     chosen_alternative = models.ForeignKey(MultipleChoiceAlternative)
     
+
 class JavaQuestionAnswer(Answer):
     
     code = models.TextField(blank=False)
-

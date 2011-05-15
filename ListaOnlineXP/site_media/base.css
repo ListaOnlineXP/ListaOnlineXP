@@ -773,3 +773,18 @@ table#change-history tbody th {
     color: #666;
 }
 
+
+/* PERSONAL */
+h1.page-title {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+form label {
+	display: block;
+	float: left;
+	width: 150px;
+	padding-top: 3px;
+	vertical-align: middle;
+	font-weight: bold;
+}

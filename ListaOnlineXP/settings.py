@@ -84,6 +84,8 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'ListaOnlineXP.urls'
+LOGIN_URL = '/login/'
+AUTH_PROFILE_MODULE = 'authentication.Profile'
 
 TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'templates/').replace('\\', '/'),
@@ -91,13 +93,6 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
-
-#Authentication settings
-AUTH_PROFILE_MODULE = "authentication.Profile"
-LOGIN_URL="/login/"
-LOGIN_REDIRECT_URL = '/course/'
-
-
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -107,9 +102,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    #'course',
-    #'exerciselist',
     'authentication',
+    'course',
+    'exerciselist',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
