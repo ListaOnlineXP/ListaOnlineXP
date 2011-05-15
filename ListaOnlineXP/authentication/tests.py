@@ -28,18 +28,12 @@ class AuthenticationTestCase(TestCase):
             password=u"1234"
         )
         self.profile1 = Profile.objects.create(
-            role='S',
-            nusp=u"6431089",
             user=User.objects.get(id=1)
         )
         self.profile2 = Profile.objects.create(
-            role='S',
-            nusp=u"6797000",
             user=User.objects.get(id=2)
         )
         self.profile3 = Profile.objects.create(
-            role='S',
-            nusp=u"123456",
             user=User.objects.get(id=3)
         )
         

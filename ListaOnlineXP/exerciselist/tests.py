@@ -10,24 +10,19 @@ class ExerciseListTestCase(TestCase):
 
     def setUp(self):
 
-        #Setup for Teacher tests
-        self.teacher1 = Teacher.objects.create(name=u"Alfredo")
-        self.teacher2 = Teacher.objects.create(name=u"Gerosa")
-        self.teacher3 = Teacher.objects.create(name=u"Flávio")
-
         #Setup for Course tests
-        self.course1 = Course.objects.create(code=u"MAC0110", name=u"Introdução à Computação", teacher=Teacher.objects.get(id=1))
-        self.course2 = Course.objects.create(code=u"MAC0342", name=u"XP", teacher=Teacher.objects.get(id=1))
-        self.course3 = Course.objects.create(code=u"MAC0122", name=u"Algoritmos", teacher=Teacher.objects.get(id=2))
+        self.course1 = Course.objects.create(code=u"MAC0110", name=u"Introdução à Computação")
+        self.course2 = Course.objects.create(code=u"MAC0342", name=u"XP")
+        self.course3 = Course.objects.create(code=u"MAC0122", name=u"Algoritmos")
 
                
         #Setup for Student tests
         self.user1 = User.objects.create(username=u"koiti", password=u"lalala")
         self.user2 = User.objects.create(username=u"tsp", password=u"weasd")
         self.user3 = User.objects.create(username=u"milan", password=u"1234")
-        self.student1 = Student.objects.create(name=u"Steven Koiti Tsukamoto", nusp=u"6431089", user=User.objects.get(id=1))
-        self.student2 = Student.objects.create(name=u"Thiago da Silva Pinheiro", nusp=u"6797000", user=User.objects.get(id=2))
-        self.student3 = Student.objects.create(name=u"Bruno Milan Perfetto", nusp=u"123456", user=User.objects.get(id=3))
+        self.student1 = Profile.objects.create(user=User.objects.get(id=1))
+        self.student2 = Profile.objects.create(user=User.objects.get(id=2))
+        self.student3 = Profile.objects.create(user=User.objects.get(id=3))
 
         #Setup for MultipleChoiceQuestion tests
         self.multichoicequestion1 = MultipleChoiceQuestion.objects.create(text=u"1+1?")
