@@ -4,9 +4,9 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
 from authentication.decorators import profile_required 
-from models import Teacher, Course
-from exerciselist.models import ExerciseList
-from authentication.models import Student
+from models import Course
+#from exerciselist.models import ExerciseList
+from authentication.models import Teacher, Student
 
 @profile_required
 def course(request, course_id):

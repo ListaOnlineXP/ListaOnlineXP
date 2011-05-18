@@ -10,7 +10,7 @@ urlpatterns = patterns('',
 
     #Enable admin site
     (r'^admin/', include(admin.site.urls)),
-    #(r'', include('course.urls')),
+    (r'', include('course.urls')),
     #(r'', include('exerciselist.urls')),
     (r'', include('authentication.urls')),
 )

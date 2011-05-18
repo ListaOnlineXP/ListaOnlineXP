@@ -6,7 +6,7 @@ from django.core.context_processors import csrf
 from django.contrib import auth
 from django.contrib.auth.models import User
 from forms import SignUpForm, LoginForm
-from models import Profile
+from models import Student
 from decorators import profile_required
 
 @profile_required
@@ -29,8 +29,8 @@ def signup(request):
             passwd = form.cleaned_data['passwd']
             try:
                 user = User.objects.create_user(username, '', passwd)
-                profile = Profile(name=name, nusp=nusp, user=user)
-                profile.save()
+                student = Student(name=name, nusp=nusp, user=user)
+                student.save()
                 return HttpResponseRedirect('/login')
             except:
                 form._errors["username"] = form.error_class(["Usuário já cadastrado."])
