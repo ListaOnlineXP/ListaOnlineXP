@@ -6,7 +6,6 @@ class Profile(models.Model):
     user = models.OneToOneField(User)
     name = models.CharField(max_length=100)
     nusp = models.CharField(max_length=100)
-    kind = models.CharField(max_length=1)
     
     def __unicode__(self):
         return self.name
@@ -20,8 +19,24 @@ class Profile(models.Model):
         else:
             return False
 
+    def is_student(self):
+	try:
+	    Student.objects.get(pk=self.pk)
+	except Profile.DoesNotExist:
+	    return False
+	return True
+
+    def is_teacher(self):
+	try:
+	    Teacher.objects.get(pk=self.pk)
+	except Profile.DoesNotExist:
+	    return False
+	return True
+	
+
 class Student(Profile):
     courses = models.ManyToManyField('course.Course', blank=True)
 
 class Teacher(Profile):
     courses = models.ForeignKey('course.Course', blank=True)
+

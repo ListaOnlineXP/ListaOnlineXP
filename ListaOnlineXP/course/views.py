@@ -38,8 +38,12 @@ def course(request, course_id):
 @profile_required
 def course_list(request):
     values = {}
-    values['student'] = Student.objects.get(user=request.user)
-    values['course_list'] = list(Course.objects.all())
+    if request.user.is_student():
+	values['student'] = request.user
+	values['course_list'] = list(Course.objects.all())
+    else:
+	values['teacher'] = request.user
+	values['course_list'] = list(teacher.courses)
     return render_to_response('course_list.html', values)
 
 
