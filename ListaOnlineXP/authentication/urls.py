@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
-from django.contrib.auth.views import login
-from django.contrib.auth.views import logout
+from django.contrib.auth.views import login, logout
 
 urlpatterns = patterns('authentication.views',
     (r'^$', 'home'),
@@ -9,5 +8,3 @@ urlpatterns = patterns('authentication.views',
     (r'^logout/$', logout, {'next_page': '/login/'}),
     (r'^signup/$', 'signup'),
 )
-
-

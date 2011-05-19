@@ -6,12 +6,6 @@ class Profile(models.Model):
     user = models.OneToOneField(User)
     name = models.CharField(max_length=100)
     nusp = models.CharField(max_length=100)
-    
-    def __unicode__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return "/admin/authentication/student/%i/" % self.id
 
     def is_enrolled(self, course):
         if (course in self.courses.all()):
@@ -20,23 +14,27 @@ class Profile(models.Model):
             return False
 
     def is_student(self):
-	try:
-	    Student.objects.get(pk=self.pk)
-	except Profile.DoesNotExist:
-	    return False
-	return True
+        try:
+            Student.objects.get(id=self.id)
+        except Profile.DoesNotExist:
+            return False
+        return True
 
     def is_teacher(self):
-	try:
-	    Teacher.objects.get(pk=self.pk)
-	except Profile.DoesNotExist:
-	    return False
-	return True
-	
+        try:
+            Teacher.objects.get(id=self.id)
+        except Profile.DoesNotExist:
+            return False
+        return True
+
+    def get_absolute_url(self):
+        return "/admin/authentication/student/%i/" % self.id
+
+    def __unicode__(self):
+        return self.name
 
 class Student(Profile):
-    courses = models.ManyToManyField('course.Course', blank=True)
+    pass
 
 class Teacher(Profile):
-    courses = models.ForeignKey('course.Course', blank=True)
-
+    pass

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-
 from django import forms
 
 class SignUpForm(forms.Form):
-
     name = forms.CharField(max_length=100, label=u'Nome')
     username = forms.CharField(max_length=20, label=u'Nome de usuário')
     nusp = forms.CharField(max_length=100, label=u'Número USP')
@@ -28,7 +26,5 @@ class SignUpForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-
     username = forms.CharField(max_length=20, label=u'Nome de usuario')
-    passwd = forms.CharField(max_length=20, widget=forms.PasswordInput, label=u'Senha')
-
+    password = forms.CharField(max_length=20, widget=forms.PasswordInput, label=u'Senha')
