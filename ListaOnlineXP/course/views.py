@@ -2,10 +2,12 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response
 from django.core.context_processors import csrf
-from authentication.decorators import profile_required 
+from django.views.generic.list_detail import object_list
+
 from models import Course
-#from exerciselist.models import ExerciseList
 from authentication.models import Profile, Teacher, Student
+from authentication.decorators import profile_required 
+#from exerciselist.models import ExerciseList
 
 @profile_required
 def course(request, course_id):
@@ -36,14 +38,13 @@ def course(request, course_id):
 
 @profile_required
 def course_list(request):
-    values = {}
     user = Profile.objects.get(user=request.user)
+    value = {'user': user}
     if user.is_student():
         student = Student.objects.get(id=user.id)
-        values['user'] = student
-        values['course_list'] = list(Course.objects.all())
+        course_list = Course.objects.all()
     else:
         teacher = Teacher.objects.get(id=user.id)
-        values['user'] = teacher
-        values['course_list'] = Course.objects.filter(teacher=teacher).all()
-    return render_to_response('course_list.html', values)
+        course_list = Course.objects.filter(teacher=teacher)
+    return object_list(request, queryset=course_list, template_object_name='course', 
+            template_name='course_list.html', extra_context=value)
