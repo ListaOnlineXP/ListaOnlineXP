@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Profile(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, unique=True)
     name = models.CharField(max_length=100)
     nusp = models.CharField(max_length=100)
 

@@ -3,10 +3,11 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.context_processors import csrf
 from django.views.generic.list_detail import object_list
+from django.views.generic.create_update import create_object, update_object, delete_object
 
 from models import Course
 from authentication.models import Profile, Teacher, Student
-from authentication.decorators import profile_required 
+from authentication.decorators import profile_required, teacher_required
 from exerciselist.models import ExerciseList
 
 @profile_required
@@ -33,13 +34,22 @@ def course(request, course_id):
 
 @profile_required
 def course_list(request):
+    values = {}
     user = Profile.objects.get(user=request.user)
-    value = {'user': user}
+    values['user'] = user
     if user.is_student():
         student = Student.objects.get(id=user.id)
         course_list = Course.objects.all()
     elif user.is_teacher():
         teacher = Teacher.objects.get(id=user.id)
+        values['teacher'] = teacher
         course_list = Course.objects.filter(teacher=teacher)
     return object_list(request, queryset=course_list, template_object_name='course', 
-            template_name='course_list.html', extra_context=value)
+            template_name='course_list.html', extra_context=values)
+
+@teacher_required
+def course_add_or_update(request, key=None):
+    if key:
+        return update_object(request, model=Course, object_id=key, template_name='course_form.html')
+    else:
+        return create_object(request, model=Course, template_name='course_form.html', post_save_redirect='course')

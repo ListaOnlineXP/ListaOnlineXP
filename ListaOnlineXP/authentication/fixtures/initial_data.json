@@ -1,0 +1,44 @@
+[
+  {
+    "pk": 1, 
+    "model": "authentication.profile", 
+    "fields": {
+      "user": 2, 
+      "nusp": "123456789", 
+      "name": "Gerosa"
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "authentication.profile", 
+    "fields": {
+      "user": 3, 
+      "nusp": "123456789", 
+      "name": "Alfredo"
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "authentication.profile", 
+    "fields": {
+      "user": 4, 
+      "nusp": "4165498", 
+      "name": "nome"
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "authentication.student", 
+    "fields": {}
+  }, 
+  {
+    "pk": 1, 
+    "model": "authentication.teacher", 
+    "fields": {}
+  }, 
+  {
+    "pk": 2, 
+    "model": "authentication.teacher", 
+    "fields": {}
+  }
+]

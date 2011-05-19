@@ -6,7 +6,6 @@ import datetime
 from itertools import izip
 from random import shuffle
 
-#Exercise List
 class Question(models.Model):
     text = models.TextField()
 
