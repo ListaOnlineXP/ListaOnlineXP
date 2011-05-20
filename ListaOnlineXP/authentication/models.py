@@ -7,12 +7,6 @@ class Profile(models.Model):
     name = models.CharField(max_length=100)
     nusp = models.CharField(max_length=100)
 
-    def is_enrolled(self, course):
-        if (course in self.courses.all()):
-            return True
-        else:
-            return False
-
     def is_student(self):
         try:
             Student.objects.get(id=self.id)

@@ -10,4 +10,5 @@ urlpatterns = patterns(
     (r'^exercise_list/add/$', 'exercise_list_add_or_update'),
     (r'^exercise_list/update/([0-9]+)/$', 'exercise_list_add_or_update'),
     (r'^exercise_list/delete/([0-9]+)/$', 'exercise_list_delete'),
+    
 )

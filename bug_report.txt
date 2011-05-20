@@ -1,2 +1,4 @@
 bugs:
 [FIXED] "bem vindo, encerrar" aparece na tela de login (devia aparecer só depois de logar)
+[TODO] É possível usar um nome de usuário que contenha espaços durante o cadastro de um aluno (/signup)
+[TODO] Não é possível responder questões de múltipla escolha após o merge.

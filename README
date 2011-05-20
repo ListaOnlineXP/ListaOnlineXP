@@ -1,9 +1,6 @@
-Para rodar o projeto no eclipse:
+Versions:
 
-Somente é necessário criar um novo projeto Django na própria pasta do git, a qual possui nosso projeto clonado.
-
-1. File -> New... -> Project
-2. Pydev -> Django Project
-3. Desmarque a opção de usar a pasta default, e escolha o diretório do git.
-
-Note que é necessário possuir instalado plugin do Pydev, além de um interpretador de python.
+Django 1.3
+Python 2.6
+JQuery: 1.5.1 (Minimal build from JQuery UI)
+JQuery UI: 1.8.1 (custom build: Core + Widget + Mouse + Sortable)

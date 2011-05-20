@@ -11,3 +11,10 @@ class Course(models.Model):
     
     def __unicode__(self):
         return self.name 
+
+    def has_student(self, student):
+        if student in self.student.all():
+            return True
+        else:
+            return False
+

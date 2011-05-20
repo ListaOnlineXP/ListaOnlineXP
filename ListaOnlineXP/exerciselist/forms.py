@@ -19,7 +19,7 @@ class MultipleChoiceQuestionForm(forms.Form):
         self.fields['alternative'].queryset = multiple_choice_question.get_alternatives() 
 
 class DiscursiveQuestionForm(forms.Form):
-    answer = forms.CharField(label='Resposta', widget=forms.Textarea)
+    discursive_answer = forms.CharField(label='Resposta', widget=forms.Textarea)
 
 class JavaQuestionForm(forms.Form):
-    answer = forms.CharField(label='Resposta', widget=forms.Textarea)
+    java_answer = forms.CharField(label='Resposta', widget=forms.Textarea)
