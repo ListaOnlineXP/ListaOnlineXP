@@ -98,9 +98,9 @@ def exercise_list(request, exercise_list_id):
     discursive_questions = exercise_list.get_discursive_questions()
 
     answers = {}
-    default_values = {}
 
     if request.method == 'GET':
+        default_values = None
         exercise_list_solution = ExerciseListSolution.objects.filter(student=student, exercise_list=exercise_list)
         if exercise_list_solution:
             for question in exercise_list.get_multiple_choice_questions().all():
@@ -151,7 +151,7 @@ def exercise_list(request, exercise_list_id):
     for discursive_question in discursive_questions:
         questions_and_forms[discursive_question] = DiscursiveQuestionForm(default_values, prefix = discursive_question.pk)
  
-    if questions_and_forms[multiple_choice_question].is_valid() and \
+    if request.method=='POST' and questions_and_forms[multiple_choice_question].is_valid() and \
             questions_and_forms[java_question].is_valid() and \
             questions_and_forms[discursive_question].is_valid():
         for _question, answer in answers.iteritems():
