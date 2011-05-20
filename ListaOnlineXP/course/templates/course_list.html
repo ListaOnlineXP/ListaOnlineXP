@@ -11,8 +11,10 @@
   <thead><tr>
     <th>Código</th>
     <th>Matéria</th>
+    {% if teacher %}
     <th></th>
     <th></th>
+    {% endif %}
   </tr></thead>
 
   <tbody>
@@ -20,8 +22,10 @@
     <tr>
     <th>{{ course.code }}</th>
     <th><a href={{ course.id }}>{{ course.name }}</a></th>
+    {% if teacher %}
     <th><a href="update/{{ course.id }}">update</a></th>
     <th><a href="delete/{{ course.id }}">delete</a></th>
+    {% endif %}
     </tr>
   {% endfor %}
   </tbody>
