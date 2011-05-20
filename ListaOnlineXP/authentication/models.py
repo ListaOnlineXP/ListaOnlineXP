@@ -21,9 +21,6 @@ class Profile(models.Model):
             return False
         return True
 
-    def get_absolute_url(self):
-        return "/admin/authentication/student/%i/" % self.id
-
     def __unicode__(self):
         return self.name
 
