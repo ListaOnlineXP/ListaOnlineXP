@@ -3,36 +3,41 @@ from django.db import models
 from django.db.models import Q
 import datetime
 
+
 from itertools import izip
 from random import shuffle
 
+#Exercise List
 class Question(models.Model):
+
     text = models.TextField()
 
     def __unicode__(self):
         return self.text
 
-
 class DiscursiveQuestion(Question):
     pass
 
+        
 
 class MultipleChoiceQuestion(Question):
+
     def get_correct_alternative(self):
         #Returns the multiple choice question's correct answer object
         return MultipleChoiceCorrectAlternative.objects.get(question=self)
 
     def get_alternatives(self):
         #Returns a QuerySet with all of the multiplechoice question's alternatives
-        return MultipleChoiceAlternative.objects.filter(Q(multiplechoicecorrectalternative__question=self) | 
-                Q(multiplechoicewrongalternative__question=self))
+        return MultipleChoiceAlternative.objects.filter(Q(multiplechoicecorrectalternative__question=self) | Q(multiplechoicewrongalternative__question=self))
 
 
 class JavaQuestion(Question):
+
     criteria = models.TextField()
 
 
 class MultipleChoiceAlternative(models.Model):
+
     text = models.CharField(blank=False, max_length=300)    
 
     def __unicode__(self):
@@ -40,19 +45,22 @@ class MultipleChoiceAlternative(models.Model):
 
 
 class MultipleChoiceCorrectAlternative(MultipleChoiceAlternative):
+
     question = models.OneToOneField(MultipleChoiceQuestion) 
     
     
 class MultipleChoiceWrongAlternative(MultipleChoiceAlternative):
+
     question = models.ForeignKey(MultipleChoiceQuestion)
     
 
 class ExerciseList(models.Model):
+    
     name = models.CharField(blank=False, max_length=100)
     course = models.ForeignKey('course.Course')
     pub_date = models.DateField(default=datetime.datetime.today)
     due_date = models.DateField(default=(datetime.datetime.today()+datetime.timedelta(days=7)))
-    questions = models.ManyToManyField(Question)
+    questions = models.ManyToManyField(Question, through='ExerciseListQuestionThrough')
 
     def get_multiple_choice_questions(self):
         return MultipleChoiceQuestion.objects.filter(exerciselist=self)
@@ -75,23 +83,37 @@ class ExerciseList(models.Model):
         return self.name
 
 
+#Through model which creates an ordered relationship between
+#questions and exercise-lists. Related doc: 
+#http://docs.djangoproject.com/en/1.3/topics/db/models/#extra-fields-on-many-to-many-relationships
+class ExerciseListQuestionThrough(models.Model):
+    exerciselist = models.ForeignKey(ExerciseList)
+    question = models.ForeignKey(Question)
+    order = models.PositiveIntegerField()
+   
+    #Sortable inline, based on:
+    class Meta:
+        ordering = ('order', )
+
 class ExerciseListSolution(models.Model):
+    
     student = models.ForeignKey('authentication.Student')
     exercise_list = models.ForeignKey(ExerciseList)
-
-
+    
 class Answer(models.Model):
+    
     exercise_list_solution = models.ForeignKey(ExerciseListSolution, editable=False)
     question_answered = models.ForeignKey(Question, editable=False)
 
-
 class DiscursiveQuestionAnswer(Answer):
+
     text = models.TextField(blank=False)
 
-
 class MultipleChoiceQuestionAnswer(Answer):
+    
     chosen_alternative = models.ForeignKey(MultipleChoiceAlternative)
     
-
 class JavaQuestionAnswer(Answer):
+    
     code = models.TextField(blank=False)
+
