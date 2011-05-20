@@ -98,9 +98,9 @@ def exercise_list(request, exercise_list_id):
     discursive_questions = exercise_list.get_discursive_questions()
 
     answers = {}
+    default_values = {}
 
     if request.method == 'GET':
-        default_values = None
         exercise_list_solution = ExerciseListSolution.objects.filter(student=student, exercise_list=exercise_list)
         if exercise_list_solution:
             for question in exercise_list.get_multiple_choice_questions().all():
@@ -112,6 +112,8 @@ def exercise_list(request, exercise_list_id):
             for question in exercise_list.get_discursive_questions():
                 answer = DiscursiveQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
                 default_values[question.id.__str__()+'-discursive_answer'] = answer.text
+        else:
+            default_values = None
 
     else: # POST
         default_values = request.POST
