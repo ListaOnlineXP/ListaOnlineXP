@@ -5,9 +5,10 @@ from django.core.context_processors import csrf
 from forms import *
 from django.views.generic import ListView
 from django.utils.decorators import method_decorator
+from django.views.generic.create_update import create_object, update_object, delete_object
 
 from authentication.models import Profile, Student, Teacher
-from authentication.decorators import profile_required
+from authentication.decorators import profile_required, teacher_required
 from course.models import Course
 from exerciselist.models import ExerciseList, Question, MultipleChoiceQuestion, ExerciseListSolution
 from views import *
@@ -15,6 +16,20 @@ from views import *
 import os.path, sys
 from subprocess import Popen, PIPE
 import shlex
+
+@teacher_required
+def exercise_list_add_or_update(request, list_id=None):
+    if list_id:
+        return update_object(request, model=ExerciseList, object_id=list_id, 
+                template_name='exercise_list_form.html', post_save_redirect='/')
+    else:
+        return create_object(request, model=ExerciseList, 
+                template_name='exercise_list_form.html', post_save_redirect='/')
+
+@teacher_required
+def exercise_list_delete(request, list_id):
+    return delete_object(request, model=ExerciseList, object_id=list_id, 
+            template_name='exercise_list_confirm_delete.html', post_delete_redirect='/')
 
 def get_code(request):
     values = {}

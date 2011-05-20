@@ -1,0 +1,9 @@
+{% extends "base_site.html" %}
+
+{% block content_sidebar %}
+  <form action="" method="POST">
+    {% csrf_token %}
+    <p>Confirmar a exclusão?</p>
+    <input type="submit" />
+  </form>
+{% endblock %}

@@ -15,22 +15,23 @@ def course(request, course_id):
     values = {}
     values.update(csrf(request))
     values['course'] = course = get_object_or_404(Course, id=int(course_id))
-    if course is not None:
-        values['user'] = user = Profile.objects.get(user=request.user)
-        if user.is_student():
-            student = Student.objects.get(id=user.id)
-            if student in course.student.all():
-                values['exercise_list'] = exercise_list = ExerciseList.objects.filter(course=course).all()
-                subscribe = False
-            else:
-                subscribe = True
-            values['subscribe'] = subscribe
-            if request.method == 'POST':
-                course.student.add(student)
-                course.save()
-                return HttpResponseRedirect('/')
-            else:
-                return render_to_response('course.html', values)
+    values['user'] = user = Profile.objects.get(user=request.user)
+    exercise_list = ExerciseList.objects.filter(course=course).all()
+    if user.is_student():
+        student = Student.objects.get(id=user.id)
+        if student in course.student.all():
+            values['subscribe'] = False
+        else:
+            values['subscribe'] = True
+        if request.method == 'POST':
+            course.student.add(student)
+            course.save()
+            return HttpResponseRedirect('/course/' + course_id)
+    elif user.is_teacher():
+        teacher = Teacher.objects.get(id=user.id)
+        values['teacher'] = teacher
+    return object_list(request, queryset=exercise_list, template_object_name='exercise', 
+            template_name='course.html', extra_context=values)
 
 @profile_required
 def course_list(request):

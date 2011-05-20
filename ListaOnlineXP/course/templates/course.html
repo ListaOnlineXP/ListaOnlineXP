@@ -1,17 +1,42 @@
 {% extends "base_site.html" %}
 
 {% block content_sidebar %}
-    <h1>{{ course.code }} - {{ course.name }}</h1>
-    {% if subscribe %}
-    <form action="." method="post">
-        {% csrf_token %}
-        <input type="submit" value="Cadastrar" />
-    </form>
-    {% else %}
-    <ul>
-    {% for list in exercise_list %}
-        <li> <a href=/view_exercise_list/{{ list.id }}>{{ list.name }}</a> </li>
-    {% endfor %}
-    </ul>
+<h1>{{ course.code }} - {{ course.name }}</h1>
+{% if subscribe %}
+  <form action="." method="post">
+  {% csrf_token %}
+    <input type="submit" value="Cadastrar" />
+  </form>
+
+{% else %}
+  {% if teacher %}
+    <a href="/exercise_list/add/" class="addlink">Adicionar Lista</a>
+  {% endif %}
+
+  <table cellspacing="0">
+    <thead><tr>
+    <th>Lista</th>
+    <th>Data da publicação</th>
+    <th>Data de entrega</th>
+    {% if teacher %}
+    <th></th>
+    <th></th>
     {% endif %}
+  </tr></thead>
+
+  <tbody>
+  {% for list in exercise_list %}
+    <tr>
+    <th><a href=/exercise_list/{{ list.id }}>{{ list.name }}</a></th>
+    <th>{{ list.pub_date }}</th>
+    <th>{{ list.due_date }}</th>
+    {% if teacher %}
+    <th><a href="/exercise_list/update/{{ list.id }}">update</a></th>
+    <th><a href="/exercise_list/delete/{{ list.id }}">delete</a></th>
+    {% endif %}
+    </tr>
+  {% endfor %}
+  </tbody>
+{% endif %}
+
 {% endblock %}
