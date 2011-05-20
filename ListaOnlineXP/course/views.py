@@ -48,8 +48,15 @@ def course_list(request):
             template_name='course_list.html', extra_context=values)
 
 @teacher_required
-def course_add_or_update(request, key=None):
-    if key:
-        return update_object(request, model=Course, object_id=key, template_name='course_form.html')
+def course_add_or_update(request, course_id=None):
+    if course_id:
+        return update_object(request, model=Course, object_id=course_id, 
+                template_name='course_form.html', post_save_redirect='/')
     else:
-        return create_object(request, model=Course, template_name='course_form.html', post_save_redirect='course')
+        return create_object(request, model=Course, 
+                template_name='course_form.html', post_save_redirect='/')
+
+@teacher_required
+def course_delete(request, course_id):
+    return delete_object(request, model=Course, object_id=course_id, 
+            template_name='course_confirm_delete.html', post_delete_redirect='/')

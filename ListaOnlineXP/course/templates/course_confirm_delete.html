@@ -3,7 +3,7 @@
 {% block content_sidebar %}
   <form action="" method="POST">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Gravar" />
+    <p>Confirmar a exclusão?</p>
+    <input type="submit" />
   </form>
 {% endblock %}

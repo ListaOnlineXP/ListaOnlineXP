@@ -5,5 +5,7 @@ urlpatterns = patterns(
     'course.views',
     (r'^course/$', 'course_list'),
     (r'^course/add/$', 'course_add_or_update'),
+    (r'^course/update/([0-9]+)/$', 'course_add_or_update'),
+    (r'^course/delete/([0-9]+)/$', 'course_delete'),
     (r'^course/([0-9]+)/$', 'course'),
 )
