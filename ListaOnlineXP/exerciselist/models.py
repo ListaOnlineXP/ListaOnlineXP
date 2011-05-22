@@ -4,9 +4,6 @@ from django.db.models import Q
 import datetime
 
 
-from itertools import izip
-from random import shuffle
-
 #Exercise List
 class Question(models.Model):
 
@@ -25,6 +22,7 @@ class TrueFalseItem(models.Model):
     question = models.ForeignKey(TrueFalseQuestion)
     text = models.TextField()
     truefalse = models.BooleanField()
+
 
 
 class MultipleChoiceQuestion(Question):
@@ -78,14 +76,6 @@ class ExerciseList(models.Model):
     def get_discursive_questions(self):
         return DiscursiveQuestion.objects.filter(exerciselist=self)
 
-    def get_questions_alternatives(self):
-        questions = self.questions.all()
-        alternatives = []
-        for question in questions:
-            multiple_choice_question = MultipleChoiceQuestion.objects.get(pk=question.pk)
-            alternatives.append(list(multiple_choice_question.get_alternatives()))
-        return izip(questions, alternatives)
-
     def __unicode__(self):
         return self.name
 
@@ -111,6 +101,14 @@ class Answer(models.Model):
     
     exercise_list_solution = models.ForeignKey(ExerciseListSolution, editable=False)
     question_answered = models.ForeignKey(Question, editable=False)
+
+
+
+class TrueFalseQuestionAnswer(Answer):
+    pass
+
+class TrueFalseQuestionItemAnswer(models.Model):
+    pass    
 
 class DiscursiveQuestionAnswer(Answer):
 
