@@ -167,20 +167,3 @@ def exercise_list(request, exercise_list_id):
     return render_to_response('view_exercise_list.html', values)
    
     
-@profile_required    
-def view_java_questions(request, exercise_list_id):
-    values = {}
-    values.update(csrf(request))
-    try:
-        exercise_list = ExerciseList.objects.get(id=int(exercise_list_id))
-        course = exercise_list.course
-    except:
-        raise Http404
-    if (exercise_list is not None) and (course is not None):
-        if (exercise_list.course == course):
-            student = Student.objects.get(user=request.user) 
-            admin = get_admin(request)
-            values["java_questions"] = JavaQuestions.objects.filter(exerciselist=exercise_list)
-        else:
-            return HttpResponseRedirect('/')   
-    raise Http404
