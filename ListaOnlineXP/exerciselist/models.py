@@ -4,61 +4,6 @@ from django.db.models import Q
 import datetime
 
 
-#Exercise List
-class Question(models.Model):
-
-    text = models.TextField()
-
-    def __unicode__(self):
-        return self.text
-
-class DiscursiveQuestion(Question):
-    pass
-
-class TrueFalseQuestion(Question):
-    pass
-
-class TrueFalseItem(models.Model):
-    question = models.ForeignKey(TrueFalseQuestion)
-    text = models.TextField()
-    truefalse = models.BooleanField()
-
-
-
-class MultipleChoiceQuestion(Question):
-
-    def get_correct_alternative(self):
-        #Returns the multiple choice question's correct answer object
-        return MultipleChoiceCorrectAlternative.objects.get(question=self)
-
-    def get_alternatives(self):
-        #Returns a QuerySet with all of the multiplechoice question's alternatives
-        return MultipleChoiceAlternative.objects.filter(Q(multiplechoicecorrectalternative__question=self) | Q(multiplechoicewrongalternative__question=self))
-
-
-class JavaQuestion(Question):
-
-    criteria = models.TextField()
-
-
-class MultipleChoiceAlternative(models.Model):
-
-    text = models.CharField(blank=False, max_length=300)    
-
-    def __unicode__(self):
-        return self.text        
-
-
-class MultipleChoiceCorrectAlternative(MultipleChoiceAlternative):
-
-    question = models.OneToOneField(MultipleChoiceQuestion) 
-    
-    
-class MultipleChoiceWrongAlternative(MultipleChoiceAlternative):
-
-    question = models.ForeignKey(MultipleChoiceQuestion)
-    
-
 class ExerciseList(models.Model):
     
     name = models.CharField(blank=False, max_length=100)
@@ -80,6 +25,96 @@ class ExerciseList(models.Model):
         return self.name
 
 
+class Question(models.Model):
+
+    text = models.TextField()
+
+    def __unicode__(self):
+        return self.text
+
+
+class ExerciseListSolution(models.Model):
+    
+    student = models.ForeignKey('authentication.Student')
+    exercise_list = models.ForeignKey(ExerciseList)
+
+
+class Answer(models.Model):
+    
+    exercise_list_solution = models.ForeignKey(ExerciseListSolution, editable=False)
+    question_answered = models.ForeignKey(Question, editable=False)
+
+
+class DiscursiveQuestion(Question):
+    pass
+
+
+class DiscursiveQuestionAnswer(Answer):
+
+    text = models.TextField(blank=False)
+
+
+class JavaQuestion(Question):
+
+    criteria = models.TextField()
+
+
+class JavaQuestionAnswer(Answer):
+    
+    code = models.TextField(blank=False)
+
+
+class MultipleChoiceQuestion(Question):
+
+    def get_correct_alternative(self):
+        #Returns the multiple choice question's correct answer object
+        return MultipleChoiceCorrectAlternative.objects.get(question=self)
+
+    def get_alternatives(self):
+        #Returns a QuerySet with all of the multiplechoice question's alternatives
+        return MultipleChoiceAlternative.objects.filter(Q(multiplechoicecorrectalternative__question=self) | Q(multiplechoicewrongalternative__question=self))
+
+
+class MultipleChoiceAlternative(models.Model):
+
+    text = models.CharField(blank=False, max_length=300)    
+
+    def __unicode__(self):
+        return self.text        
+
+
+class MultipleChoiceCorrectAlternative(MultipleChoiceAlternative):
+
+    question = models.OneToOneField(MultipleChoiceQuestion) 
+    
+    
+class MultipleChoiceWrongAlternative(MultipleChoiceAlternative):
+
+    question = models.ForeignKey(MultipleChoiceQuestion)
+
+
+class MultipleChoiceQuestionAnswer(Answer):
+    
+    chosen_alternative = models.ForeignKey(MultipleChoiceAlternative)
+
+
+class TrueFalseQuestion(Question):
+    pass
+
+
+class TrueFalseItem(models.Model):
+    question = models.ForeignKey(TrueFalseQuestion)
+    text = models.TextField()
+    truefalse = models.BooleanField()
+
+
+class TrueFalseQuestionAnswer(Answer):
+    pass
+
+class TrueFalseQuestionItemAnswer(models.Model):
+    pass    
+    
+
 #Through model which creates an ordered relationship between
 #questions and exercise-lists. Related doc: 
 #http://docs.djangoproject.com/en/1.3/topics/db/models/#extra-fields-on-many-to-many-relationships
@@ -91,34 +126,4 @@ class ExerciseListQuestionThrough(models.Model):
     #Sortable inline, based on:
     class Meta:
         ordering = ('order', )
-
-class ExerciseListSolution(models.Model):
-    
-    student = models.ForeignKey('authentication.Student')
-    exercise_list = models.ForeignKey(ExerciseList)
-    
-class Answer(models.Model):
-    
-    exercise_list_solution = models.ForeignKey(ExerciseListSolution, editable=False)
-    question_answered = models.ForeignKey(Question, editable=False)
-
-
-
-class TrueFalseQuestionAnswer(Answer):
-    pass
-
-class TrueFalseQuestionItemAnswer(models.Model):
-    pass    
-
-class DiscursiveQuestionAnswer(Answer):
-
-    text = models.TextField(blank=False)
-
-class MultipleChoiceQuestionAnswer(Answer):
-    
-    chosen_alternative = models.ForeignKey(MultipleChoiceAlternative)
-    
-class JavaQuestionAnswer(Answer):
-    
-    code = models.TextField(blank=False)
 
