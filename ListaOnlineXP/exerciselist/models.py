@@ -18,7 +18,14 @@ class Question(models.Model):
 class DiscursiveQuestion(Question):
     pass
 
-        
+class TrueFalseQuestion(Question):
+    pass
+
+class TrueFalseItem(models.Model):
+    question = models.ForeignKey(TrueFalseQuestion)
+    text = models.TextField()
+    truefalse = models.BooleanField()
+
 
 class MultipleChoiceQuestion(Question):
 

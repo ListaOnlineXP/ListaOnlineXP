@@ -40,12 +40,20 @@ class MultipleChoiceQuestionAdmin(admin.ModelAdmin):
         MultipleChoiceWrongAlternativeInline,
     ]
 
+class TrueFalseItemInline(admin.StackedInline):
+    model = TrueFalseItem
+
+class TrueFalseQuestionAdmin(admin.ModelAdmin):
+    inlines = [
+        TrueFalseItemInline,
+    ]
 
 admin.site.register(ExerciseList, ExerciseListAdmin, form=ExerciseListForm)
-#admin.site.register(ExerciseListSolution)
 admin.site.register(MultipleChoiceQuestion, MultipleChoiceQuestionAdmin)
 admin.site.register(JavaQuestion)
 admin.site.register(DiscursiveQuestion)
+admin.site.register(TrueFalseQuestion, TrueFalseQuestionAdmin)
 #admin.site.register(MultipleChoiceQuestionAnswer)
+#admin.site.register(ExerciseListSolution)
 #admin.site.register(JavaQuestionAnswer)
 #admin.site.register(DiscursiveQuestionAnswer)
