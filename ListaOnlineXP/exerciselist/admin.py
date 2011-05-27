@@ -1,4 +1,3 @@
-
 from django.contrib import admin
 from models import *
 from django import forms
@@ -39,6 +38,20 @@ class MultipleChoiceQuestionAdmin(admin.ModelAdmin):
         MultipleChoiceCorrectAlternativeInline,
         MultipleChoiceWrongAlternativeInline,
     ]
+    fields = [
+	    'text',
+    ]
+
+class JavaQuestionAdmin(admin.ModelAdmin):
+    fields = [
+	    'text',
+	    'criteria',
+    ]
+
+class DiscursiveQuestionAdmin(admin.ModelAdmin):
+    fields = [
+	    'text',
+    ]
 
 class TrueFalseItemInline(admin.StackedInline):
     model = TrueFalseItem
@@ -47,11 +60,14 @@ class TrueFalseQuestionAdmin(admin.ModelAdmin):
     inlines = [
         TrueFalseItemInline,
     ]
+    fields = [
+	    'text',
+    ]
 
 admin.site.register(ExerciseList, ExerciseListAdmin, form=ExerciseListForm)
 admin.site.register(MultipleChoiceQuestion, MultipleChoiceQuestionAdmin)
-admin.site.register(JavaQuestion)
-admin.site.register(DiscursiveQuestion)
+admin.site.register(JavaQuestion, JavaQuestionAdmin)
+admin.site.register(DiscursiveQuestion, DiscursiveQuestionAdmin)
 admin.site.register(TrueFalseQuestion, TrueFalseQuestionAdmin)
 #admin.site.register(MultipleChoiceQuestionAnswer)
 #admin.site.register(ExerciseListSolution)
