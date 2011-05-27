@@ -76,14 +76,30 @@ class ExerciseListSolution(models.Model):
         return Answer.objects.filter(exercise_list_solution=self)
 
     
-    def __init__(self, *args, **kargs):
+    def populate_blank(self, *args, **kargs):
         """
         This will go through the questions in the exercise_list
         associated with this ExerciseListSolution and create
-        empty answers to each question
+        empty answers to each question that does not exist yet
         """
-        super(ExerciseListSolution, self).__init__(*args, **kargs)
-        pass
+        
+        questions = self.exercise_list.questions.all()
+        for question in questions:
+            
+            if question.type == 'JA':
+                answer, answer_created = JavaQuestionAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
+            elif question.type == 'TF':
+                answer, answer_created = TrueFalseAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
+            elif question.type == 'DI':
+                answer, answer_created = DiscursiveQuestionAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
+            elif question.type == 'MU':
+               answer, answer_created = MultipleChoiceQuestionAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
+
+
+            if answer_created:
+                self.answer_set.add(answer)
+
+        self.save()
 
 
 class Answer(models.Model):
@@ -101,7 +117,7 @@ class DiscursiveQuestion(Question):
 
 class DiscursiveQuestionAnswer(Answer):
 
-    text = models.TextField(blank=False)
+    text = models.TextField(blank=True)
 
 
 class JavaQuestion(Question):
@@ -116,7 +132,7 @@ class JavaQuestion(Question):
 
 class JavaQuestionAnswer(Answer):
     
-    code = models.TextField(blank=False)
+    code = models.TextField(blank=True)
 
 
 class MultipleChoiceQuestion(Question):
@@ -155,7 +171,7 @@ class MultipleChoiceWrongAlternative(MultipleChoiceAlternative):
 
 class MultipleChoiceQuestionAnswer(Answer):
     
-    chosen_alternative = models.ForeignKey(MultipleChoiceAlternative)
+    chosen_alternative = models.ForeignKey(MultipleChoiceAlternative, blank=True, null=True)
 
 
 class TrueFalseQuestion(Question):

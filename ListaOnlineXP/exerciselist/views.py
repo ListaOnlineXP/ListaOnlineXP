@@ -94,10 +94,11 @@ def exercise_list_new(request, exercise_list_id):
 
     #Get or create the exercise list solution and its questions
     exercise_list_solution, exercise_list_solution_created = ExerciseListSolution.objects.get_or_create(student=student, exercise_list=exercise_list)
-
+    exercise_list_solution.populate_blank()
 
     questions_and_forms = {}
 
+    return render_to_response('view_exercise_list.html', values)
 
         
         
