@@ -83,7 +83,7 @@ class GetStudentsExerciseList(ListView):
 
 @profile_required
 def exercise_list(request, exercise_list_id):
-    <Down>values = {}
+    values = {}
     values.update(csrf(request))
     student = Student.objects.get(user=request.user)
     exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
