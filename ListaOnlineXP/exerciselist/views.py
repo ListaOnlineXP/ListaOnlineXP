@@ -138,6 +138,7 @@ def exercise_list(request, exercise_list_id):
         Types are: alternative, java_answer and discursive_answer.
         '''
         if exercise_list_solution:
+            exercise_list_solution = exercise_list_solution[0]
             for question in exercise_list.get_multiple_choice_questions().all():
                 answer = MultipleChoiceQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
                 default_values[question.id.__str__()+'-alternative'] = answer.chosen_alternative.id
@@ -149,17 +150,18 @@ def exercise_list(request, exercise_list_id):
                 default_values[question.id.__str__()+'-discursive_answer'] = answer.text
         else:
             default_values = None
-
-    else: # POST
+ 
+    if request.method == 'POST':
         default_values = request.POST
-        exercise_list_solution, exercise_list_created = ExerciseListSolution.objects.get_or_create(student=student, exercise_list=exercise_list)
+        exercise_list_solution, solution_created = ExerciseListSolution.objects.get_or_create(student=student, exercise_list=exercise_list)
         
         # get the answers posted in the forms
         for key, value in request.POST.iteritems():
-            # ignore django csrf token in request.POST dict
-            if key == 'csrfmiddlewaretoken':
+            # ignore keys that are not answers
+            try:
+                pk = int(key.split('-')[0]) # get question primary key
+            except:
                 continue
-            pk = key.split('-')[0] # get question primary key
             if 'alternative' in key:
                 question = MultipleChoiceQuestion.objects.get(pk=pk)
                 alternative = MultipleChoiceAlternative.objects.get(pk=value)
@@ -184,18 +186,40 @@ def exercise_list(request, exercise_list_id):
                     answers[question] = DiscursiveQuestionAnswer(exercise_list_solution=exercise_list_solution, question_answered=question, text=value)
 
     # instantiating the forms
+    if (exercise_list_solution and exercise_list_solution.finalized) or 'finalize' in request.POST:
+        values['finalized'] = True
+    else:
+        values['finalized'] = False
+    
     for multiple_choice_question in multiple_choice_questions:
-        questions_and_forms[multiple_choice_question] = MultipleChoiceQuestionForm(default_values, multiple_choice_question=multiple_choice_question, prefix=multiple_choice_question.pk)
+        questions_and_forms[multiple_choice_question] = MultipleChoiceQuestionForm(default_values, multiple_choice_question=multiple_choice_question, prefix=multiple_choice_question.pk, finalized=values['finalized'])
     for java_question in java_questions:
-        questions_and_forms[java_question] = JavaQuestionForm(default_values, prefix=java_question.pk)
+        questions_and_forms[java_question] = JavaQuestionForm(default_values, prefix=java_question.pk, finalized=values['finalized'])
     for discursive_question in discursive_questions:
-        questions_and_forms[discursive_question] = DiscursiveQuestionForm(default_values, prefix = discursive_question.pk)
- 
+        questions_and_forms[discursive_question] = DiscursiveQuestionForm(default_values, prefix = discursive_question.pk, finalized=values['finalized'])
+
+    submit = None
+    if 'save' in request.POST:
+        submit = 'save'
+#    elif 'test' in request.POST:
+#        submit = 'test'
+    elif 'finalize' in request.POST:
+        submit = 'finalize'
+
     # if all forms are valid save the answers.
-    if request.method=='POST' and all([form.is_valid() for _question, form in questions_and_forms.iteritems()]):
-        for _question, answer in answers.iteritems():
-            answer.save()
-        if exercise_list_created:
+    if request.method=='POST':
+        if submit == 'save':
+            for question, form in questions_and_forms.iteritems():
+                if form.is_valid():
+                    answer[question].save()
+            if solution_created:
+                exercise_list_solution.save()
+#        elif submit == 'test':
+            #TODO
+        elif submit == 'finalize' and all([form.is_valid() for _question, form in questions_and_forms.iteritems()]):
+            for _question, answer in answers.iteritems():
+                answer.save()
+            values['finalized'] = exercise_list_solution.finalized = True
             exercise_list_solution.save()
 
     #Once the dictionary is populated, send it to the values dictionary 

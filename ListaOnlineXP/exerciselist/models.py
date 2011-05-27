@@ -71,6 +71,7 @@ class ExerciseListSolution(models.Model):
     
     student = models.ForeignKey('authentication.Student')
     exercise_list = models.ForeignKey(ExerciseList)
+    finalized = models.BooleanField(False)
     
     def get_answers(self):
         return Answer.objects.filter(exercise_list_solution=self)

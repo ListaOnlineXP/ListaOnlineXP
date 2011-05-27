@@ -15,14 +15,31 @@ class MultipleChoiceQuestionForm(forms.Form):
 
     def __init__(self, *args, **kargs):
         multiple_choice_question = kargs.pop('multiple_choice_question')
+        finalized = kargs.pop('finalized')
         super(MultipleChoiceQuestionForm, self).__init__(*args, **kargs)
         self.fields['alternative'].queryset = multiple_choice_question.get_alternatives() 
+        if finalized:
+            self.fields['alternative'].widget.attrs['disabled'] = 'disabled'
 
 class DiscursiveQuestionForm(forms.Form):
     discursive_answer = forms.CharField(label='Resposta', widget=forms.Textarea)
 
+    def __init__(self, *args, **kargs):
+        finalized = kargs.pop('finalized')
+        super(DiscursiveQuestionForm, self).__init__(*args, **kargs)
+        if finalized:
+            self.fields['discursive_answer'].widget.attrs['disabled'] = 'disabled'
+
+
 class JavaQuestionForm(forms.Form):
     java_answer = forms.CharField(label='Resposta', widget=forms.Textarea)
+
+    def __init__(self, *args, **kargs):
+        finalized = kargs.pop('finalized')
+        super(JavaQuestionForm, self).__init__(*args, **kargs)
+        if finalized:
+            self.fields['java_answer'].widget.attrs['disabled'] = 'disabled'
+
 
 class TrueFalseQuestionForm(forms.ModelForm):
     pass
