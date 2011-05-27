@@ -3,7 +3,7 @@
 from django import forms
 from django.forms.formsets import formset_factory
 
-from models import MultipleChoiceAlternative
+from models import MultipleChoiceAlternative, DiscursiveQuestionAnswer
 
 class GetCodeForm(forms.Form):
     code = forms.CharField(max_length=1000, label='Código', widget=forms.Textarea(attrs={'class':'special'}) )
@@ -23,3 +23,12 @@ class DiscursiveQuestionForm(forms.Form):
 
 class JavaQuestionForm(forms.Form):
     java_answer = forms.CharField(label='Resposta', widget=forms.Textarea)
+
+class TrueFalseQuestionForm(forms.ModelForm):
+    pass
+
+class DiscursiveQuestionAnswerModelForm(forms.ModelForm):
+    class Meta:
+        model = DiscursiveQuestionAnswer
+
+

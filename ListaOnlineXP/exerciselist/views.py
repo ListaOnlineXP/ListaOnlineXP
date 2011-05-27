@@ -2,21 +2,24 @@
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.context_processors import csrf
-from forms import *
 from django.views.generic import ListView
 from django.utils.decorators import method_decorator
 from django.views.generic.create_update import create_object, update_object, delete_object
-
 from authentication.models import Profile, Student, Teacher
 from authentication.decorators import profile_required, teacher_required
 from course.models import Course
 from exerciselist.models import * 
 from views import *
 
+from django.forms.models import modelformset_factory
+
+
+from django.utils.functional import curry
 import os.path, sys
 from subprocess import Popen, PIPE
 import shlex
 
+from exerciselist.forms import *
 @teacher_required
 def exercise_list_add_or_update(request, list_id=None):
     if list_id:
@@ -77,9 +80,79 @@ class GetStudentsExerciseList(ListView):
     def dispatch(self, *args, **kargs):
         return super(GetStudentsExerciseList, self).dispatch(*args, **kargs)
 
+
+
 @profile_required
 def exercise_list(request, exercise_list_id):
     values = {}
+    values.update(csrf(request))
+    student = Student.objects.get(user=request.user)
+    exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
+    course = exercise_list.course
+    if not course.has_student(student):
+        return HttpResponseRedirect('/')
+
+    #Get or create the exercise list solution and its questions
+    exercise_list_solution, exercise_list_solution_created = ExerciseListSolution.objects.get_or_create(student=student, exercise_list=exercise_list)
+    for
+
+
+    questions_and_forms = {}
+
+
+    if request.method == 'GET':
+        
+        
+        DiscursiveAnswerFormSet = modelformset_factory(DiscursiveQuestion, queryset=)
+
+
+
+
+#@profile_required
+#def exercise_list(request, exercise_list_id):
+#    values = {}
+#    values.update(csrf(request))
+#    student = Student.objects.get(user=request.user)
+#    exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
+#    course = exercise_list.course
+#    if not course.has_student(student):
+#        return HttpResponseRedirect('/')
+#
+#    questions_and_forms = {}
+#
+#
+#    if request.method == 'GET':
+#        
+#        #If the exercise_list_solution exists
+#        try:
+#            exercise_list_solution = ExerciseListSolution.objects.get(student=student, exercise_list=exercise_list)
+#            for discursive_question in exercise_list.get_discursive_questions():
+#                #Populate the question's form if it exists
+#                try:
+#                    discursive_question_answer_instance = DiscursiveQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=discursive_question)
+#                    questions_and_forms[discursive_question] = DiscursiveQuestionAnswerModelForm(instance=discursive_question_answer_instance, prefix="discursive_"+str(discursive_question.id))
+#                except DiscursiveQuestionAnswer.DoesNotExist:
+#                    questions_and_forms[discursive_question] = DiscursiveQuestionAnswerModelForm(prefix="discursive_"+str(discursive_question.id))
+#            
+#        #If the exercise_list_solution does not exist, supply empty forms
+#        except ExerciseListSolution.DoesNotExist:
+#            for discursive_question in exercise_list.get_discursive_questions():
+#                questions_and_forms[discursive_question] = DiscursiveQuestionAnswerModelForm(prefix=discursive_question.id)
+#
+#    #Post
+#    else:
+#        print request.POST
+#            
+#        pass
+#
+#        
+#
+#    values['questions_and_forms'] =  questions_and_forms
+#    return render_to_response('view_exercise_list.html', values)
+
+@profile_required
+def exercise_list_back(request, exercise_list_id):
+    <Down>values = {}
     values.update(csrf(request))
     student = Student.objects.get(user=request.user)
     exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)

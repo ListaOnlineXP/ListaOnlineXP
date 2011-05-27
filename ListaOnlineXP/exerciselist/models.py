@@ -10,11 +10,13 @@ class ExerciseList(models.Model):
     course = models.ForeignKey('course.Course')
     pub_date = models.DateField(default=datetime.datetime.today)
     due_date = models.DateField(default=(datetime.datetime.today()+datetime.timedelta(days=7)))
-    questions = models.ManyToManyField(Question, through='ExerciseListQuestionThrough')
+    questions = models.ManyToManyField('Question', through='ExerciseListQuestionThrough')
 
     def get_multiple_choice_questions(self):
         return MultipleChoiceQuestion.objects.filter(exerciselist=self)
-
+    
+    
+    
     def get_java_questions(self):
         return JavaQuestion.objects.filter(exerciselist=self)
 
@@ -28,16 +30,51 @@ class ExerciseList(models.Model):
 class Question(models.Model):
 
     text = models.TextField()
+    QUESTION_TYPE_CHOICES= (
+        ('TF', 'True/False'),
+        ('DI', 'Discursive'),
+        ('JA', 'Java'),
+        ('MU', 'Multiple'),
+    )
+
+    type = models.CharField(max_length=2, choices=QUESTION_TYPE_CHOICES)
 
     def __unicode__(self):
         return self.text
 
+    def casted(self):
+        """
+        Returns the specific kind of question.
+        For instance, a Question that is also a
+        Multiple Choice Question will return it's 
+        Multiple Choice Question object once this
+        method is called.
+        Ex: question = Question.objects.get(pk=1).casted()
+        might return a MultipleChoiceQuestion object, 
+        of a DiscursiveQuestion object, depending
+        on what kind of question it actually is.
+        """
+
+        try:
+            if self.type == 'TF':
+                return self.truefalsequestion
+            elif self.type == 'DI':
+                return self.discursivequestion
+            elif self.type == 'JA':
+                return self.javaquestion
+            elif self.type == 'MU':
+                return self.multiplechoicequestion
+
+        except Question.DoesNotExist:
+            raise
 
 class ExerciseListSolution(models.Model):
     
     student = models.ForeignKey('authentication.Student')
     exercise_list = models.ForeignKey(ExerciseList)
-
+    
+    def get_answers(self):
+        return Answer.objects.filter(exercise_list_solution=self)
 
 class Answer(models.Model):
     
@@ -46,7 +83,10 @@ class Answer(models.Model):
 
 
 class DiscursiveQuestion(Question):
-    pass
+
+    def __init__(self, *args, **kargs):
+        super(DiscursiveQuestion, self).__init__(*args, **kargs)
+        self.type = 'DI'
 
 
 class DiscursiveQuestionAnswer(Answer):
@@ -57,6 +97,11 @@ class DiscursiveQuestionAnswer(Answer):
 class JavaQuestion(Question):
 
     criteria = models.TextField()
+
+    def __init__(self, *args, **kargs):
+        super(JavaQuestion, self).__init__(*args, **kargs)
+        self.type = 'JA'
+
 
 
 class JavaQuestionAnswer(Answer):
@@ -73,6 +118,11 @@ class MultipleChoiceQuestion(Question):
     def get_alternatives(self):
         #Returns a QuerySet with all of the multiplechoice question's alternatives
         return MultipleChoiceAlternative.objects.filter(Q(multiplechoicecorrectalternative__question=self) | Q(multiplechoicewrongalternative__question=self))
+
+    def __init__(self, *args, **kargs):
+        super(MultipleChoiceQuestion, self).__init__(*args, **kargs)
+        self.type = 'MU'
+
 
 
 class MultipleChoiceAlternative(models.Model):
@@ -99,7 +149,10 @@ class MultipleChoiceQuestionAnswer(Answer):
 
 
 class TrueFalseQuestion(Question):
-    pass
+
+    def __init__(self, *args, **kargs):
+        super(TrueFalseQuestion, self).__init__(*args, **kargs)
+        self.type = 'TF'
 
 
 class TrueFalseItem(models.Model):
@@ -107,12 +160,13 @@ class TrueFalseItem(models.Model):
     text = models.TextField()
     truefalse = models.BooleanField()
 
-
-class TrueFalseQuestionAnswer(Answer):
+class TrueFalseAnswer(Answer):
     pass
 
-class TrueFalseQuestionItemAnswer(models.Model):
-    pass    
+class TrueFalseAnswerItem(models.Model):
+    answer_group = models.ForeignKey(TrueFalseAnswer)
+    item_answered = models.ForeignKey(TrueFalseItem)
+    given_answer = models.BooleanField()
     
 
 #Through model which creates an ordered relationship between
@@ -123,7 +177,6 @@ class ExerciseListQuestionThrough(models.Model):
     question = models.ForeignKey(Question)
     order = models.PositiveIntegerField()
    
-    #Sortable inline, based on:
     class Meta:
         ordering = ('order', )
 
