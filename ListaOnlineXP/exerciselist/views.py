@@ -131,25 +131,32 @@ def exercise_list(request, exercise_list_id):
     default_values = {}
 
     if request.method == 'GET':
-        exercise_list_solution = ExerciseListSolution.objects.filter(student=student, exercise_list=exercise_list)
+        exercise_list_solution, _created = ExerciseListSolution.objects.get_or_create(student=student, exercise_list=exercise_list)
+        exercise_list_solution.populate_blank()
         '''
         If there's a solution in the db, the next lines get the answers and put them in the default_values of the forms.
         The keys of the dictionary default_values are set as: question_id-question_type (ex: '1-alternative')
         Types are: alternative, java_answer and discursive_answer.
         '''
-        if exercise_list_solution:
-            exercise_list_solution = exercise_list_solution[0]
-            for question in exercise_list.get_multiple_choice_questions().all():
-                answer = MultipleChoiceQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
+
+        ''' WIP
+        for question in exercise_list.questions.all():
+            question = question.casted()
+            answer = exercise_list_solution.answers.objects.get(question_answered=question)
+            answer =  answer.casted()
+            answer.get_form()
+        '''
+
+        for question in exercise_list.get_multiple_choice_questions().all():
+            answer = MultipleChoiceQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
+            if answer.chosen_alternative:
                 default_values[question.id.__str__()+'-alternative'] = answer.chosen_alternative.id
-            for question in exercise_list.get_java_questions():
-                answer = JavaQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
-                default_values[question.id.__str__()+'-java_answer'] = answer.code
-            for question in exercise_list.get_discursive_questions():
-                answer = DiscursiveQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
-                default_values[question.id.__str__()+'-discursive_answer'] = answer.text
-        else:
-            default_values = None
+        for question in exercise_list.get_java_questions():
+            answer = JavaQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
+            default_values[question.id.__str__()+'-java_answer'] = answer.code
+        for question in exercise_list.get_discursive_questions():
+            answer = DiscursiveQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
+            default_values[question.id.__str__()+'-discursive_answer'] = answer.text
  
     if request.method == 'POST':
         default_values = request.POST
@@ -165,25 +172,16 @@ def exercise_list(request, exercise_list_id):
             if 'alternative' in key:
                 question = MultipleChoiceQuestion.objects.get(pk=pk)
                 alternative = MultipleChoiceAlternative.objects.get(pk=value)
-                try: 
-                    answers[question] = MultipleChoiceQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
-                    answers[question].chosen_alternative = alternative
-                except MultipleChoiceQuestionAnswer.DoesNotExist:
-                    answers[question] = MultipleChoiceQuestionAnswer(exercise_list_solution=exercise_list_solution, question_answered=question, chosen_alternative=alternative)
+                answers[question] = MultipleChoiceQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
+                answers[question].chosen_alternative = alternative
             elif 'java' in key:
                 question = JavaQuestion.objects.get(pk=pk)
-                try:
-                    answers[question] = JavaQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
-                    answers[question].code = value
-                except JavaQuestionAnswer.DoesNotExist:
-                    answers[question] = JavaQuestionAnswer(exercise_list_solution=exercise_list_solution, question_answered=question, code=value)
+                answers[question] = JavaQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question) 
+                answers[question].code = value
             elif 'discursive' in key:
                 question = DiscursiveQuestion.objects.get(pk=pk)
-                try:
-                    answers[question] = DiscursiveQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
-                    answers[question].text = value
-                except DiscursiveQuestionAnswer.DoesNotExist:
-                    answers[question] = DiscursiveQuestionAnswer(exercise_list_solution=exercise_list_solution, question_answered=question, text=value)
+                answers[question] = DiscursiveQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
+                answers[question].text = value
 
     # instantiating the forms
     if (exercise_list_solution and exercise_list_solution.finalized) or 'finalize' in request.POST:
