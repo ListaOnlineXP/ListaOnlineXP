@@ -40,17 +40,20 @@ class MultipleChoiceQuestionAdmin(admin.ModelAdmin):
     ]
     fields = [
 	    'text',
+	    'weight',
     ]
 
 class JavaQuestionAdmin(admin.ModelAdmin):
     fields = [
 	    'text',
+	    'weight',
 	    'criteria',
     ]
 
 class DiscursiveQuestionAdmin(admin.ModelAdmin):
     fields = [
 	    'text',
+	    'weight',
     ]
 
 class TrueFalseItemInline(admin.StackedInline):
@@ -62,6 +65,7 @@ class TrueFalseQuestionAdmin(admin.ModelAdmin):
     ]
     fields = [
 	    'text',
+	    'weight',
     ]
 
 admin.site.register(ExerciseList, ExerciseListAdmin, form=ExerciseListForm)

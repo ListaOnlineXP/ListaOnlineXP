@@ -15,8 +15,6 @@ class ExerciseList(models.Model):
     def get_multiple_choice_questions(self):
         return MultipleChoiceQuestion.objects.filter(exerciselist=self)
     
-    
-    
     def get_java_questions(self):
         return JavaQuestion.objects.filter(exerciselist=self)
 
@@ -30,6 +28,7 @@ class ExerciseList(models.Model):
 class Question(models.Model):
 
     text = models.TextField()
+    weight = models.PositiveIntegerField()
     QUESTION_TYPE_CHOICES= (
         ('TF', 'True/False'),
         ('DI', 'Discursive'),
