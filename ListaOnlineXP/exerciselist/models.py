@@ -36,7 +36,7 @@ class Question(models.Model):
         ('MU', 'Multiple'),
     )
 
-    type = models.CharField(max_length=2, choices=QUESTION_TYPE_CHOICES)
+    type = models.CharField(max_length=2, choices=QUESTION_TYPE_CHOICES, blank=True)
 
     def __unicode__(self):
         return self.text
@@ -64,7 +64,7 @@ class Question(models.Model):
             elif self.type == 'MU':
                 return self.multiplechoicequestion
 
-        except Question.DoesNotExist:
+        except:
             raise
 
 class ExerciseListSolution(models.Model):
@@ -74,6 +74,17 @@ class ExerciseListSolution(models.Model):
     
     def get_answers(self):
         return Answer.objects.filter(exercise_list_solution=self)
+
+    
+    def __init__(self, *args, **kargs):
+        """
+        This will go through the questions in the exercise_list
+        associated with this ExerciseListSolution and create
+        empty answers to each question
+        """
+        super(ExerciseListSolution, self).__init__(*args, **kargs)
+        pass
+
 
 class Answer(models.Model):
     

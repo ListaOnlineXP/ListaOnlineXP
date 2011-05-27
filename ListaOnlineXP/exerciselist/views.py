@@ -81,6 +81,30 @@ class GetStudentsExerciseList(ListView):
         return super(GetStudentsExerciseList, self).dispatch(*args, **kargs)
 
 
+
+@profile_required
+def exercise_list_new(request, exercise_list_id):
+    values = {}
+    values.update(csrf(request))
+    student = Student.objects.get(user=request.user)
+    exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
+    course = exercise_list.course
+    if not course.has_student(student):
+        return HttpResponseRedirect('/')
+
+    #Get or create the exercise list solution and its questions
+    exercise_list_solution, exercise_list_solution_created = ExerciseListSolution.objects.get_or_create(student=student, exercise_list=exercise_list)
+
+
+    questions_and_forms = {}
+
+
+        
+        
+
+
+
+
 @profile_required
 def exercise_list(request, exercise_list_id):
     values = {}
