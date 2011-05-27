@@ -95,21 +95,27 @@ def exercise_list(request, exercise_list_id):
     #We have also verified that the student is enrolled in the
     #course, so the basic checks are done and we're ready to roll.
 
-    questions_and_forms = {}
-    #Get the multiple choice questions associated with this exercise list. The exercise list has a method that returns its multiple choice questions as a queryset.
+    #Get questions associated with this exercise list.
+    #The exercise list has a method that returns each type of question as a queryset.
     multiple_choice_questions = exercise_list.get_multiple_choice_questions()
     java_questions = exercise_list.get_java_questions()
     discursive_questions = exercise_list.get_discursive_questions()
 
+    questions_and_forms = {}
     answers = {}
     default_values = {}
 
     if request.method == 'GET':
         exercise_list_solution = ExerciseListSolution.objects.filter(student=student, exercise_list=exercise_list)
+        '''
+        If there's a solution in the db, the next lines get the answers and put them in the default_values of the forms.
+        The keys of the dictionary default_values are set as: question_id-question_type (ex: '1-alternative')
+        Types are: alternative, java_answer and discursive_answer.
+        '''
         if exercise_list_solution:
             for question in exercise_list.get_multiple_choice_questions().all():
                 answer = MultipleChoiceQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
-                default_values[question.id.__str__()+'-alternative'] = answer.id
+                default_values[question.id.__str__()+'-alternative'] = answer.chosen_alternative.id
             for question in exercise_list.get_java_questions():
                 answer = JavaQuestionAnswer.objects.get(exercise_list_solution=exercise_list_solution, question_answered=question)
                 default_values[question.id.__str__()+'-java_answer'] = answer.code
@@ -122,10 +128,12 @@ def exercise_list(request, exercise_list_id):
     else: # POST
         default_values = request.POST
         exercise_list_solution, exercise_list_created = ExerciseListSolution.objects.get_or_create(student=student, exercise_list=exercise_list)
-        if exercise_list_created:
-            exercise_list_solution.save()
-       
+        
+        # get the answers posted in the forms
         for key, value in request.POST.iteritems():
+            # ignore django csrf token in request.POST dict
+            if key == 'csrfmiddlewaretoken':
+                continue
             pk = key.split('-')[0] # get question primary key
             if 'alternative' in key:
                 question = MultipleChoiceQuestion.objects.get(pk=pk)
@@ -150,6 +158,7 @@ def exercise_list(request, exercise_list_id):
                 except DiscursiveQuestionAnswer.DoesNotExist:
                     answers[question] = DiscursiveQuestionAnswer(exercise_list_solution=exercise_list_solution, question_answered=question, text=value)
 
+    # instantiating the forms
     for multiple_choice_question in multiple_choice_questions:
         questions_and_forms[multiple_choice_question] = MultipleChoiceQuestionForm(default_values, multiple_choice_question=multiple_choice_question, prefix=multiple_choice_question.pk)
     for java_question in java_questions:
@@ -157,15 +166,15 @@ def exercise_list(request, exercise_list_id):
     for discursive_question in discursive_questions:
         questions_and_forms[discursive_question] = DiscursiveQuestionForm(default_values, prefix = discursive_question.pk)
  
-    if request.method=='POST' and questions_and_forms[multiple_choice_question].is_valid() and \
-            questions_and_forms[java_question].is_valid() and \
-            questions_and_forms[discursive_question].is_valid():
+    # if all forms are valid save the answers.
+    if request.method=='POST' and all([form.is_valid() for _question, form in questions_and_forms.iteritems()]):
         for _question, answer in answers.iteritems():
-            print answer
             answer.save()
+        if exercise_list_created:
+            exercise_list_solution.save()
 
-
-    #Once the dictionary is populated, send it to the values dictionary (a dictionary inside a dictionary works fine in the template, and is very useful)
+    #Once the dictionary is populated, send it to the values dictionary 
+    #(a dictionary inside a dictionary works fine in the template, and is very useful)
     values['questions_and_forms'] =  questions_and_forms
 
     return render_to_response('view_exercise_list.html', values)
