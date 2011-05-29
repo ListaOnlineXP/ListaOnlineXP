@@ -51,12 +51,12 @@ class JavaQuestionAdmin(admin.ModelAdmin):
     ]
 
 class DiscursiveQuestionAdmin(admin.ModelAdmin):
-    fields = [
+    fields = [ 
 	    'text',
 	    'weight',
+        'type',
     ]
 
-    exclude = ('type',)
 
 class TrueFalseItemInline(admin.StackedInline):
     model = TrueFalseItem
@@ -70,15 +70,6 @@ class TrueFalseQuestionAdmin(admin.ModelAdmin):
 	    'weight',
     ]
 
-    exclude = ('type',)
-
-class DiscursiveQuestionAdmin(admin.ModelAdmin):
-
-    exclude = ('type',)
-
-class JavaQuestionAdmin(admin.ModelAdmin):
-
-    exclude = ('type',)
 
 admin.site.register(ExerciseList, ExerciseListAdmin, form=ExerciseListForm)
 admin.site.register(MultipleChoiceQuestion, MultipleChoiceQuestionAdmin)
