@@ -27,6 +27,11 @@ class ExerciseList(models.Model):
 class Question(models.Model):
 
     text = models.TextField()
+    #TODO: This won't work. The weight here cannot be directly
+    #associated to the question, as the same question can
+    #have different weights on different exercise lists.
+    #This have to go in the ExerciseListQuestionThrough
+    #model.
     weight = models.PositiveIntegerField()
     QUESTION_TYPE_CHOICES = (
         ('TF', 'True/False'),
@@ -105,6 +110,16 @@ class Answer(models.Model):
 
     exercise_list_solution = models.ForeignKey(ExerciseListSolution, editable=False)
     question_answered = models.ForeignKey(Question, editable=False)
+
+    ANSWER_TYPE_CHOICES = (
+        ('TF', 'True/False'),
+        ('DI', 'Discursive'),
+        ('JA', 'Java'),
+        ('MU', 'Multiple'),
+    )
+
+    type = models.CharField(max_length=2, choices=ANSWER_TYPE_CHOICES, blank=True)
+
 
     def casted(self):
         """
