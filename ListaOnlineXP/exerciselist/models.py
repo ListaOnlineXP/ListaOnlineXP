@@ -3,7 +3,6 @@ from django.db import models
 from django.db.models import Q
 import datetime
 
-
 class ExerciseList(models.Model):
     
     name = models.CharField(blank=False, max_length=100)
@@ -108,6 +107,32 @@ class Answer(models.Model):
     exercise_list_solution = models.ForeignKey(ExerciseListSolution, editable=False)
     question_answered = models.ForeignKey(Question, editable=False)
 
+    def casted(self):
+        """
+        Returns the specific kind of answer.
+        For instance, an Answer that is also a
+        Multiple Choice Answer will return it's 
+        Multiple Choice Answer object once this
+        method is called.
+        Ex: question = Answer.objects.get(pk=1).casted()
+        might return a MultipleChoiceQuestionAnswer object, 
+        of a DiscursiveQuestionAnswer object, depending
+        on what kind of question it actually is.
+        """
+
+        try:
+            if self.type == 'TF':
+                return self.truefalsequestionanswer
+            elif self.type == 'DI':
+                return self.discursivequestionanswer
+            elif self.type == 'JA':
+                return self.javaquestionanswer
+            elif self.type == 'MU':
+                return self.multiplechoicequestionanswer
+
+        except:
+            raise
+
 
 class DiscursiveQuestion(Question):
 
@@ -135,6 +160,10 @@ class JavaQuestionAnswer(Answer):
     
     code = models.TextField(blank=True)
 
+    def __init__(self, *args, **kargs):
+        super(JavaQuestionAnswer, self).__init__(*args, **kargs)
+        self.type = 'JA'
+
 
 class MultipleChoiceQuestion(Question):
 
@@ -157,7 +186,7 @@ class MultipleChoiceAlternative(models.Model):
     text = models.CharField(blank=False, max_length=300)    
 
     def __unicode__(self):
-        return self.text        
+        return self.text
 
 
 class MultipleChoiceCorrectAlternative(MultipleChoiceAlternative):
@@ -174,6 +203,10 @@ class MultipleChoiceQuestionAnswer(Answer):
     
     chosen_alternative = models.ForeignKey(MultipleChoiceAlternative, blank=True, null=True)
 
+    def __init__(self, *args, **kargs):
+        super(MultipleChoiceQuestionAnswer, self).__init__(*args, **kargs)
+        self.type = 'MU'
+
 
 class TrueFalseQuestion(Question):
 
@@ -188,7 +221,11 @@ class TrueFalseItem(models.Model):
     truefalse = models.BooleanField()
 
 class TrueFalseAnswer(Answer):
-    pass
+
+    def __init__(self, *args, **kargs):
+        super(TrueFalseQuestionAnswer, self).__init__(*args, **kargs)
+        self.type = 'TF'
+
 
 class TrueFalseAnswerItem(models.Model):
     answer_group = models.ForeignKey(TrueFalseAnswer)

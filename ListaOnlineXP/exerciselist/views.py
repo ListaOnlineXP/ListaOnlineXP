@@ -96,8 +96,20 @@ def exercise_list_new(request, exercise_list_id):
     exercise_list_solution, exercise_list_solution_created = ExerciseListSolution.objects.get_or_create(student=student, exercise_list=exercise_list)
     exercise_list_solution.populate_blank()
 
+
     questions_and_forms = {}
 
+    if request.method == 'GET'
+
+        for question in exercise_list.questions
+            given_answer = exercise_list_solutions.answers.objects.get(question_answered=question)
+            given_answer = given_answer.casted()
+
+            if given_answer.type == 'JA' or given_answer.type == 'DI':
+                questions_and_forms[question] = given_answer.get_form()
+
+
+    values['questions_and_forms'] = questions_and_forms
     return render_to_response('view_exercise_list.html', values)
 
         
