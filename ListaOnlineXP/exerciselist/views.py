@@ -99,26 +99,40 @@ def exercise_list_new(request, exercise_list_id):
 
     if request.method == 'GET':
 
-        #For each answer, get the filled form associated with it
+        #For each answer, get the filled (bound) form associated with it
         for answer in exercise_list_solution.answer_set.all():
             casted_answer = answer.casted()
+            
             question_answered = answer.question_answered
 
             if casted_answer.type == 'MU':
-                questions_and_forms[question_answered] = MultipleChoiceAnswerModelForm(instance=casted_answer, prefix = casted_answer.id)
+                questions_and_forms[question_answered] = MultipleChoiceAnswerModelForm(instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERMU')
+            elif casted_answer.type == 'DI':
+                questions_and_forms[question_answered] = DiscursiveAnswerModelForm(instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERDI')
+            elif casted_answer.type == 'JA': 
+                questions_and_forms[question_answered] = JavaAnswerModelForm(instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERJA')
 
     #POST
     else:
-        for key, value in request.POST.iteritems():
-            
-            if 'alternative' in key:
 
-                answer_id = int(key.split('-')[0])
-            
+        #Go through the key/values pair in POST and filter the ones that have ANSWER
+        #Infer the answer type and id from the prefix, create forms with the POST data
+        #If the data is valid, save it. Either way, send the results to the template
+        for key, value in request.POST.iteritems():
+            if 'ANSWER' in key:
+                answer_prefix = key.split('-')[0]
+                answer_id = int(answer_prefix.split('_')[0])
                 answer = Answer.objects.get(pk=answer_id)
                 casted_answer = answer.casted()
                 question_answered = answer.question_answered
-                form = MultipleChoiceAnswerModelForm({key: value }, instance=casted_answer, prefix = casted_answer.id)
+
+                if casted_answer.type == 'MU':
+                    form = MultipleChoiceAnswerModelForm({key: value }, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERMU')
+                elif casted_answer.type == 'DI':
+                    form = DiscursiveAnswerModelForm({key: value }, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERDI')
+                elif casted_answer.type == 'JA':
+                    form = JavaAnswerModelForm({key: value }, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERJA')
+
                 questions_and_forms[question_answered] = form
 
                 if form.is_valid():
@@ -126,11 +140,6 @@ def exercise_list_new(request, exercise_list_id):
 
     values['questions_and_forms'] = questions_and_forms
     return render_to_response('view_exercise_list.html', values)
-
-        
-        
-
-
 
 
 @profile_required

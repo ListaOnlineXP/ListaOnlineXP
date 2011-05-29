@@ -159,6 +159,10 @@ class DiscursiveQuestionAnswer(Answer):
 
     text = models.TextField(blank=True)
 
+    def __init__(self, *args, **kargs):
+        super(DiscursiveQuestionAnswer, self).__init__(*args, **kargs)
+        self.type = 'DI'
+
 
 class JavaQuestion(Question):
 

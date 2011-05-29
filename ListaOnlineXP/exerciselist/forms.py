@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
-from models import MultipleChoiceAlternative, MultipleChoiceQuestionAnswer, MultipleChoiceWrongAlternative, MultipleChoiceCorrectAlternative
+from models import MultipleChoiceAlternative, MultipleChoiceQuestionAnswer, DiscursiveQuestionAnswer, JavaQuestionAnswer
 
 class GetCodeForm(forms.Form):
     code = forms.CharField(max_length=1000, label='Código', widget=forms.Textarea(attrs={'class':'special'}) )
@@ -54,6 +54,16 @@ class MultipleChoiceAnswerForm(forms.Form):
 
         if finalized:
             self.fields['alternative'].widget.attrs['disabled'] = 'disabled'
+
+class DiscursiveAnswerModelForm(forms.ModelForm):
+    class Meta:
+        model = DiscursiveQuestionAnswer
+        fields = ('text',)
+
+class JavaAnswerModelForm(forms.ModelForm):
+    class Meta:
+        model = JavaQuestionAnswer
+        fields = ('code',)
 
 class DiscursiveAnswerForm(forms.Form):
     discursive_answer = forms.CharField(label='Resposta', widget=forms.Textarea)
