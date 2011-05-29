@@ -9,8 +9,7 @@ from authentication.models import Profile, Student, Teacher
 from authentication.decorators import profile_required, teacher_required
 from course.models import Course
 from exerciselist.models import * 
-from views import *
-
+from forms import *
 from django.forms.models import modelformset_factory
 
 
@@ -96,18 +95,34 @@ def exercise_list_new(request, exercise_list_id):
     exercise_list_solution, exercise_list_solution_created = ExerciseListSolution.objects.get_or_create(student=student, exercise_list=exercise_list)
     exercise_list_solution.populate_blank()
 
-
     questions_and_forms = {}
 
-    if request.method == 'GET'
+    if request.method == 'GET':
 
-        for question in exercise_list.questions
-            given_answer = exercise_list_solutions.answers.objects.get(question_answered=question)
-            given_answer = given_answer.casted()
+        #For each answer, get the filled form associated with it
+        for answer in exercise_list_solution.answer_set.all():
+            casted_answer = answer.casted()
+            question_answered = answer.question_answered
 
-            if given_answer.type == 'JA' or given_answer.type == 'DI':
-                questions_and_forms[question] = given_answer.get_form()
+            if casted_answer.type == 'MU':
+                questions_and_forms[question_answered] = MultipleChoiceAnswerModelForm(instance=casted_answer, prefix = casted_answer.id)
 
+    #POST
+    else:
+        for key, value in request.POST.iteritems():
+            
+            if 'alternative' in key:
+
+                answer_id = int(key.split('-')[0])
+            
+                answer = Answer.objects.get(pk=answer_id)
+                casted_answer = answer.casted()
+                question_answered = answer.question_answered
+                form = MultipleChoiceAnswerModelForm({key: value }, instance=casted_answer, prefix = casted_answer.id)
+                questions_and_forms[question_answered] = form
+
+                if form.is_valid():
+                    form.save()
 
     values['questions_and_forms'] = questions_and_forms
     return render_to_response('view_exercise_list.html', values)
@@ -202,7 +217,7 @@ def exercise_list(request, exercise_list_id):
         values['finalized'] = False
     
     for multiple_choice_question in multiple_choice_questions:
-        questions_and_forms[multiple_choice_question] = MultipleChoiceQuestionForm(default_values, multiple_choice_question=multiple_choice_question, prefix=multiple_choice_question.pk, finalized=values['finalized'])
+        questions_and_forms[multiple_choice_question] = MultipleChoiceAnswerForm(default_values, multiple_choice_question=multiple_choice_question, prefix=multiple_choice_question.pk, finalized=values['finalized'])
     for java_question in java_questions:
         questions_and_forms[java_question] = JavaQuestionForm(default_values, prefix=java_question.pk, finalized=values['finalized'])
     for discursive_question in discursive_questions:
