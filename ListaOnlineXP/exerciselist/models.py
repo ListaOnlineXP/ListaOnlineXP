@@ -93,12 +93,14 @@ class ExerciseListSolution(models.Model):
             
             if question.type == 'JA':
                 answer, answer_created = JavaQuestionAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
-            elif question.type == 'TF':
-                answer, answer_created = TrueFalseAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
             elif question.type == 'DI':
                 answer, answer_created = DiscursiveQuestionAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
             elif question.type == 'MU':
                 answer, answer_created = MultipleChoiceQuestionAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
+            elif question.type == 'TF':
+                answer, answer_created = TrueFalseAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
+                for truefalsequestion_item in answer.question_answered.casted().truefalseitem_set.all():
+                    truefalseanswer_item, truefalseanswer_item_created = TrueFalseAnswerItem.objects.get_or_create(answer_group=answer, item_answered=truefalsequestion_item, given_answer = False)
 
             if answer_created:
                 self.answer_set.add(answer)
@@ -136,7 +138,7 @@ class Answer(models.Model):
 
         try:
             if self.type == 'TF':
-                return self.truefalsequestionanswer
+                return self.truefalseanswer
             elif self.type == 'DI':
                 return self.discursivequestionanswer
             elif self.type == 'JA':
@@ -240,7 +242,7 @@ class TrueFalseItem(models.Model):
 class TrueFalseAnswer(Answer):
 
     def __init__(self, *args, **kargs):
-        super(TrueFalseQuestionAnswer, self).__init__(*args, **kargs)
+        super(TrueFalseAnswer, self).__init__(*args, **kargs)
         self.type = 'TF'
 
 

@@ -10,8 +10,7 @@ from authentication.decorators import profile_required, teacher_required
 from course.models import Course
 from exerciselist.models import * 
 from forms import *
-from django.forms.models import modelformset_factory
-
+from django.forms.models import inlineformset_factory
 
 from django.utils.functional import curry
 import os.path, sys
@@ -80,7 +79,6 @@ class GetStudentsExerciseList(ListView):
         return super(GetStudentsExerciseList, self).dispatch(*args, **kargs)
 
 
-
 @profile_required
 def exercise_list_new(request, exercise_list_id):
     values = {}
@@ -96,47 +94,38 @@ def exercise_list_new(request, exercise_list_id):
     exercise_list_solution.populate_blank()
 
     questions_and_forms = {}
-
+    
+    #If the request method is GET, don't pass any data to the forms.
+    #Else, pass request.POST.
     if request.method == 'GET':
-
-        #For each answer, get the filled (bound) form associated with it
-        for answer in exercise_list_solution.answer_set.all():
-            casted_answer = answer.casted()
-            
-            question_answered = answer.question_answered
-
-            if casted_answer.type == 'MU':
-                questions_and_forms[question_answered] = MultipleChoiceAnswerModelForm(instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERMU')
-            elif casted_answer.type == 'DI':
-                questions_and_forms[question_answered] = DiscursiveAnswerModelForm(instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERDI')
-            elif casted_answer.type == 'JA': 
-                questions_and_forms[question_answered] = JavaAnswerModelForm(instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERJA')
-
-    #POST
+        data = None
     else:
+        data = request.POST
 
-        #Go through the key/values pair in POST and filter the ones that have ANSWER
-        #Infer the answer type and id from the prefix, create forms with the POST data
-        #If the data is valid, save it. Either way, send the results to the template
-        for key, value in request.POST.iteritems():
-            if 'ANSWER' in key:
-                answer_prefix = key.split('-')[0]
-                answer_id = int(answer_prefix.split('_')[0])
-                answer = Answer.objects.get(pk=answer_id)
-                casted_answer = answer.casted()
-                question_answered = answer.question_answered
+    #For each answer in the exercise list solution, get the filled (bound) form associated with it
+    #If the request is of the type POST, it will be filled with the POST DATA
+    for answer in exercise_list_solution.answer_set.all():
+        casted_answer = answer.casted()
+        question_answered = answer.question_answered
 
-                if casted_answer.type == 'MU':
-                    form = MultipleChoiceAnswerModelForm({key: value }, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERMU')
-                elif casted_answer.type == 'DI':
-                    form = DiscursiveAnswerModelForm({key: value }, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERDI')
-                elif casted_answer.type == 'JA':
-                    form = JavaAnswerModelForm({key: value }, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERJA')
+        if casted_answer.type == 'MU':
+            form = MultipleChoiceAnswerModelForm(data=data, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERMU')
+        elif casted_answer.type == 'DI':
+            form = DiscursiveAnswerModelForm(data=data, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERDI')
+        elif casted_answer.type == 'JA': 
+            form = JavaAnswerModelForm(data=data, instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERJA')
+        elif casted_answer.type == 'TF':
+            #Check https://docs.djangoproject.com/en/dev/topics/forms/modelforms/#inline-formsets for details on this one
+            TrueFalseFormSet = inlineformset_factory(TrueFalseAnswer, TrueFalseAnswerItem, extra=0, can_delete=False, fields=('given_answer',))
+            form = TrueFalseFormSet(data=data, instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERTF')
+        
+        questions_and_forms[question_answered] = form
 
-                questions_and_forms[question_answered] = form
-
-                if form.is_valid():
-                    form.save()
+        #If the request is a POST, validate each form.
+        #If the form is valid, save it.
+        if request.method == 'POST':
+            if form.is_valid():
+                form.save()
 
     values['questions_and_forms'] = questions_and_forms
     return render_to_response('view_exercise_list.html', values)
