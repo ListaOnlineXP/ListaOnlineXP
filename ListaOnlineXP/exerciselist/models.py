@@ -24,6 +24,14 @@ class ExerciseList(models.Model):
         return self.name
 
 
+class Tag(models.Model):
+    
+    name = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.name
+
+
 class Question(models.Model):
 
     text = models.TextField()
@@ -40,6 +48,7 @@ class Question(models.Model):
     )
 
     type = models.CharField(max_length=2, choices=QUESTION_TYPE_CHOICES, blank=True)
+    tags = models.ManyToManyField(Tag)
 
     def __unicode__(self):
         return self.text
