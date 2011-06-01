@@ -25,87 +25,14 @@ class MultipleChoiceAnswerModelForm(forms.ModelForm):
         }
 
 
-class MultipleChoiceAnswerForm(forms.Form):
-    alternative = forms.ModelChoiceField(queryset=MultipleChoiceAlternative.objects.none(), widget = forms.RadioSelect(), empty_label=None, label='Resposta')
-
-    def __init__(self, *args, **kargs):
-
-        if 'instance' in kargs:
-            multiple_choice_answer = kargs.pop('instance')
-        else: 
-            raise ValueError('No instance given to form')
-
-        if 'finalized' in kargs:
-            finalized = kargs.pop('finalized')
-        else:
-            finalized = False
-
-        
-
-        super(MultipleChoiceAnswerForm, self).__init__(*args, **kargs)
-        self.fields['alternative'].queryset = multiple_choice_answer.question_answered.casted().get_alternatives()
-
-        #If received data (as in request.POST)
-        #if self.data:
-        #    if self.prefix:
-        #    else:
-        #        raise ValueError('No prefix given. It is needed to associate POST data to model')
-
-
-        if finalized:
-            self.fields['alternative'].widget.attrs['disabled'] = 'disabled'
-
 class DiscursiveAnswerModelForm(forms.ModelForm):
     class Meta:
         model = DiscursiveQuestionAnswer
         fields = ('text',)
 
+
 class JavaAnswerModelForm(forms.ModelForm):
     class Meta:
         model = JavaQuestionAnswer
         fields = ('code',)
-
-class DiscursiveAnswerForm(forms.Form):
-    discursive_answer = forms.CharField(label='Resposta', widget=forms.Textarea)
-
-    def __init__(self, *args, **kargs):
-        
-        if 'instance' in kargs:
-            discursive_answer = kargs.pop('instance')
-        else: 
-            raise ValueError('No instance given to form')
-
-        if 'finalized' in kargs:
-            finalized = kargs.pop('finalized')
-        else:
-            finalized = False
-
-        super(DiscursiveQuestionForm, self).__init__(*args, **kargs)
-        if finalized:
-            self.fields['discursive_answer'].widget.attrs['disabled'] = 'disabled'
-
-
-class JavaAnswerForm(forms.Form):
-    java_answer = forms.CharField(label='Resposta', widget=forms.Textarea)
-
-    def __init__(self, *args, **kargs):
-
-        if 'instance' in kargs:
-            java_answer = kargs.pop('instance')
-        else: 
-            raise ValueError('No instance given to form')
-
-        if 'finalized' in kargs:
-            finalized = kargs.pop('finalized')
-        else:
-            finalized = False
-
-        super(DiscursiveQuestionForm, self).__init__(*args, **kargs)
-        if finalized:
-            self.fields['discursive_answer'].widget.attrs['disabled'] = 'disabled'
-
-
-
-class TrueFalseQuestionForm(forms.ModelForm):
-    pass
 

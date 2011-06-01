@@ -32,7 +32,6 @@ class Question(models.Model):
     #have different weights on different exercise lists.
     #This have to go in the ExerciseListQuestionThrough
     #model.
-    weight = models.PositiveIntegerField()
     QUESTION_TYPE_CHOICES = (
         ('TF', 'True/False'),
         ('DI', 'Discursive'),
@@ -259,6 +258,7 @@ class ExerciseListQuestionThrough(models.Model):
     exerciselist = models.ForeignKey(ExerciseList)
     question = models.ForeignKey(Question)
     order = models.PositiveIntegerField()
+    weight = models.PositiveIntegerField()
 
     class Meta:
         ordering = ('order', )
