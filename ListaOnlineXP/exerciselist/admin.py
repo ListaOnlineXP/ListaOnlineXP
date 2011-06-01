@@ -2,27 +2,29 @@ from django.contrib import admin
 from models import *
 from django import forms
 
-class QuestionExerciseInline(admin.StackedInline): 
+class QuestionExerciseInline(admin.StackedInline):
     model = ExerciseList.questions.through
+
 
 #Sortable inline, based on: http://djangosnippets.org/snippets/1053/
 class ExerciseListForm(forms.ModelForm):
     model = ExerciseList
+
     class Media:
         js = (
-            '/site_media/js/custom_admin_jquery.js',
-            '/site_media/js/custom_admin_jquery_ui.js',
-            '/site_media/js/exerciselist_sort.js',
+                '/site_media/js/custom_admin_jquery.js',
+                '/site_media/js/custom_admin_jquery_ui.js',
+                '/site_media/js/exerciselist_sort.js',
         )
 
-class ExerciseListAdmin(admin.ModelAdmin):
-    model = ExerciseListQuestionThrough;
 
+class ExerciseListAdmin(admin.ModelAdmin):
+    model = ExerciseListQuestionThrough
     inlines = [
             QuestionExerciseInline,
     ]
-
     exclude = ('questions',)
+
 
 class MultipleChoiceCorrectAlternativeInline(admin.StackedInline):
     model = MultipleChoiceCorrectAlternative
@@ -35,25 +37,24 @@ class MultipleChoiceWrongAlternativeInline(admin.StackedInline):
 
 class MultipleChoiceQuestionAdmin(admin.ModelAdmin):
     inlines = [
-        MultipleChoiceCorrectAlternativeInline,
-        MultipleChoiceWrongAlternativeInline,
+            MultipleChoiceCorrectAlternativeInline,
+            MultipleChoiceWrongAlternativeInline,
     ]
     fields = [
-	    'text',
-	    'weight',
+        'text',
     ]
+
 
 class JavaQuestionAdmin(admin.ModelAdmin):
     fields = [
-	    'text',
-	    'weight',
-	    'criteria',
+        'text',
+        'criteria',
     ]
+
 
 class DiscursiveQuestionAdmin(admin.ModelAdmin):
     fields = [ 
 	    'text',
-	    'weight',
         'type',
     ]
 
@@ -61,13 +62,13 @@ class DiscursiveQuestionAdmin(admin.ModelAdmin):
 class TrueFalseItemInline(admin.StackedInline):
     model = TrueFalseItem
 
+
 class TrueFalseQuestionAdmin(admin.ModelAdmin):
     inlines = [
         TrueFalseItemInline,
     ]
     fields = [
 	    'text',
-	    'weight',
     ]
 
 
