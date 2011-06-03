@@ -94,11 +94,11 @@ def exercise_list(request, exercise_list_id):
     groups = Group.objects.filter(solution__exercise_list = exercise_list).all()
     group = None
     for gr in groups:
-	if student in gr.students.all():
-	    group = gr
+        if student in gr.students.all():
+            group = gr
 
     if group == None:
-	return HttpResponse('/')
+        return HttpResponse('/')
 
     #Get or create the exercise list solution and its questions
     exercise_list_solution = group.solution
