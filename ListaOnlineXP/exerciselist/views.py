@@ -5,7 +5,7 @@ from django.core.context_processors import csrf
 from django.views.generic import ListView
 from django.utils.decorators import method_decorator
 from django.views.generic.create_update import create_object, update_object, delete_object
-from authentication.models import Profile, Student, Teacher
+from authentication.models import *
 from authentication.decorators import profile_required, teacher_required
 from course.models import Course
 from exerciselist.models import * 
@@ -85,12 +85,23 @@ def exercise_list(request, exercise_list_id):
     values.update(csrf(request))
     student = Student.objects.get(user=request.user)
     exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
+
     course = exercise_list.course
     if not course.has_student(student):
         return HttpResponseRedirect('/')
 
+    #Get or create the group
+    groups = Group.objects.filter(solution__exercise_list = exercise_list).all()
+    group = None
+    for gr in groups:
+	if student in gr.students.all():
+	    group = gr
+
+    if group == None:
+	return HttpResponse('/')
+
     #Get or create the exercise list solution and its questions
-    exercise_list_solution, exercise_list_solution_created = ExerciseListSolution.objects.get_or_create(student=student, exercise_list=exercise_list)
+    exercise_list_solution = group.solution
     exercise_list_solution.populate_blank()
 
     questions_and_forms = {}

@@ -58,7 +58,6 @@ class JavaQuestionAdmin(admin.ModelAdmin):
 class DiscursiveQuestionAdmin(admin.ModelAdmin):
     fields = [ 
 	    'text',
-        'type',
         'tags'
     ]
 
@@ -84,6 +83,6 @@ admin.site.register(DiscursiveQuestion, DiscursiveQuestionAdmin)
 admin.site.register(TrueFalseQuestion, TrueFalseQuestionAdmin)
 admin.site.register(MultipleChoiceQuestionAnswer)
 admin.site.register(Tag)
-#admin.site.register(ExerciseListSolution)
+admin.site.register(ExerciseListSolution)
 #admin.site.register(JavaQuestionAnswer)
 #admin.site.register(DiscursiveQuestionAnswer)

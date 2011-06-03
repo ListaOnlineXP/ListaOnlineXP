@@ -10,6 +10,7 @@ class ExerciseList(models.Model):
     pub_date = models.DateField(default=datetime.datetime.today)
     due_date = models.DateField(default=(datetime.datetime.today() + datetime.timedelta(days=7)))
     questions = models.ManyToManyField('Question', through='ExerciseListQuestionThrough')
+    number_of_students = models.PositiveIntegerField()
 
     def get_multiple_choice_questions(self):
         return MultipleChoiceQuestion.objects.filter(exerciselist=self)
@@ -77,8 +78,7 @@ class Question(models.Model):
 
 class ExerciseListSolution(models.Model):
 
-    student = models.ForeignKey('authentication.Student')
-    exercise_list = models.ForeignKey(ExerciseList)
+    exercise_list = models.OneToOneField(ExerciseList)
     finalized = models.BooleanField(False)
 
     def get_answers(self):
