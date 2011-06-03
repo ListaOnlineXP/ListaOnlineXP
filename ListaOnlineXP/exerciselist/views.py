@@ -97,7 +97,7 @@ def exercise_list(request, exercise_list_id):
         if student in gr.students.all():
             group = gr
 
-    if group == None:
+    if group is None:
         return HttpResponse('/')
 
     #Get or create the exercise list solution and its questions
