@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
-from models import MultipleChoiceAlternative, MultipleChoiceQuestionAnswer, DiscursiveQuestionAnswer, JavaQuestionAnswer
+from models import *
 
 class GetCodeForm(forms.Form):
     code = forms.CharField(max_length=1000, label='Código', widget=forms.Textarea(attrs={'class':'special'}) )
@@ -35,4 +35,14 @@ class JavaAnswerModelForm(forms.ModelForm):
     class Meta:
         model = JavaQuestionAnswer
         fields = ('code',)
+
+class TrueFalseAnswerItemModelForm(forms.ModelForm):
+    def __init__(self, *args, **kargs):
+        super(TrueFalseAnswerItemModelForm, self).__init__(*args, **kargs)
+        self.fields['given_answer'].label=self.instance.item_answered.text
+    
+    class Meta:
+        model = TrueFalseAnswerItem
+        fields = ('given_answer',)
+
 

@@ -35,11 +35,6 @@ class Tag(models.Model):
 class Question(models.Model):
 
     text = models.TextField()
-    #TODO: This won't work. The weight here cannot be directly
-    #associated to the question, as the same question can
-    #have different weights on different exercise lists.
-    #This have to go in the ExerciseListQuestionThrough
-    #model.
     QUESTION_TYPE_CHOICES = (
         ('TF', 'True/False'),
         ('DI', 'Discursive'),
