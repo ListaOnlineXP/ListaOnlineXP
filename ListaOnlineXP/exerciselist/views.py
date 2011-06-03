@@ -138,9 +138,6 @@ def exercise_list(request, exercise_list_id):
             form = JavaAnswerForm(data=data, instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERJA')
         elif casted_answer.type == 'TF':
             #Check https://docs.djangoproject.com/en/dev/topics/forms/modelforms/#inline-formsets for details on this one
-            #TODO: figure out how to pass custom labels to the factory or the FormSet instance
-            #Another idea: add a field to TrueFalseAnswerItem which copies the text from TrueFalseQuestionItem,
-            #then mark it with editable=False, and make given_answers' verbose name = ''. Should have the same effect.
             TrueFalseFormSet = inlineformset_factory(TrueFalseAnswer, TrueFalseAnswerItem, form =TrueFalseAnswerItemForm, extra=0, can_delete=False, fields=('given_answer',))
             form = TrueFalseFormSet(data=data, instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERTF')
             print "==="
