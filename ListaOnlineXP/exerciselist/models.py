@@ -261,7 +261,7 @@ class TrueFalseAnswerItem(models.Model):
 class ExerciseListQuestionThrough(models.Model):
     exerciselist = models.ForeignKey(ExerciseList)
     question = models.ForeignKey(Question)
-    order = models.PositiveIntegerField()
+    order = models.PositiveIntegerField(unique=True)
     weight = models.PositiveIntegerField()
 
     class Meta:
