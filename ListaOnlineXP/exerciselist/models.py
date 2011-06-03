@@ -197,6 +197,10 @@ class MultipleChoiceQuestion(Question):
         #Returns a QuerySet with all of the multiplechoice question's alternatives
         return MultipleChoiceAlternative.objects.filter(Q(multiplechoicecorrectalternative__question=self) | Q(multiplechoicewrongalternative__question=self))
 
+    def save(self):
+        super(MultipleChoiceQuestion, self).save()
+        MultipleChoiceWrongAlternative.objects.get_or_create(question=self, text=u"Não sei")
+
     def __init__(self, *args, **kargs):
         super(MultipleChoiceQuestion, self).__init__(*args, **kargs)
         self.type = 'MU'

@@ -3,7 +3,7 @@
 {% block content_sidebar %}
     <h1>Responder lista de exercícios</h1>
     <form name=data action="." method="post"> {% csrf_token %}
-    {% for question, question_form in questions_and_forms.iteritems %}
+    {% for question, question_form in questions_and_forms %}
     <p>Questão: {{ question.text }}</p>
     {{ question_form.as_p }}
     <br />
