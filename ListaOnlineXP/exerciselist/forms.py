@@ -8,10 +8,10 @@ class GetCodeForm(forms.Form):
     test = forms.CharField(max_length=1000, label='Teste', widget=forms.Textarea(attrs={'class':'special'}) )
 
 
-class MultipleChoiceAnswerModelForm(forms.ModelForm):
+class MultipleChoiceAnswerForm(forms.ModelForm):
 
     def __init__(self, *args, **kargs):
-        super(MultipleChoiceAnswerModelForm, self).__init__(*args, **kargs)
+        super(MultipleChoiceAnswerForm, self).__init__(*args, **kargs)
         self.fields['chosen_alternative'].queryset = self.instance.question_answered.casted().get_alternatives()
         self.fields['chosen_alternative'].empty_label=None
         self.fields['chosen_alternative'].label='Resposta'
@@ -25,20 +25,20 @@ class MultipleChoiceAnswerModelForm(forms.ModelForm):
         }
 
 
-class DiscursiveAnswerModelForm(forms.ModelForm):
+class DiscursiveAnswerForm(forms.ModelForm):
     class Meta:
         model = DiscursiveQuestionAnswer
         fields = ('text',)
 
 
-class JavaAnswerModelForm(forms.ModelForm):
+class JavaAnswerForm(forms.ModelForm):
     class Meta:
         model = JavaQuestionAnswer
         fields = ('code',)
 
-class TrueFalseAnswerItemModelForm(forms.ModelForm):
+class TrueFalseAnswerItemForm(forms.ModelForm):
     def __init__(self, *args, **kargs):
-        super(TrueFalseAnswerItemModelForm, self).__init__(*args, **kargs)
+        super(TrueFalseAnswerItemForm, self).__init__(*args, **kargs)
         self.fields['given_answer'].label=self.instance.item_answered.text
     
     class Meta:
