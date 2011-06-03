@@ -43,7 +43,7 @@ class Question(models.Model):
     )
 
     type = models.CharField(max_length=2, choices=QUESTION_TYPE_CHOICES, blank=True)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __unicode__(self):
         return self.text
