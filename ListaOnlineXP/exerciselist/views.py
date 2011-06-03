@@ -12,7 +12,6 @@ from exerciselist.models import *
 from forms import *
 from django.forms.models import inlineformset_factory
 
-from django.utils.functional import curry
 import os.path, sys
 from subprocess import Popen, PIPE
 import shlex
