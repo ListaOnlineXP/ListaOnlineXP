@@ -111,23 +111,13 @@ def exercise_list(request, exercise_list_id):
     else:
         data = request.POST
 
-    questions_and_forms = []
-    forms = {}
-
-    #Get answers and questions from the exercise list solution
-    #and order them by question order in the exercise list
-    answers_and_questions = [(answer, answer.question_answered) for answer in exercise_list_solution.answer_set.all()]
-    order = {}
-    for (_a, q) in answers_and_questions:
-        order[q] = ExerciseListQuestionThrough.objects.get(exerciselist=exercise_list, question=q).order
-    def _cmp((_a1, q1), (_a2, q2)):
-        return int(order[q1]).__cmp__(order[q2])
-    answers_and_questions.sort(_cmp) 
+    questions_and_forms_list = []
 
     #For each answer in the exercise list solution, get the filled (bound) form associated with it
     #If the request is of the type POST, it will be filled with the POST DATA
-    for answer, question in answers_and_questions:
+    for answer in exercise_list_solution.answer_set.all():
         casted_answer = answer.casted()
+        question_answered = answer.question_answered
 
         if casted_answer.type == 'MU':
             form = MultipleChoiceAnswerForm(data=data, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERMU')
@@ -139,9 +129,8 @@ def exercise_list(request, exercise_list_id):
             #Check https://docs.djangoproject.com/en/dev/topics/forms/modelforms/#inline-formsets for details on this one
             TrueFalseFormSet = inlineformset_factory(TrueFalseAnswer, TrueFalseAnswerItem, form =TrueFalseAnswerItemForm, extra=0, can_delete=False, fields=('given_answer',))
             form = TrueFalseFormSet(data=data, instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERTF')
-       
-        #Here we have a list of the questions and forms ordered by the questions
-        questions_and_forms.append((question, form))
+
+        questions_and_forms_list.append({'question' : question_answered, 'form' : form})
 
         #If the request is a POST, validate each form.
         #If the form is valid, save it.
@@ -149,5 +138,5 @@ def exercise_list(request, exercise_list_id):
             if form.is_valid():
                 form.save()
 
-    values['questions_and_forms'] = questions_and_forms
+    values['questions_and_forms_list'] = questions_and_forms_list
     return render_to_response('view_exercise_list.html', values)

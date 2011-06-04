@@ -3,14 +3,14 @@
 {% block content_sidebar %}
     <h1>Responder lista de exercícios</h1>
     <form name=data action="." method="post"> {% csrf_token %}
-    {% for question, question_form in questions_and_forms %}
-    <p>Questão: {{ question.text }}</p>
-    {{ question_form.as_p }}
-    <br />
+    {% for question_and_form in questions_and_forms_list %}
+        <p>Questão: {{ question_and_form.question.text }}</p>
+        {{ question_and_form.form.as_p }}
+        <br />
     {% endfor %}
     {% if not finalized %}
-    <input type="submit" name="save" value="Salvar" />
-    <!-- TODO <input type="submit" name="test" value="Testar" /> --!>
+        <input type="submit" name="save" value="Salvar" />
+        <!-- TODO <input type="submit" name="test" value="Testar" /> --!>
     <input type="submit" name="finalize" value="Entregar" />
     {% endif %}
     </form>
