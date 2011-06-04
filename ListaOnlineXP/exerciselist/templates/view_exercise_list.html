@@ -2,7 +2,7 @@
 
 {% block content_sidebar %}
     <h1>Responder lista de exercícios</h1>
-    <form name=data action="." method="post"> {% csrf_token %}
+    <form name=data action="." method="post" enctype="multipart/form-data"> {% csrf_token %}
     {% for question_and_form in questions_and_forms_list %}
         <p>Questão: {{ question_and_form.question.text }}</p>
         {{ question_and_form.form.as_p }}
