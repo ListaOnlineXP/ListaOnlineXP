@@ -75,6 +75,11 @@ class TrueFalseQuestionAdmin(admin.ModelAdmin):
         'tags'
     ]
 
+class FileQuestionAdmin(admin.ModelAdmin):
+    exclude = [
+        'type',
+    ]
+
 
 admin.site.register(ExerciseList, ExerciseListAdmin, form=ExerciseListForm)
 admin.site.register(MultipleChoiceQuestion, MultipleChoiceQuestionAdmin)
@@ -84,5 +89,6 @@ admin.site.register(TrueFalseQuestion, TrueFalseQuestionAdmin)
 admin.site.register(MultipleChoiceQuestionAnswer)
 admin.site.register(Tag)
 admin.site.register(ExerciseListSolution)
+admin.site.register(FileQuestion, FileQuestionAdmin)
 #admin.site.register(JavaQuestionAnswer)
 #admin.site.register(DiscursiveQuestionAnswer)

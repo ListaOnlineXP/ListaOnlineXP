@@ -45,4 +45,9 @@ class TrueFalseAnswerItemForm(forms.ModelForm):
         model = TrueFalseAnswerItem
         fields = ('given_answer',)
 
+class FileAnswerForm(forms.ModelForm):
+    class Meta:
+        model = FileAnswer
+        fields = ('file', )
+
 
