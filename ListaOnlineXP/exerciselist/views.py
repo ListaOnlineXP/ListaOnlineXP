@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.context_processors import csrf
 from django.views.generic import ListView
@@ -12,7 +12,7 @@ from exerciselist.models import *
 from forms import *
 from django.forms.models import inlineformset_factory
 
-import os.path, sys
+import os.path
 from subprocess import Popen, PIPE
 import shlex
 
