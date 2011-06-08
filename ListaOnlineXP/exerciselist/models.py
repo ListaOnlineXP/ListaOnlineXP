@@ -116,6 +116,21 @@ class ExerciseListSolution(models.Model):
 
         self.save()
 
+    # Updates the score of the exercise list solution by correcting each solution
+    def update_score(self):
+        score = 0
+        max_score = 0
+        for answer in self.get_answers():
+            casted_answer = answer.casted()
+            question = answer.question_answered
+            (s, m) = question.correct(answer, exercise_list)
+            score += s
+            max_score += m
+
+        score = 10*score/max_score
+        self.save()
+
+
 
 class Answer(models.Model):
 
@@ -213,6 +228,15 @@ class MultipleChoiceQuestion(Question):
     def __init__(self, *args, **kargs):
         super(MultipleChoiceQuestion, self).__init__(*args, **kargs)
         self.type = 'MU'
+
+    # Returns the (score, weight) of the answered question
+    def correct(self, answer, exercise_list):
+        question = answer.question_answered
+        weight = ExerciseListQuestionThrough(exerciselist=exercise_list, question=question)
+        if answer.chosen_alternative == get_correct_alternative():
+            return (weight, weight)
+        else:
+            return (0, weight)
 
 
 class MultipleChoiceAlternative(models.Model):
