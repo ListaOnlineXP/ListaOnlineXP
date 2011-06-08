@@ -11,7 +11,10 @@
     {% if not finalized %}
         <input type="submit" name="save" value="Salvar" />
         <!-- TODO <input type="submit" name="test" value="Testar" /> --!>
-    <input type="submit" name="finalize" value="Entregar" />
+        <input type="submit" name="finalize" value="Entregar" />
+    {% else %}
+        Nota: {{ score }}
+        <input type="submit" name="rollback" value="Rollback" />
     {% endif %}
     </form>
 {% endblock %}

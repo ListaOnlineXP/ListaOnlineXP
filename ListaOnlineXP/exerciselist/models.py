@@ -84,6 +84,7 @@ class ExerciseListSolution(models.Model):
 
     exercise_list = models.OneToOneField(ExerciseList)
     finalized = models.BooleanField(False)
+    score = models.FloatField(null=True, blank=True)
 
     def get_answers(self):
         return Answer.objects.filter(exercise_list_solution=self)
@@ -117,17 +118,17 @@ class ExerciseListSolution(models.Model):
         self.save()
 
     # Updates the score of the exercise list solution by correcting each solution
-    def update_score(self):
-        score = 0
+    def correct(self):
+        score = 0.0
         max_score = 0
         for answer in self.get_answers():
-            casted_answer = answer.casted()
-            question = answer.question_answered
-            (s, m) = question.correct(answer, exercise_list)
-            score += s
-            max_score += m
+            if answer.type == 'MU':
+                casted_question = answer.question_answered.casted()
+                (s, m) = casted_question.correct(answer, self.exercise_list)
+                score = score + s
+                max_score = max_score + m
 
-        score = 10*score/max_score
+        self.score = 10*score/max_score
         self.save()
 
 
@@ -232,8 +233,8 @@ class MultipleChoiceQuestion(Question):
     # Returns the (score, weight) of the answered question
     def correct(self, answer, exercise_list):
         question = answer.question_answered
-        weight = ExerciseListQuestionThrough(exerciselist=exercise_list, question=question)
-        if answer.chosen_alternative == get_correct_alternative():
+        weight = ExerciseListQuestionThrough.objects.get(exerciselist=exercise_list, question=question).weight
+        if answer.casted().chosen_alternative.id == self.get_correct_alternative().id:
             return (weight, weight)
         else:
             return (0, weight)

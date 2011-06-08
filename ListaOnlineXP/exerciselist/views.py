@@ -146,7 +146,18 @@ def exercise_list(request, exercise_list_id):
         if request.method == 'POST':
             if form.is_valid():
                 form.save()
+    
+    #If the solution is finalized, correct the answers
+    if request.method == 'POST' and 'finalize' in request.POST:
+        exercise_list_solution.correct()
+        values['score'] = exercise_list_solution.score
+        exercise_list_solution.finalized = True
 
+    #If for test and debug
+    if request.method == 'POST' and 'rollback' in request.POST:
+        exercise_list_solution.finalized = False
+
+    values['finalized'] = exercise_list_solution.finalized
     values['questions_and_forms_list'] = questions_and_forms_list
     values['user'] = student
     return render_to_response('view_exercise_list.html', values)
