@@ -141,3 +141,37 @@ def exercise_list(request, exercise_list_id):
     values['questions_and_forms_list'] = questions_and_forms_list
     values['user'] = student
     return render_to_response('view_exercise_list.html', values)
+
+@profile_required
+def view_exercise_list_solution(request, exercise_list_solution_id):
+    values = {}
+    questions_answers_list = []
+    student = Student.objects.get(user=request.user)
+    exercise_list_solution = ExerciseListSolution.objects.get(pk=exercise_list_solution_id)
+    course = exercise_list_solution.exercise_list.course
+
+
+
+    if not course.has_student(student):
+        return HttpResponseRedirect('/')
+    
+
+
+    for answer in exercise_list_solution.answer_set.all():
+        casted_answer = answer.casted()
+        question_answered = answer.question_answered
+        
+        if answer.type == 'FI':
+            answer = casted_answer.file.url
+            
+
+        question_answer = {'question' : question_answered, 'answer' : answer}    
+        questions_answers_list.append(question_answer)
+
+    values['questions_answers_list'] = questions_answers_list
+    values['student_name'] = student.name
+    values['exercise_list_title'] = exercise_list_solution.exercise_list.name
+    return render_to_response('view_exercise_list_solution.html', values)
+
+
+

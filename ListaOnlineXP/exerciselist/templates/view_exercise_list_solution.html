@@ -1,0 +1,14 @@
+{% extends "base_site.html" %}
+
+{% block content_sidebar %}
+    <h1>Respostas à lista de exercício {{ exercise_list_title }}</h1>
+    <h2>Aluno: {{ student_name }}</h2>
+    {% for question_answer in questions_answers_list %}
+        <p>Questão: {{ question_answer.question }}</p>
+	{% if question_answer.question.type == 'FI' %}
+		<p>Resposta: <a href="{{question_answer.answer}}">{{ question_answer.answer }}</a></p>
+	{% endif %}
+        <br />
+    {% endfor %}
+    </form>
+{% endblock %}
