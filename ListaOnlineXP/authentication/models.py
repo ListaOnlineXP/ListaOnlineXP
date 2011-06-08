@@ -32,4 +32,10 @@ class Teacher(Profile):
 
 class Group(models.Model):
     students = models.ManyToManyField(Student)
-    solution = models.OneToOneField('exerciselist.ExerciseListSolution', blank=True)
+    solution = models.OneToOneField('exerciselist.ExerciseListSolution')
+
+    def __unicode__(self):
+        s = self.solution.exercise_list.name + ': '
+        for student in self.students:
+            s += student.name + ', '
+        s = s[:-2]

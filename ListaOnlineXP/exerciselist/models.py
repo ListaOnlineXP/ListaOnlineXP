@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.db.models import Q
+from authentication.models import Group
 import datetime
+import random
 
 
 class ExerciseList(models.Model):
@@ -11,6 +13,26 @@ class ExerciseList(models.Model):
     due_date = models.DateField(default=(datetime.datetime.today() + datetime.timedelta(days=7)))
     questions = models.ManyToManyField('Question', through='ExerciseListQuestionThrough')
     number_of_students = models.PositiveIntegerField()
+    create_random_groups = models.BooleanField()
+
+    def save(self):
+        super(ExerciseList, self).save()
+        if self.create_random_groups is True:
+            students = []
+            for student in self.course.student.all():
+                has_group = Group.objects.filter(solution__exercise_list = self, students = student).count()
+                if not has_group:
+                    students.append(student)
+            random.shuffle(students)
+            while students:
+                solution = ExerciseListSolution(exercise_list=self, finalized=False)
+                solution.save()
+                group = Group(solution = solution)
+                group.save()
+                for student in students[:self.number_of_students]:
+                    group.students.add(student)
+                group.save()
+                students = students[self.number_of_students]
 
     def get_multiple_choice_questions(self):
         return MultipleChoiceQuestion.objects.filter(exerciselist=self)
@@ -81,7 +103,7 @@ class Question(models.Model):
 
 class ExerciseListSolution(models.Model):
 
-    exercise_list = models.OneToOneField(ExerciseList)
+    exercise_list = models.ForeignKey(ExerciseList)
     finalized = models.BooleanField(False)
 
     def get_answers(self):
