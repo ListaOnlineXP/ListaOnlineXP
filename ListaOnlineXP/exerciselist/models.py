@@ -2,7 +2,7 @@
 from django.db import models
 from django.db.models import Q
 import datetime
-
+from utilities import manage_uploads_filenames
 
 class ExerciseList(models.Model):
     name = models.CharField(blank=False, max_length=100)
@@ -276,7 +276,7 @@ class FileQuestion(Question):
 
 
 class FileAnswer(Answer):
-    file = models.FileField(upload_to='uploads')
+    file = models.FileField(upload_to = manage_uploads_filenames)
 
     def __init__(self, *args, **kargs):
         super(FileAnswer, self).__init__(*args, **kargs)
