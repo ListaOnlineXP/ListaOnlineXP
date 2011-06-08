@@ -10,6 +10,7 @@ class ExerciseList(models.Model):
     pub_date = models.DateField(default=datetime.datetime.today)
     due_date = models.DateField(default=(datetime.datetime.today() + datetime.timedelta(days=7)))
     questions = models.ManyToManyField('Question', through='ExerciseListQuestionThrough')
+    number_of_students = models.PositiveIntegerField()
 
     def get_multiple_choice_questions(self):
         return MultipleChoiceQuestion.objects.filter(exerciselist=self)
@@ -40,6 +41,7 @@ class Question(models.Model):
         ('DI', 'Discursive'),
         ('JA', 'Java'),
         ('MU', 'Multiple'),
+        ('FI', 'File'),
     )
 
     type = models.CharField(max_length=2, choices=QUESTION_TYPE_CHOICES, blank=True)
@@ -70,6 +72,8 @@ class Question(models.Model):
                 return self.javaquestion
             elif self.type == 'MU':
                 return self.multiplechoicequestion
+            elif self.type == 'FI':
+                return self.filequestion
 
         except:
             raise
@@ -77,8 +81,7 @@ class Question(models.Model):
 
 class ExerciseListSolution(models.Model):
 
-    student = models.ForeignKey('authentication.Student')
-    exercise_list = models.ForeignKey(ExerciseList)
+    exercise_list = models.OneToOneField(ExerciseList)
     finalized = models.BooleanField(False)
 
     def get_answers(self):
@@ -104,6 +107,8 @@ class ExerciseListSolution(models.Model):
                 answer, answer_created = TrueFalseAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
                 for truefalsequestion_item in answer.question_answered.casted().truefalseitem_set.all():
                     truefalseanswer_item, truefalseanswer_item_created = TrueFalseAnswerItem.objects.get_or_create(answer_group=answer, item_answered=truefalsequestion_item, given_answer = False)
+            elif question.type == 'FI':
+                answer, answer_created = FileAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
 
             if answer_created:
                 self.answer_set.add(answer)
@@ -121,6 +126,7 @@ class Answer(models.Model):
         ('DI', 'Discursive'),
         ('JA', 'Java'),
         ('MU', 'Multiple'),
+        ('FI', 'File'),
     )
 
     type = models.CharField(max_length=2, choices=ANSWER_TYPE_CHOICES, blank=True)
@@ -148,6 +154,8 @@ class Answer(models.Model):
                 return self.javaquestionanswer
             elif self.type == 'MU':
                 return self.multiplechoicequestionanswer
+            elif self.type == 'FI':
+                return self.fileanswer
 
         except:
             raise
@@ -196,6 +204,10 @@ class MultipleChoiceQuestion(Question):
     def get_alternatives(self):
         #Returns a QuerySet with all of the multiplechoice question's alternatives
         return MultipleChoiceAlternative.objects.filter(Q(multiplechoicecorrectalternative__question=self) | Q(multiplechoicewrongalternative__question=self))
+
+    def save(self):
+        super(MultipleChoiceQuestion, self).save()
+        MultipleChoiceWrongAlternative.objects.get_or_create(question=self, text=u"Não sei")
 
     def __init__(self, *args, **kargs):
         super(MultipleChoiceQuestion, self).__init__(*args, **kargs)
@@ -254,6 +266,22 @@ class TrueFalseAnswerItem(models.Model):
     item_answered = models.ForeignKey(TrueFalseItem)
     given_answer = models.BooleanField()
 
+
+class FileQuestion(Question):
+
+    def __init__(self, *args, **kargs):
+        super(FileQuestion, self).__init__(*args, **kargs)
+        self.type = 'FI'
+
+
+
+class FileAnswer(Answer):
+    file = models.FileField(upload_to='uploads')
+
+    def __init__(self, *args, **kargs):
+        super(FileAnswer, self).__init__(*args, **kargs)
+        self.type = 'FI'
+    
 
 #Through model which creates an ordered relationship between
 #questions and exercise-lists. Related doc:

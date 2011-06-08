@@ -29,3 +29,7 @@ class Student(Profile):
 
 class Teacher(Profile):
     pass
+
+class Group(models.Model):
+    students = models.ManyToManyField(Student)
+    solution = models.OneToOneField('exerciselist.ExerciseListSolution', blank=True)

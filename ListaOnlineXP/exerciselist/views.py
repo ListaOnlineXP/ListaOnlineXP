@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.context_processors import csrf
 from django.views.generic import ListView
 from django.utils.decorators import method_decorator
 from django.views.generic.create_update import create_object, update_object, delete_object
-from authentication.models import Profile, Student, Teacher
+from authentication.models import *
 from authentication.decorators import profile_required, teacher_required
 from course.models import Course
 from exerciselist.models import * 
 from forms import *
 from django.forms.models import inlineformset_factory
 
-from django.utils.functional import curry
-import os.path, sys
+import os.path
 from subprocess import Popen, PIPE
 import shlex
 
@@ -85,15 +84,25 @@ def exercise_list(request, exercise_list_id):
     values.update(csrf(request))
     student = Student.objects.get(user=request.user)
     exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
+
     course = exercise_list.course
     if not course.has_student(student):
         return HttpResponseRedirect('/')
 
+    #Get or create the group
+    groups = Group.objects.filter(solution__exercise_list = exercise_list).all()
+    group = None
+    for gr in groups:
+        if student in gr.students.all():
+            group = gr
+
+    if group is None:
+        return HttpResponse('/')
+
     #Get or create the exercise list solution and its questions
-    exercise_list_solution, exercise_list_solution_created = ExerciseListSolution.objects.get_or_create(student=student, exercise_list=exercise_list)
+    exercise_list_solution = group.solution
     exercise_list_solution.populate_blank()
 
-    questions_and_forms = {}
     
     #If the request method is GET, don't pass any data to the forms.
     #Else, pass request.POST.
@@ -102,6 +111,8 @@ def exercise_list(request, exercise_list_id):
     else:
         data = request.POST
 
+    questions_and_forms_list = []
+
     #For each answer in the exercise list solution, get the filled (bound) form associated with it
     #If the request is of the type POST, it will be filled with the POST DATA
     for answer in exercise_list_solution.answer_set.all():
@@ -109,23 +120,19 @@ def exercise_list(request, exercise_list_id):
         question_answered = answer.question_answered
 
         if casted_answer.type == 'MU':
-            form = MultipleChoiceAnswerModelForm(data=data, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERMU')
+            form = MultipleChoiceAnswerForm(data=data, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERMU')
         elif casted_answer.type == 'DI':
-            form = DiscursiveAnswerModelForm(data=data, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERDI')
+            form = DiscursiveAnswerForm(data=data, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERDI')
         elif casted_answer.type == 'JA': 
-            form = JavaAnswerModelForm(data=data, instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERJA')
+            form = JavaAnswerForm(data=data, instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERJA')
         elif casted_answer.type == 'TF':
             #Check https://docs.djangoproject.com/en/dev/topics/forms/modelforms/#inline-formsets for details on this one
-            #TODO: figure out how to pass custom labels to the factory or the FormSet instance
-            #Another idea: add a field to TrueFalseAnswerItem which copies the text from TrueFalseQuestionItem,
-            #then mark it with editable=False, and make given_answers' verbose name = ''. Should have the same effect.
-            TrueFalseFormSet = inlineformset_factory(TrueFalseAnswer, TrueFalseAnswerItem, form =TrueFalseAnswerItemModelForm, extra=0, can_delete=False, fields=('given_answer',))
+            TrueFalseFormSet = inlineformset_factory(TrueFalseAnswer, TrueFalseAnswerItem, form =TrueFalseAnswerItemForm, extra=0, can_delete=False, fields=('given_answer',))
             form = TrueFalseFormSet(data=data, instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERTF')
-            print "==="
-            print dir(form)
-            print "==="
-        
-        questions_and_forms[question_answered] = form
+        elif casted_answer.type == 'FI':
+            form = FileAnswerForm(data=data, files=request.FILES, instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERFI')
+
+        questions_and_forms_list.append({'question' : question_answered, 'form' : form})
 
         #If the request is a POST, validate each form.
         #If the form is valid, save it.
@@ -133,5 +140,5 @@ def exercise_list(request, exercise_list_id):
             if form.is_valid():
                 form.save()
 
-    values['questions_and_forms'] = questions_and_forms
+    values['questions_and_forms_list'] = questions_and_forms_list
     return render_to_response('view_exercise_list.html', values)
