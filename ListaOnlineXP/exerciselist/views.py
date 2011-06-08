@@ -84,20 +84,18 @@ def exercise_list(request, exercise_list_id):
     values.update(csrf(request))
     student = Student.objects.get(user=request.user)
     exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
+    
+    print student.name
+    print exercise_list.name
 
     course = exercise_list.course
     if not course.has_student(student):
         return HttpResponseRedirect('/')
-
-    #Get or create the group
-    groups = Group.objects.filter(solution__exercise_list = exercise_list).all()
-    group = None
-    for gr in groups:
-        if student in gr.students.all():
-            group = gr
+    
+    group = student.get_group(exercise_list)
 
     if group is None:
-        return HttpResponse('/')
+        return HttpResponseRedirect('/groups/' + str(exercise_list.id))
 
     #Get or create the exercise list solution and its questions
     exercise_list_solution = group.solution
@@ -141,4 +139,5 @@ def exercise_list(request, exercise_list_id):
                 form.save()
 
     values['questions_and_forms_list'] = questions_and_forms_list
+    values['user'] = student
     return render_to_response('view_exercise_list.html', values)

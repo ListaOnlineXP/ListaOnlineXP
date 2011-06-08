@@ -10,7 +10,8 @@ class ExerciseList(models.Model):
     pub_date = models.DateField(default=datetime.datetime.today)
     due_date = models.DateField(default=(datetime.datetime.today() + datetime.timedelta(days=7)))
     questions = models.ManyToManyField('Question', through='ExerciseListQuestionThrough')
-    number_of_students = models.PositiveIntegerField()
+    min_number_of_students = models.PositiveIntegerField()
+    max_number_of_students = models.PositiveIntegerField()
 
     def get_multiple_choice_questions(self):
         return MultipleChoiceQuestion.objects.filter(exerciselist=self)

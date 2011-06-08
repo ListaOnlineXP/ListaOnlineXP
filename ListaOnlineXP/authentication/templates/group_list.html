@@ -1,0 +1,37 @@
+{% extends "base_site.html" %}
+
+{% block content_sidebar %}
+<h1>Grupos</h1>
+
+{% if group_list %}
+  <table cellspacing="0">
+  <thead><tr>
+    <th>Número</th>
+    <th>Alunos</th>
+    <th>Ingresso</th>
+  </tr></thead>
+
+  <tbody>
+  {% for group in group_list %}
+    <tr>
+    <th>{{ group.id }}</th>
+    <th>
+    {% for student in group.students.all %}
+        {{ student.name }}</br>
+    {% endfor %}
+    </th>
+    <th>
+    {% ifnotequal group.students.count group.solution.exercise_list.max_number_of_students %}
+        <a href="update/{{ group.id }}">Ingressar</a></th>
+    {% else %}
+        Ingressar
+    {% endifnotequal %}
+    </tr>
+  {% endfor %}
+  </tbody>
+
+{% else %}
+  <p> Nenhum grupo disponível </p>
+{% endif %}
+
+{% endblock %}
