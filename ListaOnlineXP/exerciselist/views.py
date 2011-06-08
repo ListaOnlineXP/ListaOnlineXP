@@ -109,13 +109,22 @@ def exercise_list(request, exercise_list_id):
     else:
         data = request.POST
 
+    #Get answers and questions from the exercise list solution
+    #and order them by question order in the exercise list
+    answers_and_questions = [(answer, answer.question_answered) for answer in exercise_list_solution.answer_set.all()]
+    order = {}
+    for (_a, q) in answers_and_questions:
+        order[q] = ExerciseListQuestionThrough.objects.get(exerciselist=exercise_list, question=q).order
+    def _cmp((_a1, q1), (_a2, q2)):
+        return int(order[q1]).__cmp__(order[q2])
+    answers_and_questions.sort(_cmp)
+
     questions_and_forms_list = []
 
     #For each answer in the exercise list solution, get the filled (bound) form associated with it
     #If the request is of the type POST, it will be filled with the POST DATA
-    for answer in exercise_list_solution.answer_set.all():
+    for answer, question_answered in answers_and_questions:
         casted_answer = answer.casted()
-        question_answered = answer.question_answered
 
         if casted_answer.type == 'MU':
             form = MultipleChoiceAnswerForm(data=data, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERMU')
