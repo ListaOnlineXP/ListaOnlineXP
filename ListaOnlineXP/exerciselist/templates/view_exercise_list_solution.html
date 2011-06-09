@@ -8,6 +8,9 @@
 	{% if question_answer.question.type == 'FI' %}
 		<p>Resposta: <a href="{{question_answer.answer}}">{{ question_answer.answer }}</a></p>
 	{% endif %}
+    {% if question_answer.question.type == 'MU' %}
+		<p>Resposta: {{ question_answer.answer }}</p>
+	{% endif %}
         <br />
     {% endfor %}
     </form>

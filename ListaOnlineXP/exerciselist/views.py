@@ -161,22 +161,22 @@ def view_exercise_list_solution(request, exercise_list_solution_id):
     exercise_list_solution = ExerciseListSolution.objects.get(pk=exercise_list_solution_id)
     course = exercise_list_solution.exercise_list.course
 
-
-
     if not course.has_student(student):
         return HttpResponseRedirect('/')
     
-
-
-    for answer in exercise_list_solution.answer_set.all():
-        casted_answer = answer.casted()
-        question_answered = answer.question_answered
+    for through_object in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list_solution.exercise_list):
+        question_answered = through_object.question
+        casted_answer = exercise_list_solution.answer_set.get(question_answered = question_answered).casted()
         
-        if answer.type == 'FI':
-            answer = casted_answer.file.url
+        if casted_answer.type == 'FI':
+            given_answer = casted_answer.file.url
+        elif casted_answer.type == 'MU':
+            given_answer = casted_answer.chosen_alternative.text
+        else:
+            given_answer = None
             
 
-        question_answer = {'question' : question_answered, 'answer' : answer}    
+        question_answer = {'question' : question_answered, 'answer' : given_answer}
         questions_answers_list.append(question_answer)
 
     values['questions_answers_list'] = questions_answers_list
