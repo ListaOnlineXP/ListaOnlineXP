@@ -123,8 +123,8 @@ class ExerciseListSolution(models.Model):
         max_score = 0
         answers = self.get_answers()
         for answer in self.get_answers():
-            question = answer.answered_question
-            weight = ExerciseListQuestionThrough.objects.get(exerciselist=exercise_list, question=question).weight
+            question = answer.question_answered
+            weight = ExerciseListQuestionThrough.objects.get(exerciselist=self.exercise_list, question=question).weight
             max_score += weight
             if answer.type == 'MU':
                 casted_question = question.casted()
