@@ -315,7 +315,7 @@ class FileAnswer(Answer):
 class ExerciseListQuestionThrough(models.Model):
     exerciselist = models.ForeignKey(ExerciseList)
     question = models.ForeignKey(Question)
-    order = models.PositiveIntegerField(unique=True)
+    order = models.PositiveIntegerField()
     weight = models.PositiveIntegerField()
 
     class Meta:
