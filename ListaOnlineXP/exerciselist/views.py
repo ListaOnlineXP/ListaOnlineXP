@@ -172,6 +172,12 @@ def view_exercise_list_solution(request, exercise_list_solution_id):
             given_answer = casted_answer.file.url
         elif casted_answer.type == 'MU':
             given_answer = casted_answer.chosen_alternative.text
+        elif casted_answer.type == 'DI':
+            given_answer = casted_answer.text
+        elif casted_answer.type == 'JA':
+            given_answer = casted_answer.code
+        elif casted_answer.type == 'TF':
+            given_answer = None
         else:
             given_answer = None
             
