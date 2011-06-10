@@ -11,13 +11,11 @@ from course.models import Course
 from exerciselist.models import * 
 from forms import *
 from django.forms.models import inlineformset_factory
-from random import shuffle
-
-import os.path
-from subprocess import Popen, PIPE
-import shlex
 
 from exerciselist.forms import *
+
+from utilities import test_code
+
 @teacher_required
 def exercise_list_add_or_update(request, list_id=None):
     if list_id:
@@ -32,38 +30,6 @@ def exercise_list_delete(request, list_id):
     return delete_object(request, model=ExerciseList, object_id=list_id, 
             template_name='exercise_list_confirm_delete.html', post_delete_redirect='/')
 
-def get_code(request):
-    values = {}
-    values.update(csrf(request))
-    if request.method == 'GET':
-        form = GetCodeForm()
-    else:
-        form = GetCodeForm(request.POST)
-        if form.is_valid():
-            path = os.path.dirname(__file__) + "/java/"
-            
-            print path
-
-            code_file = open(path + "Code.java", 'w')
-            code_file.write(request.POST['code'])
-            code_file.close()
-
-            test_file = open(path + "TestCode.java", 'w')
-            test_file.write(request.POST['test'])
-            test_file.close()
-
-            test_command = "java -Dfile.encoding=utf-8 -classpath " + path +  " JavaTester  " + path + "Code.java " + path + "TestCode.java " + path
-
-            test_args = shlex.split(test_command)
-
-            test = Popen(test_args, stdout=PIPE, stderr=PIPE)
-            test_output = test.stdout.read()
-
-            values["test_output"] = test_output
-            values["test_command"] = test_command
-
-    values['form'] = form
-    return render_to_response('get_code.html', values)
 
 class GetStudentsExerciseList(ListView):
     context_object_name = 'exercise_list_list'
@@ -114,6 +80,10 @@ def exercise_list(request, exercise_list_id):
 
     #For each answer in the exercise list solution, get the filled (bound) form associated with it
     #If the request is of the type POST, it will be filled with the POST DATA
+
+    #Debug
+    extra = None
+    #End Debug
     for through_object in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list_solution.exercise_list):
         question_answered = through_object.question
         casted_answer = exercise_list_solution.answer_set.get(question_answered = question_answered).casted()
@@ -124,6 +94,21 @@ def exercise_list(request, exercise_list_id):
             form = DiscursiveAnswerForm(data=data, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERDI')
         elif casted_answer.type == 'JA': 
             form = JavaAnswerForm(data=data, instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERJA')
+
+            #Test java code
+            if request.method == 'POST':
+
+                if form.is_valid():
+                    code = form.cleaned_data['code']
+                    test = question_answered.casted().criteria
+                    result = test_code(test=test, code=code)
+                    #Debug
+                    extra = result
+                    #End Debug
+
+                pass
+
+
         elif casted_answer.type == 'TF':
             #Check https://docs.djangoproject.com/en/dev/topics/forms/modelforms/#inline-formsets for details on this one
             TrueFalseFormSet = inlineformset_factory(TrueFalseAnswer, TrueFalseAnswerItem, form =TrueFalseAnswerItemForm, extra=0, can_delete=False, fields=('given_answer',))
@@ -131,7 +116,7 @@ def exercise_list(request, exercise_list_id):
         elif casted_answer.type == 'FI':
             form = FileAnswerForm(data=data, files=request.FILES, instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERFI')
 
-        questions_and_forms_list.append({'question' : question_answered, 'form' : form})
+        questions_and_forms_list.append({'question' : question_answered, 'form' : form, 'extra' : extra})
 
         #If the request is a POST, validate each form.
         #If the form is valid, save it.

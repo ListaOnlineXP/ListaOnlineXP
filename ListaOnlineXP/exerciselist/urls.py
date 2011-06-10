@@ -4,7 +4,6 @@ from views import GetStudentsExerciseList
 
 urlpatterns = patterns(
     'exerciselist.views',
-    (r'^get_code/$', 'get_code'),
     (r'^my_exercise_lists/$', GetStudentsExerciseList.as_view()),
     (r'^exercise_list/(?P<exercise_list_id>\d+)/$', 'exercise_list'),
     (r'^exercise_list_solution/(?P<exercise_list_solution_id>\d+)/$', 'view_exercise_list_solution'),
