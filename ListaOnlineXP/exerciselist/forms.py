@@ -12,7 +12,7 @@ class MultipleChoiceAnswerForm(forms.ModelForm):
 
     def __init__(self, *args, **kargs):
         super(MultipleChoiceAnswerForm, self).__init__(*args, **kargs)
-        self.fields['chosen_alternative'].queryset = self.instance.question_answered.casted().get_alternatives()
+        self.fields['chosen_alternative'].queryset = self.instance.question_answered.casted().get_alternatives().order_by('?')
         self.fields['chosen_alternative'].empty_label='Em branco'
         self.fields['chosen_alternative'].label='Resposta'
         
