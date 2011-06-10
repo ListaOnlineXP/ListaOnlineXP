@@ -11,7 +11,7 @@
     {% if question_answer.question.type == 'MU' %}
 		<p>Resposta: {{ question_answer.answer }}</p>
 	{% endif %}
-    {% if question_answer.question.type == 'DI' or question_answer.question.type == 'JA' %}
+    {% if question_answer.question.type == 'DI' or question_answer.question.type == 'JA' or question_answer.question.type = 'TF'%}
 		<p>Resposta: <br />{{ question_answer.answer|linebreaksbr }}</p>
 	{% endif %}
         <br />

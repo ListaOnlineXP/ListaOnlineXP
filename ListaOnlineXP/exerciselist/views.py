@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.context_processors import csrf
 from django.views.generic import ListView
@@ -177,7 +177,10 @@ def view_exercise_list_solution(request, exercise_list_solution_id):
         elif casted_answer.type == 'JA':
             given_answer = casted_answer.code
         elif casted_answer.type == 'TF':
-            given_answer = None
+            #TODO: Work a little more on this one: not very pretty, just text, and it includes formatting in the view. The template should be in charge of formatting.
+            given_answer = ''
+            for answer_item in casted_answer.truefalseansweritem_set.all():
+                given_answer += answer_item.item_answered.text + ': ' +str(answer_item.given_answer)  + '\n'
         else:
             given_answer = None
             
