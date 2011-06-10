@@ -230,6 +230,9 @@ class MultipleChoiceQuestion(Question):
 
     # Returns the score of the answered question
     def correct(self, answer):
+        if answer.casted().chosen_alternative is None:
+            return 0
+
         if answer.casted().chosen_alternative.id == self.get_correct_alternative().id:
             return 1
         else:
