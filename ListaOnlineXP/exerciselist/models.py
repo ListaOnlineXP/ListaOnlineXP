@@ -5,6 +5,7 @@ from authentication.models import Group
 import datetime
 import random
 
+from utilities import manage_uploads_filenames
 
 class ExerciseList(models.Model):
     name = models.CharField(blank=False, max_length=100)
@@ -13,6 +14,8 @@ class ExerciseList(models.Model):
     due_date = models.DateField(default=(datetime.datetime.today() + datetime.timedelta(days=7)))
     questions = models.ManyToManyField('Question', through='ExerciseListQuestionThrough')
     number_of_students = models.PositiveIntegerField()
+    min_number_of_students = models.PositiveIntegerField()
+    max_number_of_students = models.PositiveIntegerField()
     create_random_groups = models.BooleanField()
 
     def save(self):
@@ -32,7 +35,7 @@ class ExerciseList(models.Model):
                 for student in students[:self.number_of_students]:
                     group.students.add(student)
                 group.save()
-                students = students[self.number_of_students]
+                students = students[self.number_of_students:]
 
     def get_multiple_choice_questions(self):
         return MultipleChoiceQuestion.objects.filter(exerciselist=self)
@@ -105,6 +108,7 @@ class ExerciseListSolution(models.Model):
 
     exercise_list = models.ForeignKey(ExerciseList)
     finalized = models.BooleanField(False)
+    score = models.FloatField(null=True, blank=True)
 
     def get_answers(self):
         return Answer.objects.filter(exercise_list_solution=self)
@@ -136,6 +140,23 @@ class ExerciseListSolution(models.Model):
                 self.answer_set.add(answer)
 
         self.save()
+
+    # Updates the score of the exercise list solution by correcting each solution
+    def correct(self):
+        score = 0.0
+        max_score = 0
+        answers = self.get_answers()
+        for answer in self.get_answers():
+            question = answer.question_answered
+            weight = ExerciseListQuestionThrough.objects.get(exerciselist=self.exercise_list, question=question).weight
+            max_score += weight
+            if answer.type == 'MU':
+                casted_question = question.casted()
+                score += weight * casted_question.correct(answer)
+
+        self.score = 10*score/max_score
+        self.save()
+
 
 
 class Answer(models.Model):
@@ -227,13 +248,19 @@ class MultipleChoiceQuestion(Question):
         #Returns a QuerySet with all of the multiplechoice question's alternatives
         return MultipleChoiceAlternative.objects.filter(Q(multiplechoicecorrectalternative__question=self) | Q(multiplechoicewrongalternative__question=self))
 
-    def save(self):
-        super(MultipleChoiceQuestion, self).save()
-        MultipleChoiceWrongAlternative.objects.get_or_create(question=self, text=u"Não sei")
-
     def __init__(self, *args, **kargs):
         super(MultipleChoiceQuestion, self).__init__(*args, **kargs)
         self.type = 'MU'
+
+    # Returns the score of the answered question
+    def correct(self, answer):
+        if answer.casted().chosen_alternative is None:
+            return 0
+
+        if answer.casted().chosen_alternative.id == self.get_correct_alternative().id:
+            return 1
+        else:
+            return 0
 
 
 class MultipleChoiceAlternative(models.Model):
@@ -298,7 +325,7 @@ class FileQuestion(Question):
 
 
 class FileAnswer(Answer):
-    file = models.FileField(upload_to='uploads')
+    file = models.FileField(upload_to = manage_uploads_filenames)
 
     def __init__(self, *args, **kargs):
         super(FileAnswer, self).__init__(*args, **kargs)
@@ -311,7 +338,7 @@ class FileAnswer(Answer):
 class ExerciseListQuestionThrough(models.Model):
     exerciselist = models.ForeignKey(ExerciseList)
     question = models.ForeignKey(Question)
-    order = models.PositiveIntegerField(unique=True)
+    order = models.PositiveIntegerField()
     weight = models.PositiveIntegerField()
 
     class Meta:

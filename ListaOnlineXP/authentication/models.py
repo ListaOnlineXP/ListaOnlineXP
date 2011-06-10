@@ -25,7 +25,15 @@ class Profile(models.Model):
         return self.name
 
 class Student(Profile):
-    pass
+    #Get Group filtering Student
+    def get_group(self, exercise_list):
+        groups = Group.objects.filter(solution__exercise_list = exercise_list).all()
+        group = None
+        for gr in groups:
+            if self in gr.students.all():
+                group = gr
+                
+        return group
 
 class Teacher(Profile):
     pass

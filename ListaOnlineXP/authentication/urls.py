@@ -7,4 +7,6 @@ urlpatterns = patterns('authentication.views',
     (r'^login/$', login, {'template_name' : 'login.html'}),
     (r'^logout/$', logout, {'next_page': '/login/'}),
     (r'^signup/$', 'signup'),
+    (r'^groups/([0-9]+)$', 'groups'),
+    (r'^groups/update/([0-9]+)$', 'group_update'),
 )
