@@ -6,7 +6,6 @@
 {% if group_list %}
   <table cellspacing="0">
   <thead><tr>
-    <th>Número</th>
     <th>Alunos</th>
     <th>Ingresso</th>
   </tr></thead>
@@ -14,7 +13,6 @@
   <tbody>
   {% for group in group_list %}
     <tr>
-    <th>{{ group.id }}</th>
     <th>
     {% for student in group.students.all %}
         {{ student.name }}</br>
