@@ -39,7 +39,7 @@ class Teacher(Profile):
     pass
 
 class Group(models.Model):
-    students = models.ManyToManyField(Student)
+    students = models.ManyToManyField(Student, blank=True)
     solution = models.OneToOneField('exerciselist.ExerciseListSolution')
 
     def __unicode__(self):
