@@ -44,6 +44,7 @@ class Group(models.Model):
 
     def __unicode__(self):
         s = self.solution.exercise_list.name + ': '
-        for student in self.students:
+        for student in self.students.all():
             s += student.name + ', '
         s = s[:-2]
+        return s

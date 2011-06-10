@@ -13,7 +13,6 @@ class ExerciseList(models.Model):
     pub_date = models.DateField(default=datetime.datetime.today)
     due_date = models.DateField(default=(datetime.datetime.today() + datetime.timedelta(days=7)))
     questions = models.ManyToManyField('Question', through='ExerciseListQuestionThrough')
-    number_of_students = models.PositiveIntegerField()
     min_number_of_students = models.PositiveIntegerField()
     max_number_of_students = models.PositiveIntegerField()
     create_random_groups = models.BooleanField()
@@ -32,10 +31,10 @@ class ExerciseList(models.Model):
                 solution.save()
                 group = Group(solution = solution)
                 group.save()
-                for student in students[:self.number_of_students]:
+                for student in students[:self.max_number_of_students]:
                     group.students.add(student)
                 group.save()
-                students = students[self.number_of_students:]
+                students = students[self.max_number_of_students:]
 
     def get_multiple_choice_questions(self):
         return MultipleChoiceQuestion.objects.filter(exerciselist=self)
