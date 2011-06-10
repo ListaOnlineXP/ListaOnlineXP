@@ -11,6 +11,7 @@ from course.models import Course
 from exerciselist.models import * 
 from forms import *
 from django.forms.models import inlineformset_factory
+from random import shuffle
 
 import os.path
 from subprocess import Popen, PIPE
