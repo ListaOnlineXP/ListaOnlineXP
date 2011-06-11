@@ -55,4 +55,4 @@ def group_update(request, group_id):
     group = Group.objects.get(pk=group_id)
     group.students.add(student)
     
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/exercise_list/'+str(group.solution.pk))
