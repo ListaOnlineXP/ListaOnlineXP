@@ -19,22 +19,22 @@ class ExerciseList(models.Model):
 
     def save(self):
         super(ExerciseList, self).save()
-	randomize = self.create_random_groups
+        randomize = self.create_random_groups or (self.max_number_of_students==1)
         students = []
         for student in self.course.student.all():
             has_group = Group.objects.filter(solution__exercise_list=self, students=student).count()
             if not has_group:
                 students.append(student)
-	if randomize:
+        if randomize:
             random.shuffle(students)
         while students:
             solution = ExerciseListSolution(exercise_list=self, finalized=False)
             solution.save()
             group = Group(solution = solution)
             group.save()
-	    if randomize:
+            if randomize:
                 for student in students[:self.max_number_of_students]:
-	            group.students.add(student)
+                    group.students.add(student)
             group.save()
             students = students[self.max_number_of_students:]
 
