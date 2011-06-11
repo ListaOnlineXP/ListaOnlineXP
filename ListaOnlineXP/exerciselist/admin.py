@@ -11,6 +11,15 @@ class QuestionExerciseInline(admin.StackedInline):
 class ExerciseListForm(forms.ModelForm):
     model = ExerciseList
 
+    def clean(self):
+        data = self.cleaned_data
+ 
+        max_number_of_students = data["max_number_of_students"]
+        min_number_of_students = data["min_number_of_students"]
+        if max_number_of_students < min_number_of_students:
+                raise forms.ValidationError("Max number of students is fewer than min number of students".format(max_number_of_students))
+        return data
+
     class Media:
         js = (
                 '/site_media/js/custom_admin_jquery.js',
