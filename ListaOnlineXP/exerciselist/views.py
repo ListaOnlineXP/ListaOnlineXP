@@ -85,10 +85,8 @@ def exercise_list(request, exercise_list_id):
     for through_object in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list_solution.exercise_list):
         question_answered = through_object.question
         casted_answer = exercise_list_solution.answer_set.get(question_answered = question_answered).casted()
+        java_result = None
 
-        #Debug
-        extra = None
-        #End Debug
         if casted_answer.type == 'MU':
             form = MultipleChoiceAnswerForm(data=data, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERMU')
         elif casted_answer.type == 'DI':
@@ -102,13 +100,7 @@ def exercise_list(request, exercise_list_id):
                 if form.is_valid():
                     code = form.cleaned_data['code']
                     test = question_answered.casted().criteria
-                    result = test_code(test=test, code=code)
-                    #Debug
-                    extra = result
-                    #End Debug
-
-                pass
-
+                    java_result = test_code(test=test, code=code)
 
         elif casted_answer.type == 'TF':
             #Check https://docs.djangoproject.com/en/dev/topics/forms/modelforms/#inline-formsets for details on this one
@@ -117,7 +109,7 @@ def exercise_list(request, exercise_list_id):
         elif casted_answer.type == 'FI':
             form = FileAnswerForm(data=data, files=request.FILES, instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERFI')
 
-        questions_and_forms_list.append({'question' : question_answered, 'form' : form, 'extra' : extra})
+        questions_and_forms_list.append({'question' : question_answered, 'form' : form, 'java_result' : java_result})
 
         #If the request is a POST, validate each form.
         #If the form is valid, save it.

@@ -6,7 +6,11 @@
     {% for question_and_form in questions_and_forms_list %}
         <p>Questão: {{ question_and_form.question.text }}</p>
         {{ question_and_form.form.as_p }}
-        {{ question_and_form.extra|linebreaksbr }}
+
+        {% if question_and_form.java_result %}
+            {{ question_and_form.java_result|linebreaksbr }}
+            <br />
+        {% endif %}
         <br />
     {% endfor %}
     {% if not finalized %}

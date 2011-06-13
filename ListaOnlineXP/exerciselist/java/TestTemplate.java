@@ -78,9 +78,9 @@ public class RealizaTesteNaClasseSubmetida {
             System.exit(1);
         } catch (Exception ex) {
             System.out.println("UNKNOWN_SYSTEM_ERROR!:!Ocorreu um erro desconhecido. Favor entrar em contato com o professor.");
-            System.out.println("UNKNOWN_SYSTEM_ERROR_MESSAGE!:!"+ ex.getMessage());
-            System.out.println("UNKNOWN_SYSTEM_ERROR_TYPE!:!" + ex.getClass());
-            System.out.println("UNKNOWN_SYSTEM_ERROR_WHERE!:!"+ ex.getStackTrace()[0]);
+            System.out.println("UNKNOWN_SYSTEM_ERROR_MESSAGE: "+ ex.getMessage());
+            System.out.println("UNKNOWN_SYSTEM_ERROR_TYPE: " + ex.getClass());
+            System.out.println("UNKNOWN_SYSTEM_ERROR_WHERE: "+ ex.getStackTrace()[0]);
             System.exit(1);
             //ex.printStackTrace(System.out);
             //ex.printStackTrace();
