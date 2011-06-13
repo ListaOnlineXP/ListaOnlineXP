@@ -145,7 +145,7 @@ public class JavaTester {
                             String required = extraiPalavraSeguinte(resultCompilacao, "required: ");
                             return "CODE_ERROR!:!Tipos de dados incompatíveis. Foi encontrado "+found+" e era requerido "+required+".";
                         }
-                        return "CODE_ERROR!:!Falha ao compilar o código de teste.\n"+resultCompilacao;
+                        return "TESTCODE_ERROR!:!Falha ao compilar o código de teste. Entre em contato com o professor.\n"+resultCompilacao;
                     }
 
                     // Executa o teste

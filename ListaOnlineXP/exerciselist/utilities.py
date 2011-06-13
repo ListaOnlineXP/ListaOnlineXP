@@ -11,7 +11,7 @@ def manage_uploads_filenames(instance, filename):
     return "uploads" + "/exercise_list_" + str(exercise_list_id) + "/group_" + str(group_id) + "/" + filename
 
 def test_code(test, code):
-    
+
     path = os.path.dirname(__file__) + "/java/"
 
     code_file = open(path + "Code.java", 'w')
@@ -33,16 +33,16 @@ def test_code(test, code):
     result_message, separator, result_message_remainder = result_message.partition("\n")
 
     if result_code == "CODE_ERROR":
-        return "Erro no código: " + result_message
+        return False, "Erro no código: " + result_message
     elif result_code == "TEST_ERROR":
-        return  result_message
+        return False, result_message
     elif result_code == "CORRECT":
-        return "Sucesso: " + result_message
+        return True, "Sucesso: " + result_message
     elif result_code == "TESTCODE_ERROR":
-        return "Erro: " + result_message
+        return False, "Erro: " + result_message
     elif result_code == "SYSTEM_ERROR":
-        return "Erro do sistema: " + result_message
+        return False, "Erro do sistema: " + result_message
     elif result_code == "UNKNOWN_SYSTEM_ERROR":
-        return "Erro desconhecido: " + result_message
+        return False, "Erro desconhecido: " + result_message
     else:
-        return "Erro do sistema: o sistema de testes retornou uma resposta inesperada."
+        return False, "Erro do sistema: o sistema de testes retornou uma resposta inesperada."

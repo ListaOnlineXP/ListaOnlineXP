@@ -87,20 +87,27 @@ def exercise_list(request, exercise_list_id):
         casted_answer = exercise_list_solution.answer_set.get(question_answered = question_answered).casted()
         java_result = None
 
+
         if casted_answer.type == 'MU':
             form = MultipleChoiceAnswerForm(data=data, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERMU')
         elif casted_answer.type == 'DI':
             form = DiscursiveAnswerForm(data=data, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERDI')
-        elif casted_answer.type == 'JA': 
+        elif casted_answer.type == 'JA':
             form = JavaAnswerForm(data=data, instance=casted_answer, prefix = str(casted_answer.id) + '_ANSWERJA')
 
-            #Test java code
+            #Test java code, save the result
             if request.method == 'POST':
-
+                code_in_database = casted_answer.code
                 if form.is_valid():
                     code = form.cleaned_data['code']
                     test = question_answered.casted().criteria
-                    java_result = test_code(test=test, code=code)
+                    #Only re-test if the submitted code is different from what was already in the database
+                    #Testing is an expensive operation.
+                    if not code == code_in_database:
+                        java_result_success, java_result_message = test_code(test=test, code=code)
+                        casted_answer.last_submit_result = java_result_success
+                        casted_answer.last_submit_message = java_result_message
+            java_result = casted_answer.last_submit_message
 
         elif casted_answer.type == 'TF':
             #Check https://docs.djangoproject.com/en/dev/topics/forms/modelforms/#inline-formsets for details on this one

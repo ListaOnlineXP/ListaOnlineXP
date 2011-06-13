@@ -235,7 +235,8 @@ class JavaQuestion(Question):
 class JavaAnswer(Answer):
 
     code = models.TextField(blank=True)
-
+    last_submit_success = models.BooleanField(default=False)
+    last_submit_message = models.CharField(max_length=1000, default="Não houve submissão de resposta até o momento.")
 
     def __init__(self, *args, **kargs):
         super(JavaAnswer, self).__init__(*args, **kargs)
