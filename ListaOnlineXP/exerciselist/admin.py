@@ -20,13 +20,6 @@ class ExerciseListForm(forms.ModelForm):
                 raise forms.ValidationError("Max number of students is fewer than min number of students".format(max_number_of_students))
         return data
 
-    class Media:
-        js = (
-                '/site_media/js/custom_admin_jquery.js',
-                '/site_media/js/custom_admin_jquery_ui.js',
-                '/site_media/js/exerciselist_sort.js',
-        )
-
 
 class ExerciseListAdmin(admin.ModelAdmin):
     model = ExerciseListQuestionThrough
