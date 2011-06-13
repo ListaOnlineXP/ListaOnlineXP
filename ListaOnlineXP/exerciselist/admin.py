@@ -7,7 +7,6 @@ class QuestionExerciseInline(admin.StackedInline):
     model = ExerciseList.questions.through
 
 
-#Sortable inline, based on: http://djangosnippets.org/snippets/1053/
 class ExerciseListForm(forms.ModelForm):
     model = ExerciseList
 
@@ -92,5 +91,3 @@ admin.site.register(MultipleChoiceAnswer)
 admin.site.register(Tag)
 admin.site.register(ExerciseListSolution)
 admin.site.register(FileQuestion, FileQuestionAdmin)
-#admin.site.register(JavaAnswer)
-#admin.site.register(DiscursiveAnswer)
