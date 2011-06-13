@@ -133,7 +133,9 @@ class ExerciseListSolution(models.Model):
             elif question.type == 'TF':
                 answer, answer_created = TrueFalseAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
                 for truefalsequestion_item in answer.question_answered.casted().truefalseitem_set.all():
-                    truefalseanswer_item, truefalseanswer_item_created = TrueFalseAnswerItem.objects.get_or_create(answer_group=answer, item_answered=truefalsequestion_item, given_answer = False)
+                    truefalseanswer_item, truefalseanswer_item_created = TrueFalseAnswerItem.objects.get_or_create(answer_group=answer, item_answered=truefalsequestion_item)
+                    if truefalseanswer_item_created:
+                        truefalseanswer_item.given_answer = False
             elif question.type == 'FI':
                 answer, answer_created = FileAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
 
