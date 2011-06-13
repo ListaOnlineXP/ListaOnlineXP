@@ -86,7 +86,7 @@ public String execute(String command, String[] env) throws Exception {
         Runtime.getRuntime().runFinalization();
         stdin.interrupt();
         stderr.interrupt();
-        return "TIMEOUT_ERROR : O programa excedeu o tempo limite de execução ("+ this.timeout + " milisegundos)";
+        return "TIMEOUT_ERROR!:!O programa excedeu o tempo limite de execução ("+ this.timeout + " milisegundos)";
     } finally {
         // Stop the timer
         timer.cancel();
@@ -142,7 +142,7 @@ public static void main(String[] args) {
         e.printStackTrace();
     }
 
-    System.out.println("TIMEOUT_ERROR : STOPPED");
+    System.out.println("TIMEOUT_ERROR!:!STOPPED");
 }
 }
 

@@ -33,7 +33,7 @@ public class JavaTester {
             }
             codigo_buffer.close();
         } catch(IOException e) {
-            System.out.println("SYSTEM_ERROR : Falha ao abrir arquivo de código.");
+            System.out.println("SYSTEM_ERROR!:!Falha ao abrir arquivo de código.");
         }
 
         try {
@@ -44,7 +44,7 @@ public class JavaTester {
             }
             criterio_buffer.close();
         } catch(IOException e) {
-            System.out.println("SYSTEM_ERROR : Falha ao abrir arquivo de critério.");
+            System.out.println("SYSTEM_ERROR!:!Falha ao abrir arquivo de critério.");
         }
 
         try {
@@ -58,18 +58,18 @@ public class JavaTester {
 
     public synchronized String executeTest(String codigo, String criterio) throws Exception {
         // Path
-        if (!(new File(path).exists())) throw new Exception("SYSTEM_ERROR : Diretório de execução não encontrado.");
+        if (!(new File(path).exists())) throw new Exception("SYSTEM_ERROR!:!Diretório de execução não encontrado.");
 
         // ----- Gera o arquivo do aluno ------
         // descobre o nome da classe
         int pos = codigo.indexOf("class ");
-        if (pos == -1) return "TEST_ERROR : Não há classe definida.";
+        if (pos == -1) return "CODE_ERROR!:!Não há classe definida.";
         pos = pos + "class ".length();
         while (pos < codigo.length() && codigo.charAt(pos) == ' ') pos++;
         int posFim = pos;
         while (posFim < codigo.length() && 
             (Character.isLetterOrDigit(codigo.charAt(posFim)) || codigo.charAt(posFim) == '_')) posFim++;
-        if (posFim == pos) return "CODECOMPILE_ERROR : Não há classe definida.";
+        if (posFim == pos) return "CODE_ERROR!:!Não há classe definida.";
         String nomeClasse = codigo.substring(pos, posFim);
         // Compila
         File toDelete;
@@ -79,7 +79,7 @@ public class JavaTester {
         toDelete.delete();
         String resultCompilacao = Compilar.compilar(path, nomeClasse, codigo);
         if (!resultCompilacao.equals("")) {
-            return "CODECOMPILE_ERROR : Falha ao compilar o código.\n"+resultCompilacao;
+            return "CODE_ERROR!:!Falha ao compilar o código.\n"+resultCompilacao;
         }
 
         // Trata o codigo de teste
@@ -96,8 +96,8 @@ public class JavaTester {
             while (qtdeParentesesAberto != 0 || criterio.charAt(posFim) != ',') {
                 if (criterio.charAt(posFim) == '(') qtdeParentesesAberto++;
                 if (criterio.charAt(posFim) == ')') qtdeParentesesAberto--;
-                if (qtdeParentesesAberto > 1000) return "TESTCODE_ERROR : Problema no código de teste. Notifique o professor. Não foi possível identificar o primeiro parâmetro. Excesso de parênteses abertos.";
-                if (posFim == criterio.length()-1) return "TESTCODE_ERROR : Problema no código de teste. Notifique o professor. Não foi possível identificar o primeiro parâmetro. Fim do arquivo encontrado.";
+                if (qtdeParentesesAberto > 1000) return "TESTCODE_ERROR!:!Problema no código de teste. Notifique o professor. Não foi possível identificar o primeiro parâmetro. Excesso de parênteses abertos.";
+                if (posFim == criterio.length()-1) return "TESTCODE_ERROR!:!Problema no código de teste. Notifique o professor. Não foi possível identificar o primeiro parâmetro. Fim do arquivo encontrado.";
                 posFim++;
             }
             String parametro = criterio.substring(pos, posFim);
@@ -107,8 +107,8 @@ public class JavaTester {
             while (qtdeParentesesAberto != 0 || (criterio.charAt(posFim) != ',' && criterio.charAt(posFim) != ')')) {
                 if (criterio.charAt(posFim) == '(') qtdeParentesesAberto++;
                 if (criterio.charAt(posFim) == ')') qtdeParentesesAberto--;
-                if (qtdeParentesesAberto > 1000) return "TESTCODE_ERROR : Problema no código de teste. Notifique o professor. Não foi possível identificar o último parâmetro. Excesso de parênteses abertos.";
-                if (posFim == criterio.length()-1) return "TESTCODE_ERROR : Problema no código de teste. Notifique o professor. Não foi possível identificar o último parâmetro. Fim do arquivo encontrado.";
+                if (qtdeParentesesAberto > 1000) return "TESTCODE_ERROR!:!roblema no código de teste. Notifique o professor. Não foi possível identificar o último parâmetro. Excesso de parênteses abertos.";
+                if (posFim == criterio.length()-1) return "TESTCODE_ERROR!:!Problema no código de teste. Notifique o professor. Não foi possível identificar o último parâmetro. Fim do arquivo encontrado.";
                 posFim++;
             }
             if (criterio.charAt(posFim) == ')') {
@@ -131,21 +131,21 @@ public class JavaTester {
             if (resultCompilacao.indexOf("cannot find symbol") != -1) {
                 if (resultCompilacao.indexOf("symbol  : class ") != -1) {
                     String nome = extraiPalavraSeguinte(resultCompilacao, "symbol  : class");
-                    return "TEST_ERROR : Não foi encontrada a classe "+nome+".";
+                    return "CODE_ERROR!:!Não foi encontrada a classe "+nome+".";
                     } else if (resultCompilacao.indexOf("symbol  : method") != -1) {
                         String nomeMetodo = extraiPalavraSeguinte(resultCompilacao, "symbol  : method");
                         String nomeLocal = extraiPalavraSeguinte(resultCompilacao, "location: class ");
-                        return "TEST_ERROR : Não foi encontrado o método "+nomeMetodo+" na classe "+nomeLocal+".";
+                        return "CODE_ERROR!:!Não foi encontrado o método "+nomeMetodo+" na classe "+nomeLocal+".";
                     }
                     } else if (resultCompilacao.indexOf("cannot be applied to ") != -1) {
                         String mensagem = extraiPalavraSeguinte(resultCompilacao,": ");
-                        return "TEST_ERROR : Problema com parâmetros: the method "+mensagem;
+                        return "CODE_ERROR!:!Problema com parâmetros: the method "+mensagem;
                         } else if (resultCompilacao.indexOf("incompatible types") != -1) {
                             String found = extraiPalavraSeguinte(resultCompilacao, "found :");
                             String required = extraiPalavraSeguinte(resultCompilacao, "required: ");
-                            return "TEST_ERROR : Tipos de dados incompatíveis. Foi encontrado "+found+" e era requerido "+required+".";
+                            return "CODE_ERROR!:!Tipos de dados incompatíveis. Foi encontrado "+found+" e era requerido "+required+".";
                         }
-                        return "TEST_ERROR : Falha ao compilar o código de teste.\n"+resultCompilacao;
+                        return "CODE_ERROR!:!Falha ao compilar o código de teste.\n"+resultCompilacao;
                     }
 
                     // Executa o teste
@@ -179,7 +179,7 @@ public class JavaTester {
             try {
                 template = new BufferedReader(new FileReader(path+"TestTemplate.java"));
             } catch (Exception ex) {
-                throw new Exception ("SYSTEM_ERROR : Arquivo TestTemplate.java não encontrado no diretório " + path);
+                throw new Exception ("SYSTEM_ERROR!:!Arquivo TestTemplate.java não encontrado no diretório " + path);
             }
             String linha;
             while ((linha = template.readLine()) != null) {
