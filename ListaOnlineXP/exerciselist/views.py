@@ -81,13 +81,14 @@ def exercise_list(request, exercise_list_id):
     #For each answer in the exercise list solution, get the filled (bound) form associated with it
     #If the request is of the type POST, it will be filled with the POST DATA
 
-    #Debug
-    extra = None
-    #End Debug
+
     for through_object in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list_solution.exercise_list):
         question_answered = through_object.question
         casted_answer = exercise_list_solution.answer_set.get(question_answered = question_answered).casted()
 
+        #Debug
+        extra = None
+        #End Debug
         if casted_answer.type == 'MU':
             form = MultipleChoiceAnswerForm(data=data, instance=casted_answer, prefix =  str(casted_answer.id) + '_ANSWERMU')
         elif casted_answer.type == 'DI':
