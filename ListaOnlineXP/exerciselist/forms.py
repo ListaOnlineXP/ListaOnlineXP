@@ -3,11 +3,6 @@
 from django import forms
 from models import *
 
-class GetCodeForm(forms.Form):
-    code = forms.CharField(max_length=1000, label='Código', widget=forms.Textarea(attrs={'class':'special'}) )
-    test = forms.CharField(max_length=1000, label='Teste', widget=forms.Textarea(attrs={'class':'special'}) )
-
-
 class MultipleChoiceAnswerForm(forms.ModelForm):
 
     def __init__(self, *args, **kargs):
