@@ -316,8 +316,8 @@ class TrueFalseAnswer(Answer):
 
 class TrueFalseAnswerItem(models.Model):
     answer_group = models.ForeignKey(TrueFalseAnswer)
-    item_answered = models.ForeignKey(TrueFalseItem)
     given_answer = models.BooleanField()
+    item_answered = models.ForeignKey(TrueFalseItem)
 
 
 class FileQuestion(Question):
