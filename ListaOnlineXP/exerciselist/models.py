@@ -125,11 +125,11 @@ class ExerciseListSolution(models.Model):
         for question in questions:
             
             if question.type == 'JA':
-                answer, answer_created = JavaQuestionAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
+                answer, answer_created = JavaAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
             elif question.type == 'DI':
-                answer, answer_created = DiscursiveQuestionAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
+                answer, answer_created = DiscursiveAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
             elif question.type == 'MU':
-                answer, answer_created = MultipleChoiceQuestionAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
+                answer, answer_created = MultipleChoiceAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
             elif question.type == 'TF':
                 answer, answer_created = TrueFalseAnswer.objects.get_or_create(exercise_list_solution=self, question_answered=question)
                 for truefalsequestion_item in answer.question_answered.casted().truefalseitem_set.all():
@@ -186,8 +186,8 @@ class Answer(models.Model):
         Multiple Choice Answer object once this
         method is called.
         Ex: question = Answer.objects.get(pk=1).casted()
-        might return a MultipleChoiceQuestionAnswer object,
-        of a DiscursiveQuestionAnswer object, depending
+        might return a MultipleChoiceAnswer object,
+        of a DiscursiveAnswer object, depending
         on what kind of question it actually is.
         """
 
@@ -195,11 +195,11 @@ class Answer(models.Model):
             if self.type == 'TF':
                 return self.truefalseanswer
             elif self.type == 'DI':
-                return self.discursivequestionanswer
+                return self.discursiveanswer
             elif self.type == 'JA':
-                return self.javaquestionanswer
+                return self.javaanswer
             elif self.type == 'MU':
-                return self.multiplechoicequestionanswer
+                return self.multiplechoiceanswer
             elif self.type == 'FI':
                 return self.fileanswer
 
@@ -214,12 +214,12 @@ class DiscursiveQuestion(Question):
         self.type = 'DI'
 
 
-class DiscursiveQuestionAnswer(Answer):
+class DiscursiveAnswer(Answer):
 
     text = models.TextField(blank=True)
 
     def __init__(self, *args, **kargs):
-        super(DiscursiveQuestionAnswer, self).__init__(*args, **kargs)
+        super(DiscursiveAnswer, self).__init__(*args, **kargs)
         self.type = 'DI'
 
 
@@ -232,12 +232,13 @@ class JavaQuestion(Question):
         self.type = 'JA'
 
 
-class JavaQuestionAnswer(Answer):
+class JavaAnswer(Answer):
 
     code = models.TextField(blank=True)
 
+
     def __init__(self, *args, **kargs):
-        super(JavaQuestionAnswer, self).__init__(*args, **kargs)
+        super(JavaAnswer, self).__init__(*args, **kargs)
         self.type = 'JA'
 
 
@@ -284,12 +285,12 @@ class MultipleChoiceWrongAlternative(MultipleChoiceAlternative):
     question = models.ForeignKey(MultipleChoiceQuestion)
 
 
-class MultipleChoiceQuestionAnswer(Answer):
+class MultipleChoiceAnswer(Answer):
 
     chosen_alternative = models.ForeignKey(MultipleChoiceAlternative, blank=True, null=True)
 
     def __init__(self, *args, **kargs):
-        super(MultipleChoiceQuestionAnswer, self).__init__(*args, **kargs)
+        super(MultipleChoiceAnswer, self).__init__(*args, **kargs)
         self.type = 'MU'
 
 

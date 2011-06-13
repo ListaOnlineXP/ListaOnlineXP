@@ -18,7 +18,7 @@ class MultipleChoiceAnswerForm(forms.ModelForm):
         
 
     class Meta:
-        model = MultipleChoiceQuestionAnswer
+        model = MultipleChoiceAnswer
         exclude = ('type',)
         widgets = {
                 'chosen_alternative': forms.RadioSelect(),
@@ -27,13 +27,13 @@ class MultipleChoiceAnswerForm(forms.ModelForm):
 
 class DiscursiveAnswerForm(forms.ModelForm):
     class Meta:
-        model = DiscursiveQuestionAnswer
+        model = DiscursiveAnswer
         fields = ('text',)
 
 
 class JavaAnswerForm(forms.ModelForm):
     class Meta:
-        model = JavaQuestionAnswer
+        model = JavaAnswer
         fields = ('code',)
 
 class TrueFalseAnswerItemForm(forms.ModelForm):
