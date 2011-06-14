@@ -46,3 +46,32 @@ class FileAnswerForm(forms.ModelForm):
         fields = ('file', )
 
 
+
+        
+class MultipleChoiceQuestionForm(forms.ModelForm):
+    class Meta:
+        model = MultipleChoiceQuestion
+        exclude = ['type']
+
+
+class DiscursiveQuestionForm(forms.ModelForm):
+    class Meta:
+        model = DiscursiveQuestion
+        exclude = ['type']
+
+class JavaQuestionForm(forms.ModelForm):
+    class Meta:
+        model = JavaQuestion
+        exclude = ['type']
+        
+class TrueFalseQuestionItemForm(forms.ModelForm):
+    class Meta:
+        model = TrueFalseItem
+        exclude = ['type']
+
+class FileQuestionForm(forms.ModelForm):
+    class Meta:
+        model = FileQuestion
+        exclude = ['type']
+
+

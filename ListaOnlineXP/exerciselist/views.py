@@ -80,8 +80,6 @@ def exercise_list(request, exercise_list_id):
 
     #For each answer in the exercise list solution, get the filled (bound) form associated with it
     #If the request is of the type POST, it will be filled with the POST DATA
-
-
     for through_object in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list_solution.exercise_list):
         question_answered = through_object.question
         casted_answer = exercise_list_solution.answer_set.get(question_answered = question_answered).casted()
@@ -179,5 +177,19 @@ def view_exercise_list_solution(request, exercise_list_solution_id):
     values['exercise_list_title'] = exercise_list_solution.exercise_list.name
     return render_to_response('view_exercise_list_solution.html', values)
 
+@teacher_required
+def create_modify_exercise_list(request, exercise_list_id=None):
+
+    values = {}
+    empty_forms = {}
+    values.update(csrf(request))
+
+    if exercise_list_id is None:
+        empty_forms['discursive'] = DiscursiveQuestionForm(prefix='__prefix__')
+        empty_forms['java'] = JavaQuestionForm(prefix='__prefix__')
+        empty_forms['multiple'] = MultipleChoiceQuestionForm(prefix='__prefix__')
+        empty_forms['file'] = FileQuestionForm(prefix='__prefix__')
 
 
+    values['empty_forms'] = empty_forms
+    return render_to_response('create_modify_exercise_list.html', values)

@@ -1,0 +1,11 @@
+{% extends "base_site.html" %}
+
+{% block content_sidebar %}
+
+        {% for empty_form_key, empty_form in empty_forms.iteritems %}
+            <p>{{ empty_form_key }}</p>
+            <table>{{ empty_form.as_table }}</table>
+            <br /> 
+        {% endfor %}
+
+{% endblock %}
