@@ -1,11 +1,31 @@
 {% extends "base_site.html" %}
 
 {% block content_sidebar %}
+        <table border="1">
+            {{ empty_forms.discursive.as_table }}
+        </table>
+        <br /><br />
 
-        {% for empty_form_key, empty_form in empty_forms.iteritems %}
-            <p>{{ empty_form_key }}</p>
-            <table>{{ empty_form.as_table }}</table>
-            <br /> 
-        {% endfor %}
+        <table border="1">
+            {{ empty_forms.java.as_table }}
+        </table>
+        <br /><br />
 
+        <table border="1">
+            {{ empty_forms.file.as_table }}
+        </table>
+        <br /><br />
+
+        <table border="1">
+            {{ empty_forms.multiple.as_table}}
+            {{ empty_forms.multiple_correct.as_table }}
+            {{ empty_forms.multiple_wrong.as_table }}
+        </table>
+        <br /><br />
+
+        <table border="1">
+            {{ empty_forms.truefalse.as_table }}
+            {{ empty_forms.truefalse_item.as_table }}
+        </table>
+        <br /><br />
 {% endblock %}

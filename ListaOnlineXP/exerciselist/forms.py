@@ -47,12 +47,19 @@ class FileAnswerForm(forms.ModelForm):
 
 
 
-        
+#===Begin Exercise list creation forms===
 class MultipleChoiceQuestionForm(forms.ModelForm):
     class Meta:
         model = MultipleChoiceQuestion
         exclude = ['type']
 
+class MultipleChoiceCorrectAlternativeForm(forms.ModelForm):
+    class Meta:
+        model = MultipleChoiceCorrectAlternative
+
+class MultipleChoiceWrongAlternativeForm(forms.ModelForm):
+    class Meta:
+        model = MultipleChoiceWrongAlternative
 
 class DiscursiveQuestionForm(forms.ModelForm):
     class Meta:
@@ -63,15 +70,19 @@ class JavaQuestionForm(forms.ModelForm):
     class Meta:
         model = JavaQuestion
         exclude = ['type']
-        
+
+class TrueFalseQuestionForm(forms.ModelForm):
+    class Meta:
+        model = TrueFalseQuestion
+        exclude = ['type']
+
 class TrueFalseQuestionItemForm(forms.ModelForm):
     class Meta:
         model = TrueFalseItem
-        exclude = ['type']
 
 class FileQuestionForm(forms.ModelForm):
     class Meta:
         model = FileQuestion
         exclude = ['type']
-
+#===END Exercise list creation forms===
 

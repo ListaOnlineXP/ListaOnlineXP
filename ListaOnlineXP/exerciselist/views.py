@@ -186,9 +186,17 @@ def create_modify_exercise_list(request, exercise_list_id=None):
 
     if exercise_list_id is None:
         empty_forms['discursive'] = DiscursiveQuestionForm(prefix='__prefix__')
+
         empty_forms['java'] = JavaQuestionForm(prefix='__prefix__')
+
         empty_forms['multiple'] = MultipleChoiceQuestionForm(prefix='__prefix__')
+        empty_forms['multiple_correct'] = MultipleChoiceCorrectAlternativeForm(prefix='__prefix__')
+        empty_forms['multiple_wrong'] = MultipleChoiceWrongAlternativeForm(prefix='__prefix__')
+
         empty_forms['file'] = FileQuestionForm(prefix='__prefix__')
+
+        empty_forms['truefalse'] = TrueFalseQuestionForm(prefix='__prefix__')
+        empty_forms['truefalse_item'] = TrueFalseQuestionItemForm(prefix='__prefix__')
 
 
     values['empty_forms'] = empty_forms
