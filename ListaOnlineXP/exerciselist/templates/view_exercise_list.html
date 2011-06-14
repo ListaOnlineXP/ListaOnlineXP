@@ -4,14 +4,15 @@
     <h1>Responder lista de exercícios</h1>
     <form name=data action="." method="post" enctype="multipart/form-data"> {% csrf_token %}
     {% for question_and_form in questions_and_forms_list %}
-        <p>Questão: {{ question_and_form.question.text }}</p>
-        {{ question_and_form.form.as_p }}
+        <table border="1">
+        <tr><th>Questão:</th> <td>{{ question_and_form.question.text }}</td></tr>
 
+        {{ question_and_form.form.as_table }}
         {% if question_and_form.java_result %}
-            {{ question_and_form.java_result|linebreaksbr }}
-            <br />
+            <tr><th>Resultado:</th> <td>{{ question_and_form.java_result|linebreaksbr }}</td></tr>
         {% endif %}
-        <br />
+        </table>
+        <br /><br />
     {% endfor %}
     {% if not finalized %}
         <input type="submit" name="save" value="Salvar" />
