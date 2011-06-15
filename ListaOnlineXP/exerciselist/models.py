@@ -165,7 +165,7 @@ class Answer(models.Model):
 
     exercise_list_solution = models.ForeignKey(ExerciseListSolution, editable=False)
     question_answered = models.ForeignKey(Question, editable=False)
-    score = models.FloatField(default=None)
+    score = models.FloatField(null=True)
     comment = models.TextField(null=True)
 
     ANSWER_TYPE_CHOICES = (
