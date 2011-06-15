@@ -150,12 +150,11 @@ class ExerciseListSolution(models.Model):
         max_score = 0
         answers = self.get_answers()
         for answer in self.get_answers():
-            question = answer.question_answered
-            weight = ExerciseListQuestionThrough.objects.get(exerciselist=self.exercise_list, question=question).weight
+            weight = ExerciseListQuestionThrough.objects.get(exerciselist=self.exercise_list, question=answer.question_answered).weight
             max_score += weight
             if answer.type == 'MU' or answer.type == 'TF':
-                casted_question = question.casted()
-                score += weight * casted_question.correct(answer)
+                casted_answer = answer.casted()
+                score += weight * casted_answer.correct()
 
         self.score = 10*score/max_score
         self.save()
@@ -166,6 +165,8 @@ class Answer(models.Model):
 
     exercise_list_solution = models.ForeignKey(ExerciseListSolution, editable=False)
     question_answered = models.ForeignKey(Question, editable=False)
+    score = models.FloatField(default=None)
+    comment = models.TextField()
 
     ANSWER_TYPE_CHOICES = (
         ('TF', 'True/False'),
@@ -257,16 +258,6 @@ class MultipleChoiceQuestion(Question):
         super(MultipleChoiceQuestion, self).__init__(*args, **kargs)
         self.type = 'MU'
 
-    # Returns the score of the answered question
-    def correct(self, answer):
-        if answer.casted().chosen_alternative is None:
-            return 0
-
-        if answer.casted().chosen_alternative.id == self.get_correct_alternative().id:
-            return 1
-        else:
-            return 0
-
 
 class MultipleChoiceAlternative(models.Model):
 
@@ -294,20 +285,20 @@ class MultipleChoiceAnswer(Answer):
         super(MultipleChoiceAnswer, self).__init__(*args, **kargs)
         self.type = 'MU'
 
+    # Returns the score of the answered question
+    def correct(self):
+        if self.chosen_alternative is None:
+            return 0
+        if self.chosen_alternative.id == self.question_answered.casted().get_correct_alternative().id:
+            return 1
+        return 0
+
 
 class TrueFalseQuestion(Question):
 
     def __init__(self, *args, **kargs):
         super(TrueFalseQuestion, self).__init__(*args, **kargs)
         self.type = 'TF'
-
-    def correct(self, answer):
-        score = 0.0
-        items = TrueFalseAnswerItem.objects.filter(answer_group=answer)
-        for item in items:
-            if item.given_answer == item.item_answered.is_correct:
-                score += 1
-        return score/len(items)
 
 
 class TrueFalseItem(models.Model):
@@ -321,6 +312,14 @@ class TrueFalseAnswer(Answer):
     def __init__(self, *args, **kargs):
         super(TrueFalseAnswer, self).__init__(*args, **kargs)
         self.type = 'TF'
+
+    def correct(self):
+        score = 0.0
+        items = TrueFalseAnswerItem.objects.filter(answer_group=self)
+        for i in items:
+            if i.given_answer == i.item_answered.is_correct:
+                score += 1
+        return score/len(items)
 
 
 class TrueFalseAnswerItem(models.Model):

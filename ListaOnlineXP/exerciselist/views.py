@@ -52,9 +52,6 @@ def exercise_list(request, exercise_list_id):
     student = Student.objects.get(user=request.user)
     exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
     
-    print student.name
-    print exercise_list.name
-
     course = exercise_list.course
     if not course.has_student(student):
         return HttpResponseRedirect('/')
