@@ -2,31 +2,58 @@
 
 {% block content_sidebar %}
 
-    <table border="1">
+    <table id="teste">
+    
+    </table>
+
+
+        <ul>
+        <li><input type="radio" name="question_type_selection" value="MU" id="question_type_selection_mu"><label for="question_type_selection_mu">Múltipla escolha</label></li>
+        <li><input type="radio" name="question_type_selection" value="TF" id="question_type_selection_tf"><label for="question_type_selection_tf">Verdadeiro ou Falso</label></li>
+        <li><input type="radio" name="question_type_selection" value="FI" id="question_type_selection_fi"><label for="question_type_selection_fi">Arquivo</label></li>
+        <li><input type="radio" name="question_type_selection" value="JA" id="question_type_selection_ja"><label for="question_type_selection_ja">Java</label></li>
+        <li><input type="radio" name="question_type_selection" value="DI" id="question_type_selection_di"><label for="question_type_selection_di">Discursiva</label></li>
+        </ul>
+        <input type="button" id="select_question" value="Nova questão" />
+
+
+
+
+        {% comment %}
         {{ empty_forms.discursive.as_table }}
-    </table>
-    <br /><br />
-
-    <table border="1">
         {{ empty_forms.java.as_table }}
-    </table>
-    <br /><br />
-
-    <table border="1">
         {{ empty_forms.file.as_table }}
-    </table>
-    <br /><br />
-
-    <table border="1">
         {{ empty_forms.multiple.as_table}}
         {{ empty_forms.multiple_correct.as_table }}
         {{ empty_forms.multiple_wrong.as_table }}
-    </table>
-    <br /><br />
-
-    <table border="1">
         {{ empty_forms.truefalse.as_table }}
         {{ empty_forms.truefalse_item.as_table }}
-    </table>
-    <br /><br />
+        {% endcomment %}
+
+
+    <script type="text/javascript">
+        $("input#select_question").click(function () {
+            var selected_question_type = $('input[type=radio][name=question_type_selection]:checked').val();
+
+            form = "";
+            if(selected_question_type == "MU") {
+                form = '{{ empty_forms.multiple.as_table|linebreaksbr }}'.replace("__prefix__", "new_mu");
+            } else if(selected_question_type == "TF") {
+                form = '{{ empty_forms.truefalse.as_table|linebreaksbr }}'.replace("__prefix__", "new_tf");
+            } else if(selected_question_type == "FI") {
+                form = '{{ empty_forms.file.as_table|linebreaksbr }}'.replace("__prefix__", "new_fi");
+            } else if(selected_question_type == "JA") {
+                form = '{{ empty_forms.java.as_table|linebreaksbr }}'.replace("__prefix__", "new_ja");
+            } else if(selected_question_type == "DI") {
+                form = '{{ empty_forms.discursive.as_table|linebreaksbr }}'.replace("__prefix__", "new_di");
+            }
+
+            if(form != "") {
+                $(form).appendTo('#teste');
+            }
+
+        });
+
+    </script>
+
 {% endblock %}
