@@ -1,0 +1,8 @@
+{% extends "base_site.html" %}
+
+{% block content_sidebar %}
+    {{ question.text }}
+    {% for answer in answers %}
+        <p><a href="/answer/{{ answer.id }}/">{{ answer.id }}</a></p>
+    {% endfor %}
+{% endblock %}

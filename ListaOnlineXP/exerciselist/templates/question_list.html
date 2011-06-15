@@ -1,0 +1,7 @@
+{% extends "base_site.html" %}
+
+{% block content_sidebar %}
+    {% for question in questions %}
+    <p><a href="/question/{{ question.id }}/">{{ question }}</a></p>
+    {% endfor %}
+{% endblock %}
