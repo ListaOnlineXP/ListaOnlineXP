@@ -30,6 +30,24 @@ def exercise_list_delete(request, list_id):
     return delete_object(request, model=ExerciseList, object_id=list_id, 
             template_name='exercise_list_confirm_delete.html', post_delete_redirect='/')
 
+@teacher_required
+def exercise_list_correct(request, list_id):
+    exercise_list = ExerciseList.objects.get(id=list_id)
+    questions = [through_object.question for through_object in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)]
+    return render_to_response('question_list.html', {'questions': questions})
+
+@teacher_required
+def correct_question(request, question_id):
+    question = Question.objects.get(id=question_id)
+    answers = Answer.objects.filter(question_answered=question).all()
+    return render_to_response('question_correct.html', {'question': question, 'answers': answers})
+
+def correct_answer(request, answer_id):
+    answer = Answer.objects.get(id=answer_id)
+    answer_text = 'teste'
+    question = answer.question_answered
+    form = CorrectAnswerForm()
+    return render_to_response('answer_correct.html', {'question': question, 'answer': answer, 'answer_text': answer_text, 'form': form})
 
 class GetStudentsExerciseList(ListView):
     context_object_name = 'exercise_list_list'
