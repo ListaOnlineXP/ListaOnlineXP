@@ -153,7 +153,7 @@ class ExerciseListSolution(models.Model):
             question = answer.question_answered
             weight = ExerciseListQuestionThrough.objects.get(exerciselist=self.exercise_list, question=question).weight
             max_score += weight
-            if answer.type == 'MU':
+            if answer.type == 'MU' or answer.type == 'TF':
                 casted_question = question.casted()
                 score += weight * casted_question.correct(answer)
 
@@ -301,11 +301,19 @@ class TrueFalseQuestion(Question):
         super(TrueFalseQuestion, self).__init__(*args, **kargs)
         self.type = 'TF'
 
+    def correct(self, answer):
+        score = 0.0
+        items = TrueFalseAnswerItem.objects.filter(answer_group=answer)
+        for item in items:
+            if item.given_answer == item.item_answered.is_correct:
+                score += 1
+        return score/len(items)
+
 
 class TrueFalseItem(models.Model):
     question = models.ForeignKey(TrueFalseQuestion)
     text = models.TextField()
-    truefalse = models.BooleanField()
+    is_correct = models.BooleanField(u"correto")
 
 
 class TrueFalseAnswer(Answer):
