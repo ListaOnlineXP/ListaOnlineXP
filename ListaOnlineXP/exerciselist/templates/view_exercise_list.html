@@ -1,6 +1,7 @@
 {% extends "base_site.html" %}
 
 {% block content_sidebar %}
+
     <h1>Responder lista de exercícios</h1>
     <form name=data action="." method="post" enctype="multipart/form-data"> {% csrf_token %}
     {% for question_and_form in questions_and_forms_list %}
@@ -11,6 +12,13 @@
         {% if question_and_form.java_result %}
             <tr><th>Resultado:</th> <td>{{ question_and_form.java_result|linebreaksbr }}</td></tr>
         {% endif %}
+
+        {% if question_and_form.question.type == 'MU' %}
+            <tr><th></th><td>
+                <input type="button" value="Limpar" id="{{ question_and_form.form.prefix }}"/>
+            </td></tr>
+        {% endif %}
+
         </table>
         <br /><br />
     {% endfor %}
@@ -23,4 +31,12 @@
         <input type="submit" name="rollback" value="Rollback" />
     {% endif %}
     </form>
+
+
+    <script type="text/javascript">
+        $("input[id$=ANSWERMU]").click(function () {
+            var radioname = (this).id;
+            $("input[type=radio][id*=" + radioname + "]:checked").attr("checked", false);
+        });
+    </script>
 {% endblock %}
