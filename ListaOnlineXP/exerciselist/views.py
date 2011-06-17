@@ -152,6 +152,7 @@ def exercise_list(request, exercise_list_id):
     if request.method == 'POST' and 'rollback' in request.POST:
         exercise_list_solution.finalized = False
 
+
     values['finalized'] = exercise_list_solution.finalized
     values['questions_and_forms_list'] = questions_and_forms_list
     values['user'] = student

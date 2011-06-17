@@ -2,9 +2,9 @@
 
 {% block content_sidebar %}
 
-    <table id="teste">
-    
-    </table>
+    <div id="questions_wrapper">
+
+    </div>
 
 
         <ul>
@@ -14,46 +14,80 @@
         <li><input type="radio" name="question_type_selection" value="JA" id="question_type_selection_ja"><label for="question_type_selection_ja">Java</label></li>
         <li><input type="radio" name="question_type_selection" value="DI" id="question_type_selection_di"><label for="question_type_selection_di">Discursiva</label></li>
         </ul>
-        <input type="button" id="select_question" value="Nova questão" />
+        <input type="button" id="add_question" value="Nova questão" />
 
 
 
 
         {% comment %}
-        {{ empty_forms.discursive.as_table }}
-        {{ empty_forms.java.as_table }}
-        {{ empty_forms.file.as_table }}
-        {{ empty_forms.multiple.as_table}}
-        {{ empty_forms.multiple_correct.as_table }}
-        {{ empty_forms.multiple_wrong.as_table }}
-        {{ empty_forms.truefalse.as_table }}
-        {{ empty_forms.truefalse_item.as_table }}
+        {{ empty_forms.discursive.as_p }}
+        {{ empty_forms.java.as_p }}
+        {{ empty_forms.file.as_p }}
+        {{ empty_forms.multiple.as_p}}
+        {{ empty_forms.multiple_correct.as_p }}
+        {{ empty_forms.multiple_wrong.as_p }}
+        {{ empty_forms.truefalse.as_p }}
+        {{ empty_forms.truefalse_item.as_p }}
         {% endcomment %}
 
 
     <script type="text/javascript">
-        $("input#select_question").click(function () {
+    $(document).ready(function() {
+
+        $("input#add_question").click(function () {
             var selected_question_type = $('input[type=radio][name=question_type_selection]:checked').val();
+
+            var new_multiple_id = "new_mu-"+$('div[id^=new_mu]').size()+1;
+            var new_truefalse_id = "new_tf-"+$('div[id^=new_tf]').size()+1;
+            var new_file_id = "new_fi-"+$('div[id^=new_fi]').size()+1;
+            var new_java_id = "new_ja-"+$('div[id^=new_ja]').size()+1;
+            var new_discursive_id = "new_di-"+$('div[id^=new_di]').size()+1;
 
             form = "";
             if(selected_question_type == "MU") {
-                form = '{{ empty_forms.multiple.as_table|linebreaksbr }}'.replace("__prefix__", "new_mu");
+                form += '<div class="question_wrapper" id="'+ new_multiple_id + '">';
+                form += '{{ empty_forms.multiple.as_p|linebreaksbr }}'.replace("__prefix__", new_multiple_id);
+                form += '{{ empty_forms.multiple_correct.as_p|linebreaksbr }}'.replace("__prefix__", new_multiple_id + "_correct");
+                form += '<input type="button" value="Adicionar novo item falso" class="add_multiple_choice_item" id="'+ new_multiple_id + '" />';
+                form += '</div>';
+
             } else if(selected_question_type == "TF") {
-                form = '{{ empty_forms.truefalse.as_table|linebreaksbr }}'.replace("__prefix__", "new_tf");
+                form += '<div class="question_wrapper" id="'+ new_truefalse_id + '">';
+                form += '{{ empty_forms.truefalse.as_p|linebreaksbr }}'.replace("__prefix__", "new_tf");
+                form += '<input type="button" value="Adicionar novo item" class="add_truefalse_item" id="'+ new_truefalse_id + '" />';
+                form += '</div>';
             } else if(selected_question_type == "FI") {
-                form = '{{ empty_forms.file.as_table|linebreaksbr }}'.replace("__prefix__", "new_fi");
+                form += '<div class="question_wrapper" id="'+ new_file_id + '">';
+                form += '{{ empty_forms.file.as_p|linebreaksbr }}'.replace("__prefix__", "new_fi");
+                form += '</div>';
             } else if(selected_question_type == "JA") {
-                form = '{{ empty_forms.java.as_table|linebreaksbr }}'.replace("__prefix__", "new_ja");
+                form += '<div class="question_wrapper" id="'+ new_java_id + '">';
+                form += '{{ empty_forms.java.as_p|linebreaksbr }}'.replace("__prefix__", "new_ja");
+                form += '</div>';
             } else if(selected_question_type == "DI") {
-                form = '{{ empty_forms.discursive.as_table|linebreaksbr }}'.replace("__prefix__", "new_di");
+                form += '<div class="question_wrapper" id="'+ new_discursive_id + '">';
+                form += '{{ empty_forms.discursive.as_p|linebreaksbr }}'.replace("__prefix__", "new_di");
+                form += '</div>';
             }
 
             if(form != "") {
-                $(form).appendTo('#teste');
+                $(form).appendTo('div#questions_wrapper');
             }
 
         });
 
+        //Handle new true/false and multiple choice false items.
+        //See http://www.learningjquery.com/2008/03/working-with-events-part-1 for reference.
+        $('body').click(function(event) {
+            var $tgt = $(event.target);
+            if($tgt.is('.add_multiple_choice_item')) {
+                $tgt.parent().append('{{ empty_forms.multiple_wrong.as_p|linebreaksbr }}');
+            } else if($tgt.is('.add_truefalse_item')) {
+                $tgt.parent().append('{{ empty_forms.truefalse_item.as_p|linebreaksbr }}');
+            }
+        });
+
+    });
     </script>
 
 {% endblock %}

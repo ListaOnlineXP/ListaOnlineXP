@@ -56,10 +56,12 @@ class MultipleChoiceQuestionForm(forms.ModelForm):
 class MultipleChoiceCorrectAlternativeForm(forms.ModelForm):
     class Meta:
         model = MultipleChoiceCorrectAlternative
+        exclude = ['question']
 
 class MultipleChoiceWrongAlternativeForm(forms.ModelForm):
     class Meta:
         model = MultipleChoiceWrongAlternative
+        exclude = ['question']
 
 class DiscursiveQuestionForm(forms.ModelForm):
     class Meta:
@@ -79,6 +81,7 @@ class TrueFalseQuestionForm(forms.ModelForm):
 class TrueFalseQuestionItemForm(forms.ModelForm):
     class Meta:
         model = TrueFalseItem
+        exclude = ['question']
 
 class FileQuestionForm(forms.ModelForm):
     class Meta:

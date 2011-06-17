@@ -13,6 +13,7 @@
             <tr><th>Resultado:</th> <td>{{ question_and_form.java_result|linebreaksbr }}</td></tr>
         {% endif %}
 
+
         {% if question_and_form.question.type == 'MU' %}
             <tr><th></th><td>
                 <input type="button" value="Limpar" id="{{ question_and_form.form.prefix }}"/>
