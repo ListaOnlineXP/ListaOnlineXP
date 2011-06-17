@@ -1,10 +1,14 @@
 {% extends "base_site.html" %}
 
 {% block content_sidebar %}
-    <p style="font-weight: bold">{{ question.text }}</p>
-    <p> Resposta: {{ answer_text }}</p>
+    {% csrf_token %}
     <form method="POST">
-        {% csrf_token %}
-        {{ form }}
+    {% for group, question, answer, form in answer_data %}
+        <h3>Questão:</h3>
+        <p style="font-weight: bold">{{ question }}</p>
+        <h3>Resposta:</h3>
+        <p> {{ answer }}</p>
+            {{ form.as_p }}
+    {% endfor %}
     </form>
 {% endblock %}

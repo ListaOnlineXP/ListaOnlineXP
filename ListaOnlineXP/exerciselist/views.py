@@ -33,6 +33,7 @@ def exercise_list_delete(request, list_id):
 @teacher_required
 def exercise_list_correct(request, list_id):
     values = {}
+    values['user'] = Profile.objects.get(user=request.user)
     values['exercise_list'] = exercise_list = ExerciseList.objects.get(id=list_id)
     values['ordered_questions'] = [(t.order, t.question) for t in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)]
     groups = Group.objects.filter(solution__exercise_list=values['exercise_list'])
@@ -41,21 +42,46 @@ def exercise_list_correct(request, list_id):
         
     return render_to_response('question_list.html', values)
 
+
+# Returns a tuple with the information of the given answer to help the
+# construction of correction views
+# tuple = (owner group, question, answer given, form for correction)
+def get_answer_data(answer_id):
+    answer = Answer.objects.get(id=answer_id)
+    group = answer.exercise_list_solution.get_group()
+    answer_text = answer.casted().__unicode__()
+    question = answer.question_answered
+    form = AnswerCorrectForm(instance=answer)
+    return (group, question, answer_text, form)
+
+
+@teacher_required
+def answer_student(request, student_id, list_id):
+    values = {}
+    values['user'] = Profile.objects.get(user=request.user)
+    values['exercise_list'] = exercise_list = ExerciseList.objects.get(id=list_id)
+    values['group'] = Student.objects.get(id=student_id).get_group(exercise_list)
+    ordered_questions = [(t.order, t.question) for t in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)]
+
+    values['answer_data'] = [get_answer_data(Answer.objects.get(question_answered=q).id) for _o, q in ordered_questions]
+        
+    return render_to_response('answer_correct.html', values)
+
 @teacher_required
 def answer_list(request, question_id):
     values = {}
+    values['user'] = Profile.objects.get(user=request.user)
     values['question'] = Question.objects.get(id=question_id)
     
     answers = Answer.objects.filter(question_answered=values['question']).all()
     values['group_answers'] = [(Group.objects.get(solution=a.exercise_list_solution), a) for a in answers]
     return render_to_response('answer_list.html', values)
 
+@teacher_required
 def answer_correct(request, answer_id):
     values = {}
-    values['answer'] = answer = Answer.objects.get(id=answer_id)
-    values['answer_text'] = answer.casted().__unicode__()
-    values['question'] = answer.question_answered
-    values['form'] = AnswerCorrectForm(instance=answer)
+    values['user'] = Profile.objects.get(user=request.user)
+    values['answer_data'] = [get_answer_data(answer_id)]
     return render_to_response('answer_correct.html', values)
 
 class GetStudentsExerciseList(ListView):
@@ -76,7 +102,7 @@ class GetStudentsExerciseList(ListView):
 def exercise_list(request, exercise_list_id):
     values = {}
     values.update(csrf(request))
-    user = Profile.objects.get(user=request.user)
+    values['user'] = user = Profile.objects.get(user=request.user)
     exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
 
     if not user.is_student():

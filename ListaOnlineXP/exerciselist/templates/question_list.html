@@ -13,9 +13,9 @@
     
     {% for student, answers in student_answers %}
     <tr>
-        <th><a href="/">{{ student }}</a></th>
+        <th><a href="/answer_student/{{ student.id }}/{{ exercise_list.id }}/">{{ student }}</a></th>
         {% for answer in answers %}
-            <th><a href="/">{{ answer.score }}</a></th>
+        <th><a href="/answer_correct/{{ answer.id }}/">{{ answer.score }}</a></th>
         {% endfor %}
     </tr>
     {% endfor %}

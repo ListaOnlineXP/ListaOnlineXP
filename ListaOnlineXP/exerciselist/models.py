@@ -114,6 +114,9 @@ class ExerciseListSolution(models.Model):
     def get_answers(self):
         return Answer.objects.filter(exercise_list_solution=self)
 
+    def get_group(self):
+        return Group.objects.get(solution=self)
+
     def populate_blank(self, *args, **kargs):
         """
         This will go through the questions in the exercise_list
@@ -341,11 +344,6 @@ class TrueFalseAnswerItem(models.Model):
     answer_group = models.ForeignKey(TrueFalseAnswer)
     given_answer = models.BooleanField()
     item_answered = models.ForeignKey(TrueFalseItem)
-
-    def __unicode__(self):
-        if given_answer == True:
-            return u'marcado'
-        return u'não marcado'
 
 
 class FileQuestion(Question):
