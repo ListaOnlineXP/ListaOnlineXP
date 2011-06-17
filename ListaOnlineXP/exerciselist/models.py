@@ -294,7 +294,7 @@ class MultipleChoiceAnswer(Answer):
     # Returns the score of the answered question
     def correct(self):
         self.score = 0.0
-        if self.chosen_alternative is not None or self.chosen_alternative.id == self.question_answered.casted().get_correct_alternative().id:
+        if self.chosen_alternative is not None and self.chosen_alternative.id == self.question_answered.casted().get_correct_alternative().id:
             self.score = 100.0
         self.save()
         return self.score

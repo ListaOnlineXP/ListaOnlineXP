@@ -33,8 +33,12 @@ def exercise_list_delete(request, list_id):
 @teacher_required
 def exercise_list_correct(request, list_id):
     values = {}
-    values['exercise_list'] = ExerciseList.objects.get(id=list_id)
-    values['ordered_questions'] = [(t.order, t.question) for t in ExerciseListQuestionThrough.objects.filter(exerciselist=values['exercise_list'])]
+    values['exercise_list'] = exercise_list = ExerciseList.objects.get(id=list_id)
+    values['ordered_questions'] = [(t.order, t.question) for t in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)]
+    groups = Group.objects.filter(solution__exercise_list=values['exercise_list'])
+    students = exercise_list.course.student.all()
+    values['student_answers'] = [(s, [s.get_group(exercise_list).solution.answer_set.get(question_answered = q) for (o, q) in values['ordered_questions']]) for s in students]
+        
     return render_to_response('question_list.html', values)
 
 @teacher_required
@@ -72,8 +76,13 @@ class GetStudentsExerciseList(ListView):
 def exercise_list(request, exercise_list_id):
     values = {}
     values.update(csrf(request))
-    student = Student.objects.get(user=request.user)
+    user = Profile.objects.get(user=request.user)
     exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
+
+    if not user.is_student():
+        return HttpResponseRedirect('/exercise_list/correct/' + str(exercise_list.id))
+
+    student = user.student
     
     course = exercise_list.course
     if not course.has_student(student):

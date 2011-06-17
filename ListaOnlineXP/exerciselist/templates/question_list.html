@@ -3,7 +3,21 @@
 {% block content_sidebar %}
     <h3>{{ exercise_list }}</h3>
     <p>Escolha a questão a ser corrigita:</p>
-    {% for number, question in ordered_questions %}
-    <p><a href="/answer_list/{{ question.id }}/">{{ number }}) {{question}}</a></p>
+    <table cellspacing="0">
+    <thead><tr><th></th>
+        {% for number, question in ordered_questions %}
+        <th><a href="/answer_list/{{ question.id }}/">Questão {{ number }}</a></th>
+        {% endfor %}
+    </tr></thead>
+    <tbody>
+    
+    {% for student, answers in student_answers %}
+    <tr>
+        <th><a href="/">{{ student }}</a></th>
+        {% for answer in answers %}
+            <th><a href="/">{{ answer.score }}</a></th>
+        {% endfor %}
+    </tr>
     {% endfor %}
+    </tbody>
 {% endblock %}
