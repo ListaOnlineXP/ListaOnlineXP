@@ -38,11 +38,11 @@ def exercise_list_correct(request, list_id):
     return render_to_response('question_list.html', values)
 
 @teacher_required
-def question_correct(request, question_id):
+def answer_list(request, question_id):
     values = {}
     values['question'] = Question.objects.get(id=question_id)
     values['answers'] = [Answer.objects.filter(question_answered=values['question']).all()]
-    return render_to_response('question_correct.html', values)
+    return render_to_response('answer_list.html', values)
 
 def answer_correct(request, answer_id):
     values = {}

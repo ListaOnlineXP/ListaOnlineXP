@@ -4,6 +4,6 @@
     <h3>{{ exercise_list }}</h3>
     <p>Escolha a questão a ser corrigita:</p>
     {% for number, question in questions %}
-    <p><a href="/question_correct/{{ question.id }}/">{{ number }}) {{question}}</a></p>
+    <p><a href="/answer_list/{{ question.id }}/">{{ number }}) {{question}}</a></p>
     {% endfor %}
 {% endblock %}
