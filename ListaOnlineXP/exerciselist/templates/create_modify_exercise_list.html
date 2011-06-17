@@ -37,36 +37,36 @@
         $("input#add_question").click(function () {
             var selected_question_type = $('input[type=radio][name=question_type_selection]:checked').val();
 
-            var new_multiple_id = "new_mu-"+$('div[id^=new_mu]').size()+1;
-            var new_truefalse_id = "new_tf-"+$('div[id^=new_tf]').size()+1;
-            var new_file_id = "new_fi-"+$('div[id^=new_fi]').size()+1;
-            var new_java_id = "new_ja-"+$('div[id^=new_ja]').size()+1;
-            var new_discursive_id = "new_di-"+$('div[id^=new_di]').size()+1;
+            var new_multiple_id = "new_mu_question-"+($('div[class=question_wrapper][id^=new_mu_question-]').size()+1);
+            var new_truefalse_id = "new_tf_question-"+($('div[class=question_wrapper][id^=new_tf_question-]').size()+1);
+            var new_file_id = "new_fi_question-"+($('div[class=question_wrapper][id^=new_fi_question-]').size()+1);
+            var new_java_id = "new_ja_question-"+($('div[class=question_wrapper][id^=new_ja_question-]').size()+1);
+            var new_discursive_id = "new_di_question-"+($('div[class=question_wrapper][id^=new_di_question-]').size()+1);
 
             form = "";
             if(selected_question_type == "MU") {
                 form += '<div class="question_wrapper" id="'+ new_multiple_id + '">';
-                form += '{{ empty_forms.multiple.as_p|linebreaksbr }}'.replace("__prefix__", new_multiple_id);
-                form += '{{ empty_forms.multiple_correct.as_p|linebreaksbr }}'.replace("__prefix__", new_multiple_id + "_correct");
+                form += '{{ empty_forms.multiple.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_multiple_id);
+                form += '{{ empty_forms.multiple_correct.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_multiple_id + "_correct");
                 form += '<input type="button" value="Adicionar novo item falso" class="add_multiple_choice_item" id="'+ new_multiple_id + '" />';
                 form += '</div>';
 
             } else if(selected_question_type == "TF") {
                 form += '<div class="question_wrapper" id="'+ new_truefalse_id + '">';
-                form += '{{ empty_forms.truefalse.as_p|linebreaksbr }}'.replace("__prefix__", "new_tf");
+                form += '{{ empty_forms.truefalse.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_truefalse_id);
                 form += '<input type="button" value="Adicionar novo item" class="add_truefalse_item" id="'+ new_truefalse_id + '" />';
                 form += '</div>';
             } else if(selected_question_type == "FI") {
                 form += '<div class="question_wrapper" id="'+ new_file_id + '">';
-                form += '{{ empty_forms.file.as_p|linebreaksbr }}'.replace("__prefix__", "new_fi");
+                form += '{{ empty_forms.file.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_file_id);
                 form += '</div>';
             } else if(selected_question_type == "JA") {
                 form += '<div class="question_wrapper" id="'+ new_java_id + '">';
-                form += '{{ empty_forms.java.as_p|linebreaksbr }}'.replace("__prefix__", "new_ja");
+                form += '{{ empty_forms.java.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_java_id);
                 form += '</div>';
             } else if(selected_question_type == "DI") {
                 form += '<div class="question_wrapper" id="'+ new_discursive_id + '">';
-                form += '{{ empty_forms.discursive.as_p|linebreaksbr }}'.replace("__prefix__", "new_di");
+                form += '{{ empty_forms.discursive.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_discursive_id);
                 form += '</div>';
             }
 
@@ -81,9 +81,28 @@
         $('body').click(function(event) {
             var $tgt = $(event.target);
             if($tgt.is('.add_multiple_choice_item')) {
-                $tgt.before('{{ empty_forms.multiple_wrong.as_p|linebreaksbr }}');
+
+                var mu_parent_id = $tgt.parent().attr('id');
+                var mu_num_items = $tgt.siblings('div[class=mu_item]').size();
+                var new_multiple_item_id = mu_parent_id + '_item-'+(mu_num_items+1);
+
+                alert(new_multiple_item_id);
+                var mu_form = '<div class="mu_item" id="' + new_multiple_item_id + '">';
+                mu_form += '{{ empty_forms.multiple_wrong.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_multiple_item_id);
+                mu_form += '</div>';
+                $tgt.before(mu_form);
+                
             } else if($tgt.is('.add_truefalse_item')) {
-                $tgt.before('{{ empty_forms.truefalse_item.as_p|linebreaksbr }}');
+
+                var tf_parent_id = $tgt.parent().attr('id');
+                var tf_num_items = $tgt.siblings('div[class=tf_item]').size();
+                var new_truefalse_item_id = tf_parent_id +'_item-'+(tf_num_items+1);
+
+                alert(new_truefalse_item_id);
+                var tf_form = '<div class="tf_item" id="' + new_truefalse_item_id + '">';
+                tf_form += '{{ empty_forms.truefalse.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_truefalse_item_id);
+                tf_form += '</div>';
+                $tgt.before(tf_form);
             }
         });
 

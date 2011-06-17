@@ -82,6 +82,7 @@ class TrueFalseQuestionItemForm(forms.ModelForm):
     class Meta:
         model = TrueFalseItem
         exclude = ['question']
+        widgets = {'text' : forms.TextInput}
 
 class FileQuestionForm(forms.ModelForm):
     class Meta:
