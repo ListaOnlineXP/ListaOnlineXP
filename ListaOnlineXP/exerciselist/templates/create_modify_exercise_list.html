@@ -81,9 +81,9 @@
         $('body').click(function(event) {
             var $tgt = $(event.target);
             if($tgt.is('.add_multiple_choice_item')) {
-                $tgt.parent().append('{{ empty_forms.multiple_wrong.as_p|linebreaksbr }}');
+                $tgt.before('{{ empty_forms.multiple_wrong.as_p|linebreaksbr }}');
             } else if($tgt.is('.add_truefalse_item')) {
-                $tgt.parent().append('{{ empty_forms.truefalse_item.as_p|linebreaksbr }}');
+                $tgt.before('{{ empty_forms.truefalse_item.as_p|linebreaksbr }}');
             }
         });
 
