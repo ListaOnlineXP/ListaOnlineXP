@@ -156,7 +156,7 @@ class ExerciseListSolution(models.Model):
                 casted_answer = answer.casted()
                 score += weight * casted_answer.correct()
 
-        self.score = 10*score/max_score
+        self.score = 100*score/max_score
         self.save()
 
 
@@ -287,11 +287,11 @@ class MultipleChoiceAnswer(Answer):
 
     # Returns the score of the answered question
     def correct(self):
-        if self.chosen_alternative is None:
-            return 0
-        if self.chosen_alternative.id == self.question_answered.casted().get_correct_alternative().id:
-            return 1
-        return 0
+        self.score = 0.0
+        if self.chosen_alternative is not None or self.chosen_alternative.id == self.question_answered.casted().get_correct_alternative().id:
+            self.score = 100.0
+        self.save()
+        return self.score
 
 
 class TrueFalseQuestion(Question):
@@ -319,7 +319,9 @@ class TrueFalseAnswer(Answer):
         for i in items:
             if i.given_answer == i.item_answered.is_correct:
                 score += 1
-        return score/len(items)
+        self.score = 100.0*score/len(items)
+        self.save()
+        return self.score
 
 
 class TrueFalseAnswerItem(models.Model):

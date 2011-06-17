@@ -14,7 +14,7 @@ class MultipleChoiceAnswerForm(forms.ModelForm):
 
     class Meta:
         model = MultipleChoiceAnswer
-        exclude = ('type',)
+        exclude = ('type', 'score', 'comment')
         widgets = {
                 'chosen_alternative': forms.RadioSelect(),
         }

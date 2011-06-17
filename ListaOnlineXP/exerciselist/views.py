@@ -32,15 +32,17 @@ def exercise_list_delete(request, list_id):
 
 @teacher_required
 def exercise_list_correct(request, list_id):
-    exercise_list = ExerciseList.objects.get(id=list_id)
-    questions = [through_object.question for through_object in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)]
-    return render_to_response('question_list.html', {'questions': questions})
+    values = {}
+    values['exercise_list'] = ExerciseList.objects.get(id=list_id)
+    values['questions'] = [(t.order, t.question) for t in ExerciseListQuestionThrough.objects.filter(exerciselist=values['exercise_list'])]
+    return render_to_response('question_list.html', values)
 
 @teacher_required
-def correct_question(request, question_id):
-    question = Question.objects.get(id=question_id)
-    answers = Answer.objects.filter(question_answered=question).all()
-    return render_to_response('question_correct.html', {'question': question, 'answers': answers})
+def question_correct(request, question_id):
+    values = {}
+    values['question'] = Question.objects.get(id=question_id)
+    values['answers'] = Answer.objects.filter(question_answered=values['question']).all()
+    return render_to_response('question_correct.html', values)
 
 def correct_answer(request, answer_id):
     answer = Answer.objects.get(id=answer_id)

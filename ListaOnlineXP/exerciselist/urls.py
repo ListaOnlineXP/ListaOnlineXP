@@ -13,6 +13,6 @@ urlpatterns = patterns(
     (r'^exercise_list/correct/([0-9]+)/$', 'exercise_list_correct'),
     (r'^create_modify_exercise_list/$', 'create_modify_exercise_list'),
     (r'^create_modify_exercise_list/(?P<exercise_list_id>\d+)/$', 'create_modify_exercise_list'),
-    (r'^question/([0-9+])/$', 'correct_question'),
-    (r'^answer/([0-9]+)/$', 'correct_answer'),
+    (r'^question_correct/([0-9+])/$', 'question_correct'),
+    (r'^answer_correct/([0-9]+)/$', 'correct_answer'),
 )

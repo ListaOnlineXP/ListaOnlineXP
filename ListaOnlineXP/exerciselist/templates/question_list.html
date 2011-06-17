@@ -1,7 +1,9 @@
 {% extends "base_site.html" %}
 
 {% block content_sidebar %}
-    {% for question in questions %}
-    <p><a href="/question/{{ question.id }}/">{{ question }}</a></p>
+    <h3>{{ exercise_list }}</h3>
+    <p>Escolha a questão a ser corrigita:</p>
+    {% for number, question in questions %}
+    <p><a href="/question_correct/{{ question.id }}/">{{ number }}) {{question}}</a></p>
     {% endfor %}
 {% endblock %}

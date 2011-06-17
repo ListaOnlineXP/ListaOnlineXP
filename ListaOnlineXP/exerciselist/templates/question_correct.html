@@ -1,8 +1,12 @@
 {% extends "base_site.html" %}
 
 {% block content_sidebar %}
-    {{ question.text }}
+    <h3>Questão</h3>
+    <p>{{ question }}</p>
+    <p>Escolha a resposta a ser corrigita:</p>
     {% for answer in answers %}
-        <p><a href="/answer/{{ answer.id }}/">{{ answer.id }}</a></p>
+        <p><a href="/answer/{{ answer.id }}/">{{ answer.id }} </a>
+        {{ answer.exercise_list_solution }}
+        {{ answer.score }} </p>
     {% endfor %}
 {% endblock %}
