@@ -41,15 +41,16 @@ def exercise_list_correct(request, list_id):
 def question_correct(request, question_id):
     values = {}
     values['question'] = Question.objects.get(id=question_id)
-    values['answers'] = Answer.objects.filter(question_answered=values['question']).all()
+    values['answers'] = [Answer.objects.filter(question_answered=values['question']).all()]
     return render_to_response('question_correct.html', values)
 
-def correct_answer(request, answer_id):
-    answer = Answer.objects.get(id=answer_id)
-    answer_text = 'teste'
-    question = answer.question_answered
-    form = CorrectAnswerForm()
-    return render_to_response('answer_correct.html', {'question': question, 'answer': answer, 'answer_text': answer_text, 'form': form})
+def answer_correct(request, answer_id):
+    values = {}
+    values['answer'] = answer = Answer.objects.get(id=answer_id)
+    values['answer_text'] = 'teste'
+    values['question'] = answer.question_answered
+    values['form'] = CorrectAnswerForm()
+    return render_to_response('answer_correct.html', values)
 
 class GetStudentsExerciseList(ListView):
     context_object_name = 'exercise_list_list'

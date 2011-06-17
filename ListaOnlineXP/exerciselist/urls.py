@@ -14,5 +14,5 @@ urlpatterns = patterns(
     (r'^create_modify_exercise_list/$', 'create_modify_exercise_list'),
     (r'^create_modify_exercise_list/(?P<exercise_list_id>\d+)/$', 'create_modify_exercise_list'),
     (r'^question_correct/([0-9+])/$', 'question_correct'),
-    (r'^answer_correct/([0-9]+)/$', 'correct_answer'),
+    (r'^answer_correct/([0-9]+)/$', 'answer_correct'),
 )

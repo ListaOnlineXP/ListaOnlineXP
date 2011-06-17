@@ -151,7 +151,7 @@ class ExerciseListSolution(models.Model):
         answers = self.get_answers()
         for answer in self.get_answers():
             weight = ExerciseListQuestionThrough.objects.get(exerciselist=self.exercise_list, question=answer.question_answered).weight
-            max_score += weight
+            max_score += 100*weight
             if answer.type == 'MU' or answer.type == 'TF':
                 casted_answer = answer.casted()
                 score += weight * casted_answer.correct()

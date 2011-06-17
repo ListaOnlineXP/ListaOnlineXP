@@ -5,7 +5,7 @@
     <p>{{ question }}</p>
     <p>Escolha a resposta a ser corrigita:</p>
     {% for answer in answers %}
-        <p><a href="/answer/{{ answer.id }}/">{{ answer.id }} </a>
+        <p><a href="/answer_correct/{{ answer.id }}/">{{ answer.id }} </a>
         {{ answer.exercise_list_solution }}
         {{ answer.score }} </p>
     {% endfor %}
