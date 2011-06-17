@@ -223,6 +223,9 @@ class DiscursiveAnswer(Answer):
         super(DiscursiveAnswer, self).__init__(*args, **kargs)
         self.type = 'DI'
 
+    def __unicode__(self):
+        return self.text
+
 
 class JavaQuestion(Question):
 
@@ -242,6 +245,9 @@ class JavaAnswer(Answer):
     def __init__(self, *args, **kargs):
         super(JavaAnswer, self).__init__(*args, **kargs)
         self.type = 'JA'
+
+    def __unicode__(self):
+        self.code
 
 
 class MultipleChoiceQuestion(Question):
@@ -293,6 +299,9 @@ class MultipleChoiceAnswer(Answer):
         self.save()
         return self.score
 
+    def __unicode__(self):
+        return self.chosen_alternative
+
 
 class TrueFalseQuestion(Question):
 
@@ -323,11 +332,20 @@ class TrueFalseAnswer(Answer):
         self.save()
         return self.score
 
+    def __unicode__(self):
+        items = TrueFalseAnswerItem.objects.filter(answer_group=self)
+        return [i.given_answer for i in items]
+
 
 class TrueFalseAnswerItem(models.Model):
     answer_group = models.ForeignKey(TrueFalseAnswer)
     given_answer = models.BooleanField()
     item_answered = models.ForeignKey(TrueFalseItem)
+
+    def __unicode__(self):
+        if given_answer == True:
+            return u'marcado'
+        return u'não marcado'
 
 
 class FileQuestion(Question):
@@ -344,6 +362,9 @@ class FileAnswer(Answer):
     def __init__(self, *args, **kargs):
         super(FileAnswer, self).__init__(*args, **kargs)
         self.type = 'FI'
+
+    def __unicode__(self):
+        return self.file
     
 
 #Through model which creates an ordered relationship between

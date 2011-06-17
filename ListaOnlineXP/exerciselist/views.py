@@ -34,22 +34,24 @@ def exercise_list_delete(request, list_id):
 def exercise_list_correct(request, list_id):
     values = {}
     values['exercise_list'] = ExerciseList.objects.get(id=list_id)
-    values['questions'] = [(t.order, t.question) for t in ExerciseListQuestionThrough.objects.filter(exerciselist=values['exercise_list'])]
+    values['ordered_questions'] = [(t.order, t.question) for t in ExerciseListQuestionThrough.objects.filter(exerciselist=values['exercise_list'])]
     return render_to_response('question_list.html', values)
 
 @teacher_required
 def answer_list(request, question_id):
     values = {}
     values['question'] = Question.objects.get(id=question_id)
-    values['answers'] = [Answer.objects.filter(question_answered=values['question']).all()]
+    
+    answers = Answer.objects.filter(question_answered=values['question']).all()
+    values['group_answers'] = [(Group.objects.get(solution=a.exercise_list_solution), a) for a in answers]
     return render_to_response('answer_list.html', values)
 
 def answer_correct(request, answer_id):
     values = {}
     values['answer'] = answer = Answer.objects.get(id=answer_id)
-    values['answer_text'] = 'teste'
+    values['answer_text'] = answer.casted().__unicode__()
     values['question'] = answer.question_answered
-    values['form'] = CorrectAnswerForm()
+    values['form'] = AnswerCorrectForm(instance=answer)
     return render_to_response('answer_correct.html', values)
 
 class GetStudentsExerciseList(ListView):

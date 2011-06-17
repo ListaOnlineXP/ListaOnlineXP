@@ -87,6 +87,7 @@ class FileQuestionForm(forms.ModelForm):
 #===END Exercise list creation forms===
 
 
-class CorrectAnswerForm(forms.Form):
-    comment = forms.CharField(widget=forms.Textarea)
-    score = forms.FloatField()
+class AnswerCorrectForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ('score', 'comment',)

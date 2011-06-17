@@ -2,7 +2,7 @@
 
 {% block content_sidebar %}
     <p style="font-weight: bold">{{ question.text }}</p>
-    <p>{{ answer_text }}</p>
+    <p> Resposta: {{ answer_text }}</p>
     <form method="POST">
         {% csrf_token %}
         {{ form }}
