@@ -47,6 +47,8 @@
             if(selected_question_type == "MU") {
                 form += '<div class="question_wrapper" id="'+ new_multiple_id + '">';
                 form += '{{ empty_forms.multiple.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_multiple_id);
+                form += '<input type="button" value="Apagar" class="del_question" id="'+ new_multiple_id + '" />';
+                
                 form += '{{ empty_forms.multiple_correct.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_multiple_id + "_correct");
                 form += '<input type="button" value="Adicionar novo item falso" class="add_multiple_choice_item" id="'+ new_multiple_id + '" />';
                 form += '</div>';
@@ -54,19 +56,27 @@
             } else if(selected_question_type == "TF") {
                 form += '<div class="question_wrapper" id="'+ new_truefalse_id + '">';
                 form += '{{ empty_forms.truefalse.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_truefalse_id);
+                form += '<input type="button" value="Apagar" class="del_question" id="'+ new_truefalse_id + '" />';
+
                 form += '<input type="button" value="Adicionar novo item" class="add_truefalse_item" id="'+ new_truefalse_id + '" />';
                 form += '</div>';
             } else if(selected_question_type == "FI") {
                 form += '<div class="question_wrapper" id="'+ new_file_id + '">';
                 form += '{{ empty_forms.file.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_file_id);
+                form += '<input type="button" value="Apagar" class="del_question" id="'+ new_file_id + '" />';
+
                 form += '</div>';
             } else if(selected_question_type == "JA") {
                 form += '<div class="question_wrapper" id="'+ new_java_id + '">';
                 form += '{{ empty_forms.java.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_java_id);
+                form += '<input type="button" value="Apagar" class="del_question" id="'+ new_java_id + '" />';
+
                 form += '</div>';
             } else if(selected_question_type == "DI") {
                 form += '<div class="question_wrapper" id="'+ new_discursive_id + '">';
                 form += '{{ empty_forms.discursive.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_discursive_id);
+                form += '<input type="button" value="Apagar" class="del_question" id="'+ new_discursive_id + '" />';
+                
                 form += '</div>';
             }
 
@@ -103,6 +113,9 @@
                 tf_form += '{{ empty_forms.truefalse.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_truefalse_item_id);
                 tf_form += '</div>';
                 $tgt.before(tf_form);
+
+            } else if($tgt.is('.del_question')) {
+                $tgt.parent().remove();
             }
         });
 
