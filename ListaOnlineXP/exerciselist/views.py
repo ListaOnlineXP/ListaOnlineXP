@@ -45,14 +45,16 @@ def exercise_list_correct(request, list_id):
 
 # Returns a tuple with the information of the given answer to help the
 # construction of correction views
-# tuple = (owner group, question, answer given, form for correction)
+# tuple = (owner group, question, answer given, form for correction, 
+#         trueFalse question?)
 def get_answer_data(answer_id):
     answer = Answer.objects.get(id=answer_id)
     group = answer.exercise_list_solution.get_group()
     answer_text = answer.casted().__unicode__()
     question = answer.question_answered
     form = AnswerCorrectForm(instance=answer)
-    return (group, question, answer_text, form)
+    true_false = answer.casted() in TrueFalseAnswer.objects.all()
+    return (group, question, answer_text, form, true_false)
 
 
 @teacher_required
@@ -64,6 +66,7 @@ def answer_student(request, student_id, list_id):
     ordered_questions = [(t.order, t.question) for t in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)]
 
     values['answer_data'] = [get_answer_data(Answer.objects.get(question_answered=q).id) for _o, q in ordered_questions]
+    print values['answer_data']
         
     return render_to_response('answer_correct.html', values)
 

@@ -318,6 +318,9 @@ class TrueFalseItem(models.Model):
     text = models.TextField()
     is_correct = models.BooleanField(u"correto")
 
+    def __unicode__(self):
+        return self.text
+
 
 class TrueFalseAnswer(Answer):
 
@@ -337,13 +340,18 @@ class TrueFalseAnswer(Answer):
 
     def __unicode__(self):
         items = TrueFalseAnswerItem.objects.filter(answer_group=self)
-        return [i.given_answer for i in items]
+        return [i.__unicode__() for i in items]
 
 
 class TrueFalseAnswerItem(models.Model):
     answer_group = models.ForeignKey(TrueFalseAnswer)
     given_answer = models.BooleanField()
     item_answered = models.ForeignKey(TrueFalseItem)
+
+    def __unicode__(self):
+        if self.given_answer == True:
+            return (self.item_answered.__unicode__(), 'Verdadeiro')
+        return (self.item_answered.__unicode__(), 'Falso')
 
 
 class FileQuestion(Question):
