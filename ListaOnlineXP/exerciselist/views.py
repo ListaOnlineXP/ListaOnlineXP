@@ -36,9 +36,8 @@ def exercise_list_correct(request, list_id):
     values['user'] = Profile.objects.get(user=request.user)
     values['exercise_list'] = exercise_list = ExerciseList.objects.get(id=list_id)
     values['ordered_questions'] = [(t.order, t.question) for t in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)]
-    groups = Group.objects.filter(solution__exercise_list=values['exercise_list'])
     students = exercise_list.course.student.all()
-    values['student_answers'] = [(s, [s.get_group(exercise_list).solution.answer_set.get(question_answered = q) for (o, q) in values['ordered_questions']]) for s in students]
+    values['student_answers'] = [(s, [s.get_group(exercise_list).solution.answer_set.get(question_answered = q) for (o, q) in values['ordered_questions']], s.get_group(exercise_list).solution.score) for s in students]
         
     return render_to_response('question_list.html', values)
 
@@ -62,11 +61,10 @@ def answer_student(request, student_id, list_id):
     values = {}
     values['user'] = Profile.objects.get(user=request.user)
     values['exercise_list'] = exercise_list = ExerciseList.objects.get(id=list_id)
-    values['group'] = Student.objects.get(id=student_id).get_group(exercise_list)
+    values['group'] = group = Student.objects.get(id=student_id).get_group(exercise_list)
     ordered_questions = [(t.order, t.question) for t in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)]
 
-    values['answer_data'] = [get_answer_data(Answer.objects.get(question_answered=q).id) for _o, q in ordered_questions]
-    print values['answer_data']
+    values['answer_data'] = [get_answer_data(Answer.objects.get(question_answered=q, exercise_list_solution=group.solution).id) for _o, q in ordered_questions]
         
     return render_to_response('answer_correct.html', values)
 
@@ -74,9 +72,9 @@ def answer_student(request, student_id, list_id):
 def answer_list(request, question_id):
     values = {}
     values['user'] = Profile.objects.get(user=request.user)
-    values['question'] = Question.objects.get(id=question_id)
+    values['question'] = question = Question.objects.get(id=question_id)
     
-    answers = Answer.objects.filter(question_answered=values['question']).all()
+    answers = Answer.objects.filter(question_answered=question).all()
     values['group_answers'] = [(Group.objects.get(solution=a.exercise_list_solution), a) for a in answers]
     return render_to_response('answer_list.html', values)
 
