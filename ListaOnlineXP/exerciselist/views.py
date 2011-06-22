@@ -87,9 +87,8 @@ def answer_list(request, question_id, exercise_list_id):
     values['question'] = question = Question.objects.get(id=question_id)
     exercise_list = ExerciseList.objects.get(id=exercise_list_id)
     answers = []
-    for solution in ExerciseListSolution.objects.filter(exercise_list=exercise_list, ):
+    for solution in ExerciseListSolution.objects.filter(exercise_list=exercise_list):
 	answers.append(Answer.objects.get(question_answered=question, exercise_list_solution=solution))
-    print answers
     values['group_answers'] = [get_answer_data(request, a.id) for a in answers]
     if request.method == 'POST':
         return HttpResponseRedirect('/exercise_list/correct/' + str(exercise_list.id))
@@ -105,6 +104,19 @@ def answer_correct(request, answer_id):
         exercise_list = Answer.objects.get(id=answer_id).exercise_list_solution.exercise_list
         return HttpResponseRedirect('/exercise_list/correct/' + str(exercise_list.id))
     return render_to_response('answer_correct.html', values)
+
+@teacher_required
+def answer_new(request, exercise_list_id):
+    values = {}
+    values.update(csrf(request))
+    values['user'] = Profile.objects.get(user=request.user)
+    exercise_list = ExerciseList.objects.get(id=exercise_list_id)
+    answers = Answer.objects.filter(score=None, exercise_list_solution__exercise_list=exercise_list)
+    values['group_answers'] = [get_answer_data(request, a.id) for a in answers]
+    if request.method == 'POST':
+        return HttpResponseRedirect('/exercise_list/correct/' + str(exercise_list.id))
+    return render_to_response('answer_new.html', values)
+
 
 class GetStudentsExerciseList(ListView):
     context_object_name = 'exercise_list_list'
