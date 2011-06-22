@@ -139,6 +139,8 @@ def exercise_list(request, exercise_list_id):
     exercise_list_solution = group.solution
     exercise_list_solution.populate_blank()
 
+    if exercise_list_solution.finalized is True:
+        return HttpResponseRedirect('/exercise_list_solution/%s' % exercise_list_id)
     
     #If the request method is GET, don't pass any data to the forms.
     #Else, pass request.POST.
@@ -203,7 +205,7 @@ def exercise_list(request, exercise_list_id):
     if request.method == 'POST' and 'rollback' in request.POST:
         exercise_list_solution.finalized = False
 
-
+    exercise_list_solution.save()
     values['finalized'] = exercise_list_solution.finalized
     values['questions_and_forms_list'] = questions_and_forms_list
     values['user'] = student
