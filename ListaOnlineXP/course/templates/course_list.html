@@ -21,7 +21,7 @@
   {% for course in course_list %}
     <tr>
     <th>{{ course.code }}</th>
-    <th><a href={{ course.id }}>{{ course.name }}</a></th>
+    <th><a href="/course/{{ course.id }}">{{ course.name }}</a></th>
     {% if teacher %}
     <th><a href="update/{{ course.id }}">update</a></th>
     <th><a href="delete/{{ course.id }}">delete</a></th>
