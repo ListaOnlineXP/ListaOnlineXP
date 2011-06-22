@@ -1,12 +1,24 @@
 {% extends "base_site.html" %}
 
 {% block content_sidebar %}
-    <h3>Questão</h3>
-    <p>{{ question }}</p>
-    <p>Escolha a resposta a ser corrigita:</p>
-    {% for group, answer in group_answers %}
-        <p><a href="/answer_correct/{{ answer.id }}/">{{ answer.id }}</a>
-        {{ group }}
-        {{ answer.score }} </p>
-    {% endfor %}
+    <form action="." method="POST">
+        {% csrf_token %}
+        {% for group, question, answer, form, tf in group_answers %}
+            {% if forloop.first %}
+                <h3>Questão:</h3>
+                <p style="font-weight: bold">{{ question }}</p>
+            {% endif %}
+            Integrantes: {{ group }}<br/>
+        <h3>Resposta:</h3>
+        {% if tf %}
+            {% for item, q in answer %}
+            <p>{{ item }}: {{ q }}</p>
+            {% endfor %}
+        {% else %}
+            <p>{{ answer }}</p>
+        {% endif %}
+        {{ form.as_p }}
+        {% endfor %}
+        <input type="submit" value="Salvar" />
+    </form>
 {% endblock %}
