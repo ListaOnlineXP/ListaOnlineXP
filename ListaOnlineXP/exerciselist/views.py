@@ -117,19 +117,20 @@ def answer_new(request, exercise_list_id):
         return HttpResponseRedirect('/exercise_list/correct/' + str(exercise_list.id))
     return render_to_response('answer_new.html', values)
 
-
-class GetStudentsExerciseList(ListView):
+class GetMyExerciseList(ListView):
     context_object_name = 'exercise_list_list'
-    template_name = 'students_exercise_lists.html'
-    
-    def get_queryset(self):
-        student = Profile.objects.get(user=self.request.user)
+    template_name = 'my_exercise_lists.html'
 
-        return ExerciseList.objects.filter(course__student=student) 
+    def get_queryset(self):
+        user = Profile.objects.get(user=self.request.user)
+        if user.is_student():
+            return ExerciseList.objects.filter(course__student=user) 
+        else:
+            return ExerciseList.objects.filter(course__teacher=user) 
 
     @method_decorator(profile_required)
     def dispatch(self, *args, **kargs):
-        return super(GetStudentsExerciseList, self).dispatch(*args, **kargs)
+        return super(GetMyExerciseList, self).dispatch(*args, **kargs)
 
 
 @profile_required

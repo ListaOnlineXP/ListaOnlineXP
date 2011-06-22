@@ -1,0 +1,46 @@
+{% extends "base_site.html" %}
+
+{% block content_sidebar %}
+<h1>Minhas listas de exercícios</h1>
+{% if subscribe %}
+  <form action="." method="post">
+  {% csrf_token %}
+    <input type="submit" value="Cadastrar" />
+  </form>
+
+{% else %}
+  {% if exercise_list_list %}
+    {% if teacher %}
+      <a href="/exercise_list/add/" class="addlink">Adicionar Lista</a>
+    {% endif %}
+
+    <table cellspacing="0">
+      <thead><tr>
+      <th>Lista</th>
+      <th>Data da publicação</th>
+      <th>Data de entrega</th>
+      <th>Curso</th>
+      {% if teacher %}
+      <th></th>
+      <th></th>
+      {% endif %}
+    </tr></thead>
+
+    <tbody>
+    {% for list in exercise_list_list %}
+      <tr>
+     <th><a href=/exercise_list/{{ list.id }}>{{ list.name }}</a></th>
+      <th>{{ list.pub_date }}</th>
+      <th>{{ list.due_date }}</th>
+      <th>{{ list.course }}</th>
+      {% if teacher %}
+      <th><a href="/exercise_list/update/{{ list.id }}">update</a></th>
+      <th><a href="/exercise_list/delete/{{ list.id }}">delete</a></th>
+      {% endif %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  {% endif %}
+{% endif %}
+
+{% endblock %}

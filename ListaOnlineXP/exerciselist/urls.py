@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
-from views import GetStudentsExerciseList
+from views import GetMyExerciseList
 
 urlpatterns = patterns(
     'exerciselist.views',
-    (r'^my_exercise_lists/$', GetStudentsExerciseList.as_view()),
+    (r'^my/exercise_lists/$', GetMyExerciseList.as_view()),
     (r'^exercise_list/(?P<exercise_list_id>\d+)/$', 'exercise_list'),
     (r'^exercise_list_solution/(?P<exercise_list_solution_id>\d+)/$', 'view_exercise_list_solution'),
     (r'^exercise_list/add/$', 'exercise_list_add_or_update'),

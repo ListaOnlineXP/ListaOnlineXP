@@ -1,0 +1,22 @@
+{% extends "base_site.html" %}
+
+{% block content_sidebar %}
+    <form action="." method="POST">
+        {% csrf_token %}
+        {% for group, question, answer, form, tf in group_answers %}
+            <h3>Questão:</h3>
+            <p style="font-weight: bold">{{ question }}</p>
+            Integrantes: {{ group }}<br/>
+        <h3>Resposta:</h3>
+        {% if tf %}
+            {% for item, q in answer %}
+            <p>{{ item }}: {{ q }}</p>
+            {% endfor %}
+        {% else %}
+            <p>{{ answer }}</p>
+        {% endif %}
+        {{ form.as_p }}
+        {% endfor %}
+        <input type="submit" value="Salvar" />
+    </form>
+{% endblock %}
