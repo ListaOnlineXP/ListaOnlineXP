@@ -16,4 +16,5 @@ urlpatterns = patterns(
     (r'^answer_list/([0-9+])/([0-9+])/$', 'answer_list'),
     (r'^answer_correct/([0-9]+)/$', 'answer_correct'),
     (r'^answer_student/([0-9]+)/([0-9]+)/$', 'answer_student'),
+    (r'^answer_new/([0-9]+)/$', 'answer_new'),
 )

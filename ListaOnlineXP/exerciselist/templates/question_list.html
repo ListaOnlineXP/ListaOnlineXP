@@ -2,7 +2,8 @@
 
 {% block content_sidebar %}
     <h3>{{ exercise_list }}</h3>
-    <p>Escolha a questão a ser corrigita:</p>
+    <a href="/answer_new/{{ exercise_list.id }}">Corrigir novas</a>
+
     <table cellspacing="0">
     <thead><tr><th></th>
         {% for number, question in ordered_questions %}
@@ -22,7 +23,12 @@
     <tr>
         <th><a href="/answer_student/{{ student.id }}/{{ exercise_list.id }}/">{{ student }}</a></th>
         {% for answer in answers %}
-        <th style="text-align: center;"><a href="/answer_correct/{{ answer.id }}/">{{ answer.score|floatformat }}</a></th>
+        <th style="text-align: center;"><a href="/answer_correct/{{ answer.id }}/">
+                {% if answer.score %} {{ answer.score|floatformat }}
+                {% else %} -
+                {% endif %}
+        </a></th>
+
         {% endfor %}
 	<th>{{ score|floatformat }}</th>
     </tr>
