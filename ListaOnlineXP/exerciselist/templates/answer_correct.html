@@ -1,7 +1,7 @@
 {% extends "base_site.html" %}
 
 {% block content_sidebar %}
-    <form method="POST">
+    <form action="." method="POST">
         {% csrf_token %}
         {% for group, question, answer, form, tf in answer_data %}
         <h3>Questão:</h3>
@@ -15,6 +15,7 @@
             <p>{{ answer }}</p>
         {% endif %}
         {{ form.as_p }}
-    {% endfor %}
+        {% endfor %}
+        <input type="submit" value="Salvar" />
     </form>
 {% endblock %}

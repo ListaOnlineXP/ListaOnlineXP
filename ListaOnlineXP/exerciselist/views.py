@@ -35,7 +35,9 @@ def exercise_list_correct(request, list_id):
     values = {}
     values['user'] = Profile.objects.get(user=request.user)
     values['exercise_list'] = exercise_list = ExerciseList.objects.get(id=list_id)
-    values['ordered_questions'] = [(t.order, t.question) for t in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)]
+    through_objects = ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)
+    values['ordered_questions'] = [(t.order, t.question) for t in through_objects]
+    values['weights'] = [t.weight for t in through_objects]
     students = exercise_list.course.student.all()
     values['student_answers'] = [(s, [s.get_group(exercise_list).solution.answer_set.get(question_answered = q) for (o, q) in values['ordered_questions']], s.get_group(exercise_list).solution.score) for s in students]
         
@@ -46,12 +48,18 @@ def exercise_list_correct(request, list_id):
 # construction of correction views
 # tuple = (owner group, question, answer given, form for correction, 
 #         trueFalse question?)
-def get_answer_data(answer_id):
+def get_answer_data(request, answer_id):
     answer = Answer.objects.get(id=answer_id)
     group = answer.exercise_list_solution.get_group()
     answer_text = answer.casted().__unicode__()
     question = answer.question_answered
-    form = AnswerCorrectForm(instance=answer)
+    if request.method == 'POST':
+        form = AnswerCorrectForm(request.POST, instance=answer, prefix=str(answer.id))
+        if form.is_valid():
+            form.save()
+        answer.exercise_list_solution.update_score()
+    else:
+        form = AnswerCorrectForm(instance=answer, prefix=str(answer.id))
     true_false = answer.casted() in TrueFalseAnswer.objects.all()
     return (group, question, answer_text, form, true_false)
 
@@ -59,21 +67,24 @@ def get_answer_data(answer_id):
 @teacher_required
 def answer_student(request, student_id, list_id):
     values = {}
+    values.update(csrf(request))
     values['user'] = Profile.objects.get(user=request.user)
     values['exercise_list'] = exercise_list = ExerciseList.objects.get(id=list_id)
     values['group'] = group = Student.objects.get(id=student_id).get_group(exercise_list)
     ordered_questions = [(t.order, t.question) for t in ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)]
 
-    values['answer_data'] = [get_answer_data(Answer.objects.get(question_answered=q, exercise_list_solution=group.solution).id) for _o, q in ordered_questions]
-        
+    values['answer_data'] = [get_answer_data(request, Answer.objects.get(question_answered=q, exercise_list_solution=group.solution).id) for _o, q in ordered_questions]
+
+    if request.method == 'POST':
+        return HttpResponseRedirect('/exercise_list/correct/' + str(exercise_list.id))
     return render_to_response('answer_correct.html', values)
 
 @teacher_required
 def answer_list(request, question_id):
     values = {}
+    values.update(csrf(request))
     values['user'] = Profile.objects.get(user=request.user)
     values['question'] = question = Question.objects.get(id=question_id)
-    
     answers = Answer.objects.filter(question_answered=question).all()
     values['group_answers'] = [(Group.objects.get(solution=a.exercise_list_solution), a) for a in answers]
     return render_to_response('answer_list.html', values)
@@ -81,8 +92,12 @@ def answer_list(request, question_id):
 @teacher_required
 def answer_correct(request, answer_id):
     values = {}
+    values.update(csrf(request))
     values['user'] = Profile.objects.get(user=request.user)
-    values['answer_data'] = [get_answer_data(answer_id)]
+    values['answer_data'] = [get_answer_data(request, answer_id)]
+    if request.method == 'POST':
+        exercise_list = Answer.objects.get(id=answer_id).exercise_list_solution.exercise_list
+        return HttpResponseRedirect('/exercise_list/correct/' + str(exercise_list.id))
     return render_to_response('answer_correct.html', values)
 
 class GetStudentsExerciseList(ListView):

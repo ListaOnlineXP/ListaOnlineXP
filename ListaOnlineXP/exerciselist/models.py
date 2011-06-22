@@ -151,10 +151,10 @@ class ExerciseListSolution(models.Model):
     def correct(self):
         score = 0.0
         max_score = 0
-        answers = self.get_answers()
         for answer in self.get_answers():
             weight = ExerciseListQuestionThrough.objects.get(exerciselist=self.exercise_list, question=answer.question_answered).weight
             max_score += 100*weight
+            # types with auto correction
             if answer.type == 'MU' or answer.type == 'TF':
                 casted_answer = answer.casted()
                 score += weight * casted_answer.correct()
@@ -162,14 +162,26 @@ class ExerciseListSolution(models.Model):
         self.score = 100*score/max_score
         self.save()
 
+    # Updates de score based on the scores in the answers
+    # This function should be used after a custom correction made by a teacher
+    def update_score(self):
+        score = 0.0
+        max_score = 0
+        for answer in self.get_answers():
+            weight = ExerciseListQuestionThrough.objects.get(exerciselist=self.exercise_list, question=answer.question_answered).weight
+            max_score += 100*weight
+            if answer.score is not None:
+                score += answer.score
+        self.score = 100*score/max_score
+        self.save()
 
 
 class Answer(models.Model):
 
     exercise_list_solution = models.ForeignKey(ExerciseListSolution, editable=False)
     question_answered = models.ForeignKey(Question, editable=False)
-    score = models.FloatField(null=True)
-    comment = models.TextField(null=True)
+    score = models.FloatField(null=True, blank=True)
+    comment = models.TextField(null=True, blank=True)
 
     ANSWER_TYPE_CHOICES = (
         ('TF', 'True/False'),
@@ -350,8 +362,8 @@ class TrueFalseAnswerItem(models.Model):
 
     def __unicode__(self):
         if self.given_answer == True:
-            return (self.item_answered.__unicode__(), 'Verdadeiro')
-        return (self.item_answered.__unicode__(), 'Falso')
+            return (self.item_answered.__unicode__(), 'Marcado')
+        return (self.item_answered.__unicode__(), 'Desmarcado')
 
 
 class FileQuestion(Question):

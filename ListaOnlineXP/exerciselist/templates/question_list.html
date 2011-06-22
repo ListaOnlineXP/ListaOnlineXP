@@ -9,6 +9,12 @@
         <th><a href="/answer_list/{{ question.id }}/">Questão {{ number }}</a></th>
         {% endfor %}
 	<th>Total</th>
+    </tr>
+    <tr><th>Pesos:</th>
+        {% for weight in weights %}
+        <th style="text-align: center;">{{ weight }}</th>
+        {% endfor %}
+	<th></th>
     </tr></thead>
     <tbody>
     
@@ -16,9 +22,9 @@
     <tr>
         <th><a href="/answer_student/{{ student.id }}/{{ exercise_list.id }}/">{{ student }}</a></th>
         {% for answer in answers %}
-        <th><a href="/answer_correct/{{ answer.id }}/">{{ answer.score }}</a></th>
+        <th style="text-align: center;"><a href="/answer_correct/{{ answer.id }}/">{{ answer.score|floatformat }}</a></th>
         {% endfor %}
-	<th>{{ score }}</th>
+	<th>{{ score|floatformat }}</th>
     </tr>
     {% endfor %}
     </tbody>
