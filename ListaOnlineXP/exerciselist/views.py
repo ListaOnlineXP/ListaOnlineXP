@@ -249,7 +249,8 @@ def view_exercise_list_solution(request, exercise_list_solution_id):
             given_answer = None
             
 
-        question_answer = {'question' : question_answered, 'answer' : given_answer}
+        question_answer = {'question' : question_answered, 'answer' : given_answer,
+                'score': casted_answer.score, 'comment': casted_answer.comment}
         questions_answers_list.append(question_answer)
 
     values['questions_answers_list'] = questions_answers_list

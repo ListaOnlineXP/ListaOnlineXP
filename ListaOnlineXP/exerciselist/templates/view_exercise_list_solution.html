@@ -14,7 +14,14 @@
     {% if question_answer.question.type == 'DI' or question_answer.question.type == 'JA' or question_answer.question.type = 'TF'%}
 		<p>Resposta: <br />{{ question_answer.answer|linebreaksbr }}</p>
 	{% endif %}
-        <br />
+    <br />
+    {% if question_answer.score > -0.5 %}</p>
+    <p>Nota: {{ question_answer.score }}</p>
+    {% else %}
+    <p>Nota: -</p>
+    {% endif %}
+    {% if question_answer.comment %}</p>
+    <p>Comentário: {{ question_answer.comment }}</p>
+    {% endif %}
     {% endfor %}
-    </form>
 {% endblock %}
