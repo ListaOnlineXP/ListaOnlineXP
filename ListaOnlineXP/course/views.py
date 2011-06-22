@@ -38,13 +38,9 @@ def course_list(request):
     values = {}
     user = Profile.objects.get(user=request.user)
     values['user'] = user
-    if user.is_student():
-        student = Student.objects.get(id=user.id)
-        course_list = Course.objects.all()
-    elif user.is_teacher():
-        teacher = Teacher.objects.get(id=user.id)
-        values['teacher'] = teacher
-        course_list = Course.objects.filter(teacher=teacher)
+    if user.is_teacher():
+	values['teacher'] = Teacher.objects.get(id=user.id)
+    course_list = Course.objects.all()
     return object_list(request, queryset=course_list, template_object_name='course', 
             template_name='course_list.html', extra_context=values)
 
@@ -61,3 +57,19 @@ def course_add_or_update(request, course_id=None):
 def course_delete(request, course_id):
     return delete_object(request, model=Course, object_id=course_id, 
             template_name='course_confirm_delete.html', post_delete_redirect='/')
+
+@profile_required
+def my_course_list(request):
+    values = {}
+    user = Profile.objects.get(user=request.user)
+    values['user'] = user
+    if user.is_student():
+        student = Student.objects.get(id=user.id)
+        course_list = Course.objects.filter(student=student)
+    elif user.is_teacher():
+        teacher = Teacher.objects.get(id=user.id)
+        values['teacher'] = teacher
+        course_list = Course.objects.filter(teacher=teacher)
+    return object_list(request, queryset=course_list, template_object_name='course', 
+            template_name='course_list.html', extra_context=values)
+

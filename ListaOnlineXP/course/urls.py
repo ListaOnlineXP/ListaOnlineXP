@@ -8,4 +8,5 @@ urlpatterns = patterns(
     (r'^course/update/([0-9]+)/$', 'course_add_or_update'),
     (r'^course/delete/([0-9]+)/$', 'course_delete'),
     (r'^course/([0-9]+)/$', 'course'),
+    (r'^my/course/$', 'my_course_list'),
 )
