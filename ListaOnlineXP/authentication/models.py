@@ -43,7 +43,7 @@ class Group(models.Model):
     solution = models.OneToOneField('exerciselist.ExerciseListSolution')
 
     def __unicode__(self):
-        s = self.solution.exercise_list.name + ': '
+        s = ''
         for student in self.students.all():
             s += student.name + ', '
         s = s[:-2]

@@ -80,13 +80,19 @@ def answer_student(request, student_id, list_id):
     return render_to_response('answer_correct.html', values)
 
 @teacher_required
-def answer_list(request, question_id):
+def answer_list(request, question_id, exercise_list_id):
     values = {}
     values.update(csrf(request))
     values['user'] = Profile.objects.get(user=request.user)
     values['question'] = question = Question.objects.get(id=question_id)
-    answers = Answer.objects.filter(question_answered=question).all()
-    values['group_answers'] = [(Group.objects.get(solution=a.exercise_list_solution), a) for a in answers]
+    exercise_list = ExerciseList.objects.get(id=exercise_list_id)
+    answers = []
+    for solution in ExerciseListSolution.objects.filter(exercise_list=exercise_list, ):
+	answers.append(Answer.objects.get(question_answered=question, exercise_list_solution=solution))
+    print answers
+    values['group_answers'] = [get_answer_data(request, a.id) for a in answers]
+    if request.method == 'POST':
+        return HttpResponseRedirect('/exercise_list/correct/' + str(exercise_list.id))
     return render_to_response('answer_list.html', values)
 
 @teacher_required

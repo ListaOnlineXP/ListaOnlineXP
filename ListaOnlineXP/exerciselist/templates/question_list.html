@@ -6,7 +6,7 @@
     <table cellspacing="0">
     <thead><tr><th></th>
         {% for number, question in ordered_questions %}
-        <th><a href="/answer_list/{{ question.id }}/">Questão {{ number }}</a></th>
+        <th><a href="/answer_list/{{ question.id }}/{{ exercise_list.id }}">Questão {{ number }}</a></th>
         {% endfor %}
 	<th>Total</th>
     </tr>
