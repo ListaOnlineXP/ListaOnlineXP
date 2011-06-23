@@ -15,8 +15,8 @@
 		<p>Resposta: <br />{{ question_answer.answer|linebreaksbr }}</p>
 	{% endif %}
     <br />
-    {% if question_answer.score > -0.5 %}</p>
-    <p>Nota: {{ question_answer.score }}</p>
+    {% if question_answer.score %}</p>
+    <p>Nota: {{ question_answer.score|floatformat }}</p>
     {% else %}
     <p>Nota: -</p>
     {% endif %}

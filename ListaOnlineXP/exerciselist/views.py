@@ -136,7 +136,6 @@ class GetMyExerciseList(ListView):
     def get_context_data(self, **kargs):
         context = super(GetMyExerciseList, self).get_context_data(**kargs)
         context['user'] = Profile.objects.get(user=self.request.user)
-        print context['user']
         return context
 
     @method_decorator(profile_required)
@@ -170,7 +169,7 @@ def exercise_list(request, exercise_list_id):
     exercise_list_solution.populate_blank()
 
     if exercise_list_solution.finalized is True:
-        return HttpResponseRedirect('/exercise_list_solution/%s' % exercise_list_id)
+        return HttpResponseRedirect('/exercise_list_solution/' + str(exercise_list_id))
     
     #If the request method is GET, don't pass any data to the forms.
     #Else, pass request.POST.
@@ -230,6 +229,7 @@ def exercise_list(request, exercise_list_id):
         exercise_list_solution.correct()
         values['score'] = exercise_list_solution.score
         exercise_list_solution.finalized = True
+        return HttpResponseRedirect('/exercise_list_solution/' + str(exercise_list_id))
 
     #If for test and debug
     if request.method == 'POST' and 'rollback' in request.POST:
@@ -285,7 +285,6 @@ def view_exercise_list_solution(request, exercise_list_solution_id):
 
 @teacher_required
 def create_modify_exercise_list(request, exercise_list_id=None):
-
     values = {}
     empty_forms = {}
     values.update(csrf(request))
