@@ -128,9 +128,15 @@ class GetMyExerciseList(ListView):
         else:
             return ExerciseList.objects.filter(course__teacher=user) 
 
+    def get_context_data(self, **kargs):
+        context = super(GetMyExerciseList, self).get_context_data(**kargs)
+        context['user'] = Profile.objects.get(user=self.request.user)
+        print context['user']
+        return context
+
     @method_decorator(profile_required)
-    def dispatch(self, *args, **kargs):
-        return super(GetMyExerciseList, self).dispatch(*args, **kargs)
+    def dispatch(self, *args, **kwargs):
+        return super(GetMyExerciseList, self).dispatch(*args, **kwargs)
 
 
 @profile_required

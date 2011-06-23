@@ -18,7 +18,7 @@
     {% if student or user or admin %}
       <div id="user-tools">
     {% trans 'Welcome,' %}
-    <strong>{% firstof user.name user.login %}</strong>
+    <strong>{% firstof user.name user.login user %}</strong>
     <a href="/logout">{% trans 'Log out' %}</a>
       </div>
     {% else %}
