@@ -231,10 +231,6 @@ def exercise_list(request, exercise_list_id):
         exercise_list_solution.finalized = True
         return HttpResponseRedirect('/exercise_list_solution/' + str(exercise_list_id))
 
-    #If for test and debug
-    if request.method == 'POST' and 'rollback' in request.POST:
-        exercise_list_solution.finalized = False
-
     exercise_list_solution.save()
     values['finalized'] = exercise_list_solution.finalized
     values['questions_and_forms_list'] = questions_and_forms_list
