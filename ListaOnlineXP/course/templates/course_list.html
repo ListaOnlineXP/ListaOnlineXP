@@ -3,7 +3,7 @@
 {% block content_sidebar %}
 <h1>Cursos</h1>
 {% if teacher %}
-  <a href="add/" class="addlink">Adicionar Curso</a>
+  <a href="/course/add/" class="addlink">Adicionar Curso</a>
 {% endif %}
 
 {% if course_list %}
@@ -23,8 +23,8 @@
     <th>{{ course.code }}</th>
     <th><a href="/course/{{ course.id }}">{{ course.name }}</a></th>
     {% if teacher %}
-    <th><a href="update/{{ course.id }}">update</a></th>
-    <th><a href="delete/{{ course.id }}">delete</a></th>
+    <th><a href="/course/update/{{ course.id }}">update</a></th>
+    <th><a href="/course/delete/{{ course.id }}">delete</a></th>
     {% endif %}
     </tr>
   {% endfor %}
