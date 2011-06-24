@@ -9,9 +9,12 @@ class CourseTestCase(TestCase):
     def setUp(self):
         
         #Setup for Teacher tests
-        self.teacher1 = Teacher.objects.create(name=u"Alfredo")
-        self.teacher2 = Teacher.objects.create(name=u"Gerosa")
-        self.teacher3 = Teacher.objects.create(name=u"Flávio")
+        self.user1 = User.objects.create(username=u"alfredo", password=u"alf")
+        self.user2 = User.objects.create(username=u"gerosa", password=u"weasd")
+        self.user3 = User.objects.create(username=u"flavio", password=u"1234")
+        self.teacher1 = Teacher.objects.create(name=u"Alfredo", nusp=u"6431089", user=User.objects.get(id=2))
+        self.teacher2 = Teacher.objects.create(name=u"Gerosa", nusp=u"6797000", user=User.objects.get(id=3))
+        self.teacher3 = Teacher.objects.create(name=u"Flávio", nusp=u"123456", user=User.objects.get(id=4))
 
         #Setup for Course tests
         self.course1 = Course.objects.create(code=u"MAC0110", name=u"Introdução à Computação", teacher=Teacher.objects.get(id=1))
