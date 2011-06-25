@@ -229,6 +229,7 @@ def exercise_list(request, exercise_list_id):
         exercise_list_solution.correct()
         values['score'] = exercise_list_solution.score
         exercise_list_solution.finalized = True
+        exercise_list_solution.save()
         return HttpResponseRedirect('/exercise_list_solution/' + str(exercise_list_id))
 
     exercise_list_solution.save()
