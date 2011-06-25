@@ -272,8 +272,6 @@ def view_exercise_list_solution(request, exercise_list_solution_id):
 
         question_answer = {'question' : question_answered, 'answer' : given_answer,
                 'score': casted_answer.score, 'comment': casted_answer.comment}
-        print question_answer
-        print question_answer['score']
         questions_answers_list.append(question_answer)
 
     values['user'] = Profile.objects.get(user=request.user)
