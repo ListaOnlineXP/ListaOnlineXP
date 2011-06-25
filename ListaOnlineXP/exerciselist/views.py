@@ -252,8 +252,10 @@ def view_exercise_list_solution(request, exercise_list_solution_id):
         question_answered = through_object.question
         casted_answer = exercise_list_solution.answer_set.get(question_answered = question_answered).casted()
         
-        if casted_answer.type == 'FI':
-            given_answer = casted_answer.file.url
+        given_answer = ''
+        if casted_answer.type == 'FI': 
+            if not casted_answer.file == '':
+                given_answer = casted_answer.file.url
         elif casted_answer.type == 'MU':
             given_answer = casted_answer.chosen_alternative.text
         elif casted_answer.type == 'DI':
@@ -262,12 +264,10 @@ def view_exercise_list_solution(request, exercise_list_solution_id):
             given_answer = casted_answer.code
         elif casted_answer.type == 'TF':
             #TODO: Work a little more on this one: not very pretty, just text, and it includes formatting in the view. The template should be in charge of formatting.
-            given_answer = ''
             for answer_item in casted_answer.truefalseansweritem_set.all():
                 given_answer += answer_item.item_answered.text + ': ' +str(answer_item.given_answer)  + '\n'
         else:
             given_answer = None
-            
 
         question_answer = {'question' : question_answered, 'answer' : given_answer,
                 'score': casted_answer.score, 'comment': casted_answer.comment}

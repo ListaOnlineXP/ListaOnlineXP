@@ -375,7 +375,7 @@ class FileQuestion(Question):
 
 
 class FileAnswer(Answer):
-    file = models.FileField(upload_to = manage_uploads_filenames)
+    file = models.FileField(upload_to = manage_uploads_filenames, blank=True)
 
     def __init__(self, *args, **kargs):
         super(FileAnswer, self).__init__(*args, **kargs)

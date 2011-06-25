@@ -6,8 +6,7 @@
     <form name=data action="." method="post" enctype="multipart/form-data"> {% csrf_token %}
     {% for question_and_form in questions_and_forms_list %}
         <table border="1">
-        <tr><th>Questão:</th> <td>{{ question_and_form.question.text }}</td></tr>
-
+        <tr><th>Questão:</th> <td>{{ question_and_form.question.text|linebreaksbr }}</td></tr>
         {{ question_and_form.form.as_table }}
         {% if question_and_form.java_result %}
             <tr><th>Resultado:</th> <td>{{ question_and_form.java_result|linebreaksbr }}</td></tr>
