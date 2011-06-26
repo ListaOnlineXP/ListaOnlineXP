@@ -85,12 +85,12 @@
 
                 form += '<input type="button" value="Apagar" class="del_question" id="'+ new_chosen_id + '" />';
 
-                if(selected_question_type == 'mu') {
-                    form += '{{ empty_forms.multiple_correct.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id + "_correct");
-                    form += '<input type="button" value="Adicionar novo item falso" class="add_multiple_choice_item" id="'+ new_chosen_id + '" />';
-                    form += '<input type="hidden" value=/>'
-                } else if(selected_question_type == 'tf') {
-                    form += '<input type="button" value="Adicionar novo item" class="add_truefalse_item" id="'+ new_chosen_id + '" />';
+                if(selected_question_type == 'mu' || selected_question_type == 'tf') {
+                    if(selected_question_type == 'mu') {
+                        form += '{{ empty_forms.multiple_correct.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id + "_correct");
+                    }
+                    form += '<input type="button" value="Adicionar novo item" class="add_item" id="'+ new_chosen_id + '" />';
+                    form += '<input type="hidden" value="0" name="' + new_chosen_id + '_item_count"/>'
                 }
 
                 form += '</div>';
@@ -109,27 +109,30 @@
                 var $tgt = $(event.target);
                 //Handle new true/false and multiple choice false items.
                 //See http://www.learningjquery.com/2008/03/working-with-events-part-1 for reference.
-                if($tgt.is('.add_multiple_choice_item')) {
+                if($tgt.is('.add_item')) {
 
-                    var mu_parent_id = $tgt.parent().attr('id');
-                    var mu_num_items = $tgt.siblings('div[class=mu_item]').size();
-                    var new_multiple_item_id = mu_parent_id + '_item-'+(mu_num_items+1);
+                    var parent_id = $tgt.parent().attr('id');
 
-                    var mu_form = '<div class="mu_item" id="' + new_multiple_item_id + '">';
-                    mu_form += '{{ empty_forms.multiple_wrong.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_multiple_item_id);
-                    mu_form += '</div>';
-                    $tgt.before(mu_form);
+                    var question_type = '';
 
-                } else if($tgt.is('.add_truefalse_item')) {
+                    alert(parent_id.substring(4,6));
+                    if(parent_id.substring(4,6) == 'mu') question_type = 'mu';
+                    if(parent_id.substring(4,6) == 'tf') question_type = 'tf';
 
-                    var tf_parent_id = $tgt.parent().attr('id');
-                    var tf_num_items = $tgt.siblings('div[class=tf_item]').size();
-                    var new_truefalse_item_id = tf_parent_id +'_item-'+(tf_num_items+1);
+                    var num_items = $tgt.siblings('div[class=question_item]').size();
+                    var new_item_id = parent_id + '_item-'+(num_items+1);
+                    $tgt.siblings('input[type=hidden][name$=_item_count]').val(num_items+1);
 
-                    var tf_form = '<div class="tf_item" id="' + new_truefalse_item_id + '">';
-                    tf_form += '{{ empty_forms.truefalse.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_truefalse_item_id);
-                    tf_form += '</div>';
-                    $tgt.before(tf_form);
+                    var form = '<div class="question_item" id="' + new_item_id + '">';
+
+                    if(question_type == 'mu') {
+                        form += '{{ empty_forms.multiple_wrong.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_item_id);
+                    } else if (question_type == 'tf') {
+                        form += '{{ empty_forms.truefalse.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_item_id);
+                    }
+
+                    form += '</div>';
+                    $tgt.before(form);
 
                 } else if($tgt.is('.del_question')) {
                     var clicked_type = $tgt.attr('id').substring(0,6);

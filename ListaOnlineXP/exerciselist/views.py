@@ -291,9 +291,10 @@ def create_modify_exercise_list(request, exercise_list_id=None):
         #Debug
         values['POST_print'] = ""
         for key, value in request.POST.iteritems():
-
             values['POST_print'] += 'Chave: ' + unicode(key) + '\tValor: ' + unicode(value) + '\n'
         #Debug
+
+        
 
     if exercise_list_id is None:
         empty_forms['discursive'] = DiscursiveQuestionForm(prefix='__prefix__')
