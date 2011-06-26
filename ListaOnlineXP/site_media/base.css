@@ -773,3 +773,11 @@ table#change-history tbody th {
     color: #666;
 }
 
+/*Custom styles*/
+.question_wrapper {
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    padding: 1px;
+    margin: 2px;
+}
