@@ -4,122 +4,144 @@
 
     <div id="questions_wrapper">
 
-    </div>
+        <form name=data action="." method="post" id="questions_form"> {% csrf_token %}
 
+            <input type="hidden" name="new_tf_count" value="0">
+            <input type="hidden" name="new_mu_count" value="0">
+            <input type="hidden" name="new_di_count" value="0">
+            <input type="hidden" name="new_ja_count" value="0">
+            <input type="hidden" name="new_fi_count" value="0">
+
+            <input type="hidden" name="tf_seq_count" value="0">
+            <input type="hidden" name="mu_seq_count" value="0">
+            <input type="hidden" name="di_seq_count" value="0">
+            <input type="hidden" name="ja_seq_count" value="0">
+            <input type="hidden" name="fi_seq_count" value="0">
+            
+            <input type="submit" name="send" value="Enviar" />
+
+        </form>
 
         <ul>
-        <li><input type="radio" name="question_type_selection" value="MU" id="question_type_selection_mu"><label for="question_type_selection_mu">Múltipla escolha</label></li>
-        <li><input type="radio" name="question_type_selection" value="TF" id="question_type_selection_tf"><label for="question_type_selection_tf">Verdadeiro ou Falso</label></li>
-        <li><input type="radio" name="question_type_selection" value="FI" id="question_type_selection_fi"><label for="question_type_selection_fi">Arquivo</label></li>
-        <li><input type="radio" name="question_type_selection" value="JA" id="question_type_selection_ja"><label for="question_type_selection_ja">Java</label></li>
-        <li><input type="radio" name="question_type_selection" value="DI" id="question_type_selection_di"><label for="question_type_selection_di">Discursiva</label></li>
+            <li><input type="radio" name="question_type_selection" value="MU" id="question_type_selection_mu"><label for="question_type_selection_mu">Múltipla escolha</label></li>
+            <li><input type="radio" name="question_type_selection" value="TF" id="question_type_selection_tf"><label for="question_type_selection_tf">Verdadeiro ou Falso</label></li>
+            <li><input type="radio" name="question_type_selection" value="FI" id="question_type_selection_fi"><label for="question_type_selection_fi">Arquivo</label></li>
+            <li><input type="radio" name="question_type_selection" value="JA" id="question_type_selection_ja"><label for="question_type_selection_ja">Java</label></li>
+            <li><input type="radio" name="question_type_selection" value="DI" id="question_type_selection_di"><label for="question_type_selection_di">Discursiva</label></li>
         </ul>
         <input type="button" id="add_question" value="Nova questão" />
 
+    </div>
 
 
 
-        {% comment %}
-        {{ empty_forms.discursive.as_p }}
-        {{ empty_forms.java.as_p }}
-        {{ empty_forms.file.as_p }}
-        {{ empty_forms.multiple.as_p}}
-        {{ empty_forms.multiple_correct.as_p }}
-        {{ empty_forms.multiple_wrong.as_p }}
-        {{ empty_forms.truefalse.as_p }}
-        {{ empty_forms.truefalse_item.as_p }}
-        {% endcomment %}
+
+
+
+    <p>{{ POST_print|linebreaksbr }}</p>
 
 
     <script type="text/javascript">
-    $(document).ready(function() {
+        $(document).ready(function() {
 
-        $("input#add_question").click(function () {
-            var selected_question_type = $('input[type=radio][name=question_type_selection]:checked').val();
+            $("input#add_question").click(function () {
+                var selected_question_type = $('input[type=radio][name=question_type_selection]:checked').val().toLowerCase();
 
-            var new_multiple_id = "new_mu_question-"+($('div[class=question_wrapper][id^=new_mu_question-]').size()+1);
-            var new_truefalse_id = "new_tf_question-"+($('div[class=question_wrapper][id^=new_tf_question-]').size()+1);
-            var new_file_id = "new_fi_question-"+($('div[class=question_wrapper][id^=new_fi_question-]').size()+1);
-            var new_java_id = "new_ja_question-"+($('div[class=question_wrapper][id^=new_ja_question-]').size()+1);
-            var new_discursive_id = "new_di_question-"+($('div[class=question_wrapper][id^=new_di_question-]').size()+1);
-
-            form = "";
-            if(selected_question_type == "MU") {
-                form += '<div class="question_wrapper" id="'+ new_multiple_id + '">';
-                form += '{{ empty_forms.multiple.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_multiple_id);
-                form += '<input type="button" value="Apagar" class="del_question" id="'+ new_multiple_id + '" />';
+                var chosen_seq_count = parseInt($('input[name='+selected_question_type+'_seq_count]').val(),10)+1;
+                $('input[name='+selected_question_type+'_seq_count]').val(chosen_seq_count);
                 
-                form += '{{ empty_forms.multiple_correct.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_multiple_id + "_correct");
-                form += '<input type="button" value="Adicionar novo item falso" class="add_multiple_choice_item" id="'+ new_multiple_id + '" />';
+                var new_chosen_id = "new_" + selected_question_type + "_question-"+chosen_seq_count;
+
+                var question_label = '';
+                if(selected_question_type == 'ja') {
+                    question_label = 'Java';
+                } else if(selected_question_type == 'di'){
+                    question_label = 'Discursiva';
+                } else if(selected_question_type == 'tf'){
+                    question_label = 'Verdadeiro/Falso';
+                } else if(selected_question_type == 'mu'){
+                    question_label = 'Múltipla escolha';
+                } else if(selected_question_type == 'fi'){
+                    question_label = 'Arquivo';
+                }
+
+
+                form = "";
+
+                form += '<div class="question_wrapper" id="'+ new_chosen_id + '">';
+
+                form += '<p>'+question_label+ '</p>';
+                if(selected_question_type == 'mu') {
+                    form += '{{ empty_forms.multiple.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
+                } else if(selected_question_type == 'tf') {
+                    form += '{{ empty_forms.truefalse.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
+                } else if(selected_question_type == 'fi') {
+                    form += '{{ empty_forms.file.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
+                } else if(selected_question_type == 'ja') {
+                    form += '{{ empty_forms.java.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
+                } else if(selected_question_type == 'di') {
+                    form += '{{ empty_forms.discursive.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
+                }
+
+                form += '<input type="button" value="Apagar" class="del_question" id="'+ new_chosen_id + '" />';
+
+                if(selected_question_type == 'mu') {
+                    form += '{{ empty_forms.multiple_correct.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id + "_correct");
+                    form += '<input type="button" value="Adicionar novo item falso" class="add_multiple_choice_item" id="'+ new_chosen_id + '" />';
+                    form += '<input type="hidden" value=/>'
+                } else if(selected_question_type == 'tf') {
+                    form += '<input type="button" value="Adicionar novo item" class="add_truefalse_item" id="'+ new_chosen_id + '" />';
+                }
+
                 form += '</div>';
 
-            } else if(selected_question_type == "TF") {
-                form += '<div class="question_wrapper" id="'+ new_truefalse_id + '">';
-                form += '{{ empty_forms.truefalse.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_truefalse_id);
-                form += '<input type="button" value="Apagar" class="del_question" id="'+ new_truefalse_id + '" />';
+                var current_new_chosen_count = parseInt($('input[name=new_'+selected_question_type+'_count]').val(), 10);
+                $('input[name=new_'+selected_question_type+'_count]').val(current_new_chosen_count+1);
 
-                form += '<input type="button" value="Adicionar novo item" class="add_truefalse_item" id="'+ new_truefalse_id + '" />';
-                form += '</div>';
-            } else if(selected_question_type == "FI") {
-                form += '<div class="question_wrapper" id="'+ new_file_id + '">';
-                form += '{{ empty_forms.file.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_file_id);
-                form += '<input type="button" value="Apagar" class="del_question" id="'+ new_file_id + '" />';
+                if(form != "") {
+                    $(form).appendTo('form#questions_form');
+                }
 
-                form += '</div>';
-            } else if(selected_question_type == "JA") {
-                form += '<div class="question_wrapper" id="'+ new_java_id + '">';
-                form += '{{ empty_forms.java.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_java_id);
-                form += '<input type="button" value="Apagar" class="del_question" id="'+ new_java_id + '" />';
+            });
 
-                form += '</div>';
-            } else if(selected_question_type == "DI") {
-                form += '<div class="question_wrapper" id="'+ new_discursive_id + '">';
-                form += '{{ empty_forms.discursive.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_discursive_id);
-                form += '<input type="button" value="Apagar" class="del_question" id="'+ new_discursive_id + '" />';
-                
-                form += '</div>';
-            }
 
-            if(form != "") {
-                $(form).appendTo('div#questions_wrapper');
-            }
+            $('body').click(function(event) {
+                var $tgt = $(event.target);
+                //Handle new true/false and multiple choice false items.
+                //See http://www.learningjquery.com/2008/03/working-with-events-part-1 for reference.
+                if($tgt.is('.add_multiple_choice_item')) {
+
+                    var mu_parent_id = $tgt.parent().attr('id');
+                    var mu_num_items = $tgt.siblings('div[class=mu_item]').size();
+                    var new_multiple_item_id = mu_parent_id + '_item-'+(mu_num_items+1);
+
+                    var mu_form = '<div class="mu_item" id="' + new_multiple_item_id + '">';
+                    mu_form += '{{ empty_forms.multiple_wrong.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_multiple_item_id);
+                    mu_form += '</div>';
+                    $tgt.before(mu_form);
+
+                } else if($tgt.is('.add_truefalse_item')) {
+
+                    var tf_parent_id = $tgt.parent().attr('id');
+                    var tf_num_items = $tgt.siblings('div[class=tf_item]').size();
+                    var new_truefalse_item_id = tf_parent_id +'_item-'+(tf_num_items+1);
+
+                    var tf_form = '<div class="tf_item" id="' + new_truefalse_item_id + '">';
+                    tf_form += '{{ empty_forms.truefalse.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_truefalse_item_id);
+                    tf_form += '</div>';
+                    $tgt.before(tf_form);
+
+                } else if($tgt.is('.del_question')) {
+                    var clicked_type = $tgt.attr('id').substring(0,6);
+
+                    var current_new_count = parseInt($('input[name='+clicked_type+'_count]').val(), 10);
+                    $('input[name='+clicked_type+'_count]').val(current_new_count-1);
+
+                    $tgt.parent().remove();
+                }
+            });
 
         });
-
-        //Handle new true/false and multiple choice false items.
-        //See http://www.learningjquery.com/2008/03/working-with-events-part-1 for reference.
-        $('body').click(function(event) {
-            var $tgt = $(event.target);
-            if($tgt.is('.add_multiple_choice_item')) {
-
-                var mu_parent_id = $tgt.parent().attr('id');
-                var mu_num_items = $tgt.siblings('div[class=mu_item]').size();
-                var new_multiple_item_id = mu_parent_id + '_item-'+(mu_num_items+1);
-
-                alert(new_multiple_item_id);
-                var mu_form = '<div class="mu_item" id="' + new_multiple_item_id + '">';
-                mu_form += '{{ empty_forms.multiple_wrong.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_multiple_item_id);
-                mu_form += '</div>';
-                $tgt.before(mu_form);
-                
-            } else if($tgt.is('.add_truefalse_item')) {
-
-                var tf_parent_id = $tgt.parent().attr('id');
-                var tf_num_items = $tgt.siblings('div[class=tf_item]').size();
-                var new_truefalse_item_id = tf_parent_id +'_item-'+(tf_num_items+1);
-
-                alert(new_truefalse_item_id);
-                var tf_form = '<div class="tf_item" id="' + new_truefalse_item_id + '">';
-                tf_form += '{{ empty_forms.truefalse.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_truefalse_item_id);
-                tf_form += '</div>';
-                $tgt.before(tf_form);
-
-            } else if($tgt.is('.del_question')) {
-                $tgt.parent().remove();
-            }
-        });
-
-    });
     </script>
 
 {% endblock %}
