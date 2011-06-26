@@ -286,6 +286,52 @@ def create_modify_exercise_list(request, exercise_list_id=None):
     empty_forms = {}
     values.update(csrf(request))
 
+    if request.method == 'POST':
+
+        values['POST_print'] = ""
+        for key, value in request.POST.iteritems():
+            #Debug
+            values['POST_print'] += 'Chave: ' + unicode(key) + '\tValor: ' + unicode(value) + '\n'
+            #Debug
+
+            post_keys = request.POST.keys()
+            if 'new_tf_question' in str(post_keys):
+                
+                pass
+
+#            if "new_tf_question" in key:
+#
+#                pass
+#            elif "new_mu_question" in key:
+#                if "item" not in key:
+#                    form = MultipleChoiceQuestionForm(data = {})
+#                else:
+#                    if "correct" in key:
+#                        form = MultipleChoiceCorrectAlternativeForm(data = {})
+#                    elif "wrong" in key:
+#                        form = MultipleChoiceWrongAlternativeForm(data = {})
+#                    else:
+#                        print("Valor não esperado: " + key)
+#                pass
+#            elif "new_fi_question" in key:
+#                form = FileQuestionForm(data={})
+#                pass
+#            elif "new_ja_question" in key:
+#                form = JavaQuestionForm(data={})
+#                pass
+#            elif "new_di_question" in key:
+#                form = DiscursiveQuestionForm(data={})
+#                pass
+#            else:
+#                print("Valor não esperado: " + key)
+
+
+
+
+
+    pass
+
+
     if exercise_list_id is None:
         empty_forms['discursive'] = DiscursiveQuestionForm(prefix='__prefix__')
 
