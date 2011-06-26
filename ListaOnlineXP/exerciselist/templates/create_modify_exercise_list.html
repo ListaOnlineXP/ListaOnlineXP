@@ -115,7 +115,6 @@
 
                     var question_type = '';
 
-                    alert(parent_id.substring(4,6));
                     if(parent_id.substring(4,6) == 'mu') question_type = 'mu';
                     if(parent_id.substring(4,6) == 'tf') question_type = 'tf';
 
@@ -128,7 +127,7 @@
                     if(question_type == 'mu') {
                         form += '{{ empty_forms.multiple_wrong.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_item_id);
                     } else if (question_type == 'tf') {
-                        form += '{{ empty_forms.truefalse.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_item_id);
+                        form += '{{ empty_forms.truefalse_item.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_item_id);
                     }
 
                     form += '</div>';
