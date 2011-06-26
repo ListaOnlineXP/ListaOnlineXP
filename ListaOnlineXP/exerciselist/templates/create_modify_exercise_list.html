@@ -89,7 +89,8 @@
                     if(selected_question_type == 'mu') {
                         form += '{{ empty_forms.multiple_correct.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id + "_correct");
                     }
-                    form += '<input type="button" value="Adicionar novo item" class="add_item" id="'+ new_chosen_id + '" />';
+                    form += '<input type="button" value="Adicionar item" class="add_item" id="'+ new_chosen_id + '" />';
+                    form += '<input type="button" value="Remover item" class="del_item" id="'+ new_chosen_id + '" />';
                     form += '<input type="hidden" value="0" name="' + new_chosen_id + '_item_count"/>'
                 }
 
@@ -140,6 +141,10 @@
                     $('input[name='+clicked_type+'_count]').val(current_new_count-1);
 
                     $tgt.parent().remove();
+                } else if($tgt.is('.del_item')) {
+                    $tgt.siblings('div.question_item').last().remove();
+                    var num_items = $tgt.siblings('div[class=question_item]').size();
+                    $tgt.siblings('input[type=hidden][name$=_item_count]').val(num_items-11);
                 }
             });
 
