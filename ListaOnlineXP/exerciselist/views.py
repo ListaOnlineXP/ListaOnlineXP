@@ -309,8 +309,27 @@ def create_modify_exercise_list(request, exercise_list_id=None):
                 new_mu_prefix = 'new_mu_question-'+unicode(new_mu_index)
                 new_mu_question_form = MultipleChoiceQuestionForm(data=request.POST, prefix=new_mu_prefix)
                 if new_mu_question_form.is_valid():
-                    new_mu_question_form.save()
+                    new_mu_question = new_mu_question_form.save()
                 processed_new_mu += 1
+
+                #Multiple question, correct item
+                new_mu_correct_prefix = new_mu_prefix+'_correct'
+                new_mu_correct_form = MultipleChoiceCorrectAlternativeForm(data=request.POST, prefix=new_mu_correct_prefix)
+                if new_mu_correct_form.is_valid():
+                    new_mu_correct = new_mu_correct_form.save(commit=False)
+                    new_mu_correct.question = new_mu_question
+                    new_mu_correct.save()
+                
+                #Multiple question items
+                new_item_count = int(request.POST[new_mu_prefix+'_item_count'])
+                for item_number in range(1,new_item_count+1):
+                    new_item_prefix = 'new_mu_question-'+unicode(new_mu_index)+'_item-'+unicode(item_number)
+                    new_item_form = MultipleChoiceWrongAlternativeForm(data=request.POST, prefix=new_item_prefix)
+                    if new_item_form.is_valid():
+                        new_item = new_item_form.save(commit=False)
+                        new_item.question = new_mu_question
+                        new_item.save()
+
             new_mu_index +=1
 
         #Discursive
@@ -357,16 +376,20 @@ def create_modify_exercise_list(request, exercise_list_id=None):
                 new_tf_prefix = 'new_tf_question-'+unicode(new_tf_index)
                 new_tf_question_form = TrueFalseQuestionForm(data=request.POST, prefix=new_tf_prefix)
                 if new_tf_question_form.is_valid():
-                    new_tf_question_form.save()
+                    new_tf_question = new_tf_question_form.save()
                 processed_new_tf += 1
+
+                #TrueFalse items
+                new_item_count = int(request.POST[new_tf_prefix+'_item_count'])
+                for item_number in range(1,new_item_count+1):
+                    new_item_prefix = 'new_tf_question-'+unicode(new_tf_index)+'_item-'+unicode(item_number)
+                    new_item_form = TrueFalseQuestionItemForm(data=request.POST, prefix=new_item_prefix)
+                    if new_item_form.is_valid():
+                        new_item = new_item_form.save(commit=False)
+                        new_item.question = new_tf_question
+                        new_item.save()
+
             new_tf_index +=1
-
-
-
-
-
-
-        
 
     if exercise_list_id is None:
         empty_forms['discursive'] = DiscursiveQuestionForm(prefix='__prefix__')
