@@ -294,6 +294,78 @@ def create_modify_exercise_list(request, exercise_list_id=None):
             values['POST_print'] += 'Chave: ' + unicode(key) + '\tValor: ' + unicode(value) + '\n'
         #Debug
 
+        post_keys = request.POST.keys()
+        new_mu_count = int(request.POST['new_mu_count'])
+        new_tf_count = int(request.POST['new_tf_count'])
+        new_di_count = int(request.POST['new_di_count'])
+        new_fi_count = int(request.POST['new_fi_count'])
+        new_ja_count = int(request.POST['new_ja_count'])
+
+        #Multiple
+        processed_new_mu = 0
+        new_mu_index = 1
+        while processed_new_mu < new_mu_count:
+            if 'new_mu_question-'+unicode(new_mu_index)+'-text' in post_keys:
+                new_mu_prefix = 'new_mu_question-'+unicode(new_mu_index)
+                new_mu_question_form = MultipleChoiceQuestionForm(data=request.POST, prefix=new_mu_prefix)
+                if new_mu_question_form.is_valid():
+                    new_mu_question_form.save()
+                processed_new_mu += 1
+            new_mu_index +=1
+
+        #Discursive
+        processed_new_di = 0
+        new_di_index = 1
+        while processed_new_di < new_di_count:
+            if 'new_di_question-'+unicode(new_di_index)+'-text' in post_keys:
+                new_di_prefix = 'new_di_question-'+unicode(new_di_index)
+                new_di_question_form = DiscursiveQuestionForm(data=request.POST, prefix=new_di_prefix)
+                if new_di_question_form.is_valid():
+                    new_di_question_form.save()
+                processed_new_di += 1
+            new_di_index +=1
+
+        #Java
+        processed_new_ja = 0
+        new_ja_index = 1
+        while processed_new_ja < new_ja_count:
+            if 'new_ja_question-'+unicode(new_ja_index)+'-text' in post_keys:
+                new_ja_prefix = 'new_ja_question-'+unicode(new_ja_index)
+                new_ja_question_form = JavaQuestionForm(data=request.POST, prefix=new_ja_prefix)
+                if new_ja_question_form.is_valid():
+                    new_ja_question_form.save()
+                processed_new_ja += 1
+            new_ja_index +=1
+
+        #File
+        processed_new_fi = 0
+        new_fi_index = 1
+        while processed_new_fi < new_fi_count:
+            if 'new_fi_question-'+unicode(new_fi_index)+'-text' in post_keys:
+                new_fi_prefix = 'new_fi_question-'+unicode(new_fi_index)
+                new_fi_question_form = FileQuestionForm(data=request.POST, prefix=new_fi_prefix)
+                if new_fi_question_form.is_valid():
+                    new_fi_question_form.save()
+                processed_new_fi += 1
+            new_fi_index +=1
+
+        #TrueFalse
+        processed_new_tf = 0
+        new_tf_index = 1
+        while processed_new_tf < new_tf_count:
+            if 'new_tf_question-'+unicode(new_tf_index)+'-text' in post_keys:
+                new_tf_prefix = 'new_tf_question-'+unicode(new_tf_index)
+                new_tf_question_form = TrueFalseQuestionForm(data=request.POST, prefix=new_tf_prefix)
+                if new_tf_question_form.is_valid():
+                    new_tf_question_form.save()
+                processed_new_tf += 1
+            new_tf_index +=1
+
+
+
+
+
+
         
 
     if exercise_list_id is None:
