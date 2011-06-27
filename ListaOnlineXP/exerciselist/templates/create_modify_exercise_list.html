@@ -6,6 +6,14 @@
 
         <form name=data action="." method="post" id="questions_form"> {% csrf_token %}
 
+            {% for form in form_list %}
+                <table>
+                    {{ form.as_table }}
+                </table>
+            {% endfor %}
+
+
+
             <input type="hidden" name="new_tf_count" value="0">
             <input type="hidden" name="new_mu_count" value="0">
             <input type="hidden" name="new_di_count" value="0">

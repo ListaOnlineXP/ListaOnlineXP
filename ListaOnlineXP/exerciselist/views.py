@@ -302,7 +302,39 @@ def create_modify_exercise_list(request, exercise_list_id=None):
     empty_forms = {}
     values.update(csrf(request))
 
-    if request.method == 'POST':
+    if request.method == "POST":
+        data = request.POST
+    else:
+        data = None
+
+    if request.method == 'GET' and exercise_list_id is not None:
+
+        exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
+        through_objects = ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)
+        forms_list = []
+
+        for through_object in through_objects:
+            casted_question = through_object.question.casted()
+
+            if casted_question.type == 'MU':
+                form = MultipleChoiceQuestionForm(data=data, instance=casted_question, prefix =  str(casted_question.id) + '_QUESTIONMU')
+            elif casted_question.type == 'DI':
+                form = DiscursiveQuestionForm(data=data, instance=casted_question, prefix =  str(casted_question.id) + '_QUESTIONDI')
+            elif casted_question.type == 'JA':
+                form = JavaQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONJA')
+            elif casted_question.type == 'TF':
+                form = TrueFalseQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONTF')
+            elif casted_question.type == 'FI':
+                form = FileQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONFI')
+
+            forms_list.append(form)
+
+        values['form_list'] = forms_list
+
+
+
+    #POST
+    else:
 
         #Debug
         values['POST_print'] = ""
@@ -407,19 +439,20 @@ def create_modify_exercise_list(request, exercise_list_id=None):
 
             new_tf_index +=1
 
-    if exercise_list_id is None:
-        empty_forms['discursive'] = DiscursiveQuestionForm(prefix='__prefix__')
 
-        empty_forms['java'] = JavaQuestionForm(prefix='__prefix__')
+    #Empty forms generation
+    empty_forms['discursive'] = DiscursiveQuestionForm(prefix='__prefix__')
 
-        empty_forms['multiple'] = MultipleChoiceQuestionForm(prefix='__prefix__')
-        empty_forms['multiple_correct'] = MultipleChoiceCorrectAlternativeForm(prefix='__prefix__')
-        empty_forms['multiple_wrong'] = MultipleChoiceWrongAlternativeForm(prefix='__prefix__')
+    empty_forms['java'] = JavaQuestionForm(prefix='__prefix__')
 
-        empty_forms['file'] = FileQuestionForm(prefix='__prefix__')
+    empty_forms['multiple'] = MultipleChoiceQuestionForm(prefix='__prefix__')
+    empty_forms['multiple_correct'] = MultipleChoiceCorrectAlternativeForm(prefix='__prefix__')
+    empty_forms['multiple_wrong'] = MultipleChoiceWrongAlternativeForm(prefix='__prefix__')
 
-        empty_forms['truefalse'] = TrueFalseQuestionForm(prefix='__prefix__')
-        empty_forms['truefalse_item'] = TrueFalseQuestionItemForm(prefix='__prefix__')
+    empty_forms['file'] = FileQuestionForm(prefix='__prefix__')
+
+    empty_forms['truefalse'] = TrueFalseQuestionForm(prefix='__prefix__')
+    empty_forms['truefalse_item'] = TrueFalseQuestionItemForm(prefix='__prefix__')
 
 
     values['empty_forms'] = empty_forms
