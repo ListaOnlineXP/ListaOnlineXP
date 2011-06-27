@@ -149,6 +149,7 @@ def exercise_list(request, exercise_list_id):
     values.update(csrf(request))
     values['user'] = user = Profile.objects.get(user=request.user)
     exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
+    values['topics'] = topics = exercise_list.topics.all()
 
     if not user.is_student():
         return HttpResponseRedirect('/exercise_list/correct/' + str(exercise_list.id))
@@ -177,6 +178,20 @@ def exercise_list(request, exercise_list_id):
         data = None
     else:
         data = request.POST
+
+    #Check this exercise list's topics and if the respective list solution has already a chosen topic
+    if topics:
+        form = TopicsChoiceForm(data=data, instance=exercise_list_solution)
+
+        if request.method == 'POST':
+            if form.is_valid():
+                form.save()
+        values['topics_form'] = form
+        
+        if exercise_list_solution.chosen_topic:
+            values['topics'] = None
+            exercise_list.topics.remove(exercise_list_solution.chosen_topic)
+            exercise_list.save()
 
     questions_and_forms_list = []
 
@@ -278,6 +293,7 @@ def view_exercise_list_solution(request, exercise_list_solution_id):
     values['questions_answers_list'] = questions_answers_list
     values['student_name'] = student.name
     values['exercise_list_title'] = exercise_list_solution.exercise_list.name
+    values['chosen_topic'] = exercise_list_solution.chosen_topic
     return render_to_response('view_exercise_list_solution.html', values)
 
 @teacher_required

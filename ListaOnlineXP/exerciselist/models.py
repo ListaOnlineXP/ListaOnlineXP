@@ -16,6 +16,7 @@ class ExerciseList(models.Model):
     min_number_of_students = models.PositiveIntegerField()
     max_number_of_students = models.PositiveIntegerField()
     create_random_groups = models.BooleanField()
+    topics = models.ManyToManyField('Topic', blank=True)
 
     def save(self):
         super(ExerciseList, self).save()
@@ -55,6 +56,14 @@ class Tag(models.Model):
     
     name = models.CharField(max_length=100)
 
+    def __unicode__(self):
+        return self.name
+
+
+class Topic(models.Model):
+    
+    name = models.CharField(max_length=100)
+    
     def __unicode__(self):
         return self.name
 
@@ -110,6 +119,7 @@ class ExerciseListSolution(models.Model):
     exercise_list = models.ForeignKey(ExerciseList)
     finalized = models.BooleanField(False)
     score = models.FloatField(null=True, blank=True)
+    chosen_topic = models.OneToOneField(Topic, null=True, blank=True)
 
     def get_answers(self):
         return Answer.objects.filter(exercise_list_solution=self)

@@ -6,7 +6,6 @@ from django import forms
 class QuestionExerciseInline(admin.StackedInline):
     model = ExerciseList.questions.through
 
-
 class ExerciseListForm(forms.ModelForm):
     model = ExerciseList
 
@@ -79,7 +78,8 @@ class TrueFalseQuestionAdmin(admin.ModelAdmin):
 
 class ExerciseListSolutionAdmin(admin.ModelAdmin):
     fields = [
-        'exercise_list'
+        'exercise_list',
+        'chosen_topic'
     ]
 
 
@@ -94,6 +94,7 @@ admin.site.register(MultipleChoiceQuestion, MultipleChoiceQuestionAdmin)
 admin.site.register(JavaQuestion, JavaQuestionAdmin)
 admin.site.register(DiscursiveQuestion, DiscursiveQuestionAdmin)
 admin.site.register(TrueFalseQuestion, TrueFalseQuestionAdmin)
+admin.site.register(Topic)
 admin.site.register(Tag)
 admin.site.register(ExerciseListSolution, ExerciseListSolutionAdmin)
 admin.site.register(FileQuestion, FileQuestionAdmin)

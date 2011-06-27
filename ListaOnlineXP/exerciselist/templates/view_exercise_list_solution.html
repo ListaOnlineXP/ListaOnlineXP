@@ -3,6 +3,9 @@
 {% block content_sidebar %}
     <h1>Respostas à lista de exercício {{ exercise_list_title }}</h1>
     <h2>Aluno: {{ student_name }}</h2>
+    {% if chosen_topic %}
+        <p>Tema escolhido: {{ chosen_topic }}</p>
+    {% endif %}
     {% for question_answer in questions_answers_list %}
         <p>Questão: {{ question_answer.question|linebreaksbr }}</p>
 	{% if question_answer.question.type == 'FI' %}

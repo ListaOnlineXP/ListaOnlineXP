@@ -4,6 +4,10 @@
 
     <h1>Responder lista de exercícios</h1>
     <form name=data action="." method="post" enctype="multipart/form-data"> {% csrf_token %}
+    {% if topics %}
+    {{ topics_form }}
+    {% endif %}
+
     {% for question_and_form in questions_and_forms_list %}
         <table border="1">
         <tr><th>Questão:</th> <td>{{ question_and_form.question.text|linebreaksbr }}</td></tr>
