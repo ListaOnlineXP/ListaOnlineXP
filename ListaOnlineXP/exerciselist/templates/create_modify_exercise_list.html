@@ -6,9 +6,19 @@
 
         <form name=data action="." method="post" id="questions_form"> {% csrf_token %}
 
-            {% for form in form_list %}
+            {% for form_data in form_list %}
                 <table>
-                    {{ form.as_table }}
+                    {{ form_data.question_form.as_table }}
+                    {% if form_data.correct_form %}
+                        {{ form_data.correct_form }}
+                    {% endif %}
+                    {% if form_data.items_forms %}
+                        {% for item_form in form_data.items_forms %}
+                            {{ item_form }}
+                        {% endfor %}
+
+                    {% endif %}
+
                 </table>
             {% endfor %}
 

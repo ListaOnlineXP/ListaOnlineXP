@@ -314,27 +314,40 @@ def create_modify_exercise_list(request, exercise_list_id=None):
         forms_list = []
 
         for through_object in through_objects:
+
+            question_form = None
+            correct_form = None
+            items_forms = []
             casted_question = through_object.question.casted()
 
             if casted_question.type == 'MU':
-                form = MultipleChoiceQuestionForm(data=data, instance=casted_question, prefix =  str(casted_question.id) + '_QUESTIONMU')
+                question_form = MultipleChoiceQuestionForm(data=data, instance=casted_question, prefix =  str(casted_question.id) + '_QUESTIONMU')
+                correct_form = MultipleChoiceCorrectAlternativeForm(data=data, instance=casted_question.multiplechoicecorrectalternative, prefix=str(casted_question.id)+'-'+str(casted_question.multiplechoicecorrectalternative.id)+'_CORRECTMU')
+                items = casted_question.multiplechoicewrongalternative_set
+                for item in items.all():
+                    item_form = MultipleChoiceWrongAlternativeForm(data=data, instance=item, prefix = str(casted_question.id)+'-'+str(item.id)+'_WRONGMU')
+                    items_forms.append(item_form)
             elif casted_question.type == 'DI':
-                form = DiscursiveQuestionForm(data=data, instance=casted_question, prefix =  str(casted_question.id) + '_QUESTIONDI')
+                question_form = DiscursiveQuestionForm(data=data, instance=casted_question, prefix =  str(casted_question.id) + '_QUESTIONDI')
             elif casted_question.type == 'JA':
-                form = JavaQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONJA')
+                question_form = JavaQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONJA')
             elif casted_question.type == 'TF':
-                form = TrueFalseQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONTF')
+                question_form = TrueFalseQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONTF')
+                items = casted_question.truefalseitem_set
+                for item in items.all():
+                    item_form = TrueFalseQuestionItemForm(data=data, instance=item, prefix = str(casted_question.id)+'-'+str(item.id)+'_ITEMTF')
+                    items_forms.append(item_form)
             elif casted_question.type == 'FI':
-                form = FileQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONFI')
+                question_form = FileQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONFI')
 
-            forms_list.append(form)
+            forms_list.append({'question_form': question_form, 'correct_form': correct_form, 'items_forms' : items_forms})
 
         values['form_list'] = forms_list
 
 
 
     #POST
-    else:
+    elif request.method == 'POST':
 
         #Debug
         values['POST_print'] = ""
@@ -454,6 +467,6 @@ def create_modify_exercise_list(request, exercise_list_id=None):
     empty_forms['truefalse'] = TrueFalseQuestionForm(prefix='__prefix__')
     empty_forms['truefalse_item'] = TrueFalseQuestionItemForm(prefix='__prefix__')
 
-
     values['empty_forms'] = empty_forms
+    
     return render_to_response('create_modify_exercise_list.html', values)
