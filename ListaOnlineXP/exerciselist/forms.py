@@ -63,6 +63,12 @@ class TopicsChoiceForm(forms.ModelForm):
 
 
 #===Begin Exercise list creation forms===
+
+class ExerciseListForm(forms.ModelForm):
+    class Meta:
+        model = ExerciseList
+        exclude=['questions']
+
 class MultipleChoiceQuestionForm(forms.ModelForm):
     class Meta:
         model = MultipleChoiceQuestion

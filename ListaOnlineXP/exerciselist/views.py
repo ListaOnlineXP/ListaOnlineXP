@@ -307,9 +307,134 @@ def create_modify_exercise_list(request, exercise_list_id=None):
     else:
         data = None
 
-    if request.method == 'GET' and exercise_list_id is not None:
+    if request.method == 'POST':
+
+        if exercise_list_id is not None:
+            exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
+        else:
+            exercise_list = None
+        
+
+        exercise_list_form = ExerciseListForm(data=data, instance=exercise_list, prefix='EXLIST')
+
+        if exercise_list_form.is_valid:
+            exercise_list = exercise_list_form.save()
+
+
+        post_keys = request.POST.keys()
+        new_mu_count = int(request.POST['new_mu_count'])
+        new_tf_count = int(request.POST['new_tf_count'])
+        new_di_count = int(request.POST['new_di_count'])
+        new_fi_count = int(request.POST['new_fi_count'])
+        new_ja_count = int(request.POST['new_ja_count'])
+
+        #Multiple
+        processed_new_mu = 0
+        new_mu_index = 1
+        while processed_new_mu < new_mu_count:
+            if 'new_mu_question-'+unicode(new_mu_index)+'-text' in post_keys:
+                new_mu_prefix = 'new_mu_question-'+unicode(new_mu_index)
+                new_mu_question_form = MultipleChoiceQuestionForm(data=request.POST, prefix=new_mu_prefix)
+                if new_mu_question_form.is_valid():
+                    new_mu_question = new_mu_question_form.save()
+                    relationship = ExerciseListQuestionThrough(question=new_mu_question, exerciselist=exercise_list, order=1, weight=1)
+                    relationship.save()
+                processed_new_mu += 1
+
+                #Multiple question, correct item
+                new_mu_correct_prefix = new_mu_prefix+'_correct'
+                new_mu_correct_form = MultipleChoiceCorrectAlternativeForm(data=request.POST, prefix=new_mu_correct_prefix)
+                if new_mu_correct_form.is_valid():
+                    new_mu_correct = new_mu_correct_form.save(commit=False)
+                    new_mu_correct.question = new_mu_question
+                    new_mu_correct.save()
+
+                #Multiple question items
+                new_item_count = int(request.POST[new_mu_prefix+'_item_count'])
+                for item_number in range(1,new_item_count+1):
+                    new_item_prefix = 'new_mu_question-'+unicode(new_mu_index)+'_item-'+unicode(item_number)
+                    new_item_form = MultipleChoiceWrongAlternativeForm(data=request.POST, prefix=new_item_prefix)
+                    if new_item_form.is_valid():
+                        new_item = new_item_form.save(commit=False)
+                        new_item.question = new_mu_question
+                        new_item.save()
+
+            new_mu_index +=1
+
+        #Discursive
+        processed_new_di = 0
+        new_di_index = 1
+        while processed_new_di < new_di_count:
+            if 'new_di_question-'+unicode(new_di_index)+'-text' in post_keys:
+                new_di_prefix = 'new_di_question-'+unicode(new_di_index)
+                new_di_question_form = DiscursiveQuestionForm(data=request.POST, prefix=new_di_prefix)
+                if new_di_question_form.is_valid():
+                    new_di_question_form.save()
+                    relationship = ExerciseListQuestionThrough(question=new_di_question, exerciselist=exercise_list, order=1, weight=1)
+                    relationship.save()
+                processed_new_di += 1
+            new_di_index +=1
+
+        #Java
+        processed_new_ja = 0
+        new_ja_index = 1
+        while processed_new_ja < new_ja_count:
+            if 'new_ja_question-'+unicode(new_ja_index)+'-text' in post_keys:
+                new_ja_prefix = 'new_ja_question-'+unicode(new_ja_index)
+                new_ja_question_form = JavaQuestionForm(data=request.POST, prefix=new_ja_prefix)
+                if new_ja_question_form.is_valid():
+                    new_ja_question_form.save()
+                    relationship = ExerciseListQuestionThrough(question=new_ja_question, exerciselist=exercise_list, order=1, weight=1)
+                    relationship.save()
+                processed_new_ja += 1
+            new_ja_index +=1
+
+        #File
+        processed_new_fi = 0
+        new_fi_index = 1
+        while processed_new_fi < new_fi_count:
+            if 'new_fi_question-'+unicode(new_fi_index)+'-text' in post_keys:
+                new_fi_prefix = 'new_fi_question-'+unicode(new_fi_index)
+                new_fi_question_form = FileQuestionForm(data=request.POST, prefix=new_fi_prefix)
+                if new_fi_question_form.is_valid():
+                    new_fi_question_form.save()
+                    relationship = ExerciseListQuestionThrough(question=new_fi_question, exerciselist=exercise_list, order=1, weight=1)
+                    relationship.save()
+                processed_new_fi += 1
+            new_fi_index +=1
+
+        #TrueFalse
+        processed_new_tf = 0
+        new_tf_index = 1
+        while processed_new_tf < new_tf_count:
+            if 'new_tf_question-'+unicode(new_tf_index)+'-text' in post_keys:
+                new_tf_prefix = 'new_tf_question-'+unicode(new_tf_index)
+                new_tf_question_form = TrueFalseQuestionForm(data=request.POST, prefix=new_tf_prefix)
+                if new_tf_question_form.is_valid():
+                    new_tf_question = new_tf_question_form.save()
+                    relationship = ExerciseListQuestionThrough(question=new_tf_question, exerciselist=exercise_list, order=1, weight=1)
+                    relationship.save()
+                processed_new_tf += 1
+
+                #TrueFalse items
+                new_item_count = int(request.POST[new_tf_prefix+'_item_count'])
+                for item_number in range(1,new_item_count+1):
+                    new_item_prefix = 'new_tf_question-'+unicode(new_tf_index)+'_item-'+unicode(item_number)
+                    new_item_form = TrueFalseQuestionItemForm(data=request.POST, prefix=new_item_prefix)
+                    if new_item_form.is_valid():
+                        new_item = new_item_form.save(commit=False)
+                        new_item.question = new_tf_question
+                        new_item.save()
+
+            new_tf_index +=1
+
+
+    if exercise_list_id is not None:
 
         exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
+        exercise_list_form = ExerciseListForm(data=data, instance=exercise_list, prefix='EXLIST')
+        values['exercise_list_form'] = exercise_list_form
+
         through_objects = ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)
         forms_list = []
 
@@ -344,113 +469,9 @@ def create_modify_exercise_list(request, exercise_list_id=None):
 
         values['form_list'] = forms_list
 
-
-
-    #POST
-    elif request.method == 'POST':
-
-        #Debug
-        values['POST_print'] = ""
-        for key, value in request.POST.iteritems():
-            values['POST_print'] += 'Chave: ' + unicode(key) + '\tValor: ' + unicode(value) + '\n'
-        #Debug
-
-        post_keys = request.POST.keys()
-        new_mu_count = int(request.POST['new_mu_count'])
-        new_tf_count = int(request.POST['new_tf_count'])
-        new_di_count = int(request.POST['new_di_count'])
-        new_fi_count = int(request.POST['new_fi_count'])
-        new_ja_count = int(request.POST['new_ja_count'])
-
-        #Multiple
-        processed_new_mu = 0
-        new_mu_index = 1
-        while processed_new_mu < new_mu_count:
-            if 'new_mu_question-'+unicode(new_mu_index)+'-text' in post_keys:
-                new_mu_prefix = 'new_mu_question-'+unicode(new_mu_index)
-                new_mu_question_form = MultipleChoiceQuestionForm(data=request.POST, prefix=new_mu_prefix)
-                if new_mu_question_form.is_valid():
-                    new_mu_question = new_mu_question_form.save()
-                processed_new_mu += 1
-
-                #Multiple question, correct item
-                new_mu_correct_prefix = new_mu_prefix+'_correct'
-                new_mu_correct_form = MultipleChoiceCorrectAlternativeForm(data=request.POST, prefix=new_mu_correct_prefix)
-                if new_mu_correct_form.is_valid():
-                    new_mu_correct = new_mu_correct_form.save(commit=False)
-                    new_mu_correct.question = new_mu_question
-                    new_mu_correct.save()
-                
-                #Multiple question items
-                new_item_count = int(request.POST[new_mu_prefix+'_item_count'])
-                for item_number in range(1,new_item_count+1):
-                    new_item_prefix = 'new_mu_question-'+unicode(new_mu_index)+'_item-'+unicode(item_number)
-                    new_item_form = MultipleChoiceWrongAlternativeForm(data=request.POST, prefix=new_item_prefix)
-                    if new_item_form.is_valid():
-                        new_item = new_item_form.save(commit=False)
-                        new_item.question = new_mu_question
-                        new_item.save()
-
-            new_mu_index +=1
-
-        #Discursive
-        processed_new_di = 0
-        new_di_index = 1
-        while processed_new_di < new_di_count:
-            if 'new_di_question-'+unicode(new_di_index)+'-text' in post_keys:
-                new_di_prefix = 'new_di_question-'+unicode(new_di_index)
-                new_di_question_form = DiscursiveQuestionForm(data=request.POST, prefix=new_di_prefix)
-                if new_di_question_form.is_valid():
-                    new_di_question_form.save()
-                processed_new_di += 1
-            new_di_index +=1
-
-        #Java
-        processed_new_ja = 0
-        new_ja_index = 1
-        while processed_new_ja < new_ja_count:
-            if 'new_ja_question-'+unicode(new_ja_index)+'-text' in post_keys:
-                new_ja_prefix = 'new_ja_question-'+unicode(new_ja_index)
-                new_ja_question_form = JavaQuestionForm(data=request.POST, prefix=new_ja_prefix)
-                if new_ja_question_form.is_valid():
-                    new_ja_question_form.save()
-                processed_new_ja += 1
-            new_ja_index +=1
-
-        #File
-        processed_new_fi = 0
-        new_fi_index = 1
-        while processed_new_fi < new_fi_count:
-            if 'new_fi_question-'+unicode(new_fi_index)+'-text' in post_keys:
-                new_fi_prefix = 'new_fi_question-'+unicode(new_fi_index)
-                new_fi_question_form = FileQuestionForm(data=request.POST, prefix=new_fi_prefix)
-                if new_fi_question_form.is_valid():
-                    new_fi_question_form.save()
-                processed_new_fi += 1
-            new_fi_index +=1
-
-        #TrueFalse
-        processed_new_tf = 0
-        new_tf_index = 1
-        while processed_new_tf < new_tf_count:
-            if 'new_tf_question-'+unicode(new_tf_index)+'-text' in post_keys:
-                new_tf_prefix = 'new_tf_question-'+unicode(new_tf_index)
-                new_tf_question_form = TrueFalseQuestionForm(data=request.POST, prefix=new_tf_prefix)
-                if new_tf_question_form.is_valid():
-                    new_tf_question = new_tf_question_form.save()
-                processed_new_tf += 1
-
-                #TrueFalse items
-                new_item_count = int(request.POST[new_tf_prefix+'_item_count'])
-                for item_number in range(1,new_item_count+1):
-                    new_item_prefix = 'new_tf_question-'+unicode(new_tf_index)+'_item-'+unicode(item_number)
-                    new_item_form = TrueFalseQuestionItemForm(data=request.POST, prefix=new_item_prefix)
-                    if new_item_form.is_valid():
-                        new_item = new_item_form.save(commit=False)
-                        new_item.question = new_tf_question
-                        new_item.save()
-
-            new_tf_index +=1
+    else:
+        exercise_list_form = ExerciseListForm(data=data, prefix='EXLIST')
+        values['exercise_list_form'] = exercise_list_form
 
 
     #Empty forms generation
