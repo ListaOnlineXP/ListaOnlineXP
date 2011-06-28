@@ -8,15 +8,15 @@ import random
 from utilities import manage_uploads_filenames
 
 class ExerciseList(models.Model):
-    name = models.CharField(blank=False, max_length=100)
-    course = models.ForeignKey('course.Course')
-    pub_date = models.DateField(default=datetime.datetime.today)
-    due_date = models.DateField(default=(datetime.datetime.today() + datetime.timedelta(days=7)))
-    questions = models.ManyToManyField('Question', through='ExerciseListQuestionThrough')
-    min_number_of_students = models.PositiveIntegerField()
-    max_number_of_students = models.PositiveIntegerField()
-    create_random_groups = models.BooleanField()
-    topics = models.ManyToManyField('Topic', blank=True)
+    name = models.CharField(blank=False, max_length=100, verbose_name="titulo")
+    course = models.ForeignKey('course.Course', verbose_name='curso')
+    pub_date = models.DateField(default=datetime.datetime.today, verbose_name='data de publicação')
+    due_date = models.DateField(default=(datetime.datetime.today() + datetime.timedelta(days=7)), verbose_name='data de entrega')
+    questions = models.ManyToManyField('Question', through='ExerciseListQuestionThrough', verbose_name='questões')
+    min_number_of_students = models.PositiveIntegerField(verbose_name='número mínimo de alunos')
+    max_number_of_students = models.PositiveIntegerField(verbose_name='número máximo de alunos')
+    create_random_groups = models.BooleanField(verbose_name='criar grupos aleatoriamente')
+    topics = models.ManyToManyField('Topic', blank=True, verbose_name='tópicos')
 
     def save(self):
         super(ExerciseList, self).save()
@@ -54,7 +54,7 @@ class ExerciseList(models.Model):
 
 class Tag(models.Model):
     
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, verbose_name='nome')
 
     def __unicode__(self):
         return self.name
@@ -62,7 +62,7 @@ class Tag(models.Model):
 
 class Topic(models.Model):
     
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, verbose_name='nome')
     
     def __unicode__(self):
         return self.name
@@ -70,7 +70,7 @@ class Topic(models.Model):
 
 class Question(models.Model):
 
-    text = models.TextField()
+    text = models.TextField('enunciado')
     QUESTION_TYPE_CHOICES = (
         ('TF', 'True/False'),
         ('DI', 'Discursive'),
@@ -79,7 +79,7 @@ class Question(models.Model):
         ('FI', 'File'),
     )
 
-    type = models.CharField(max_length=2, choices=QUESTION_TYPE_CHOICES, blank=True)
+    type = models.CharField(max_length=2, choices=QUESTION_TYPE_CHOICES, blank=True, verbose_name='tipo')
     tags = models.ManyToManyField(Tag, blank=True)
 
     def __unicode__(self):
@@ -116,10 +116,10 @@ class Question(models.Model):
 
 class ExerciseListSolution(models.Model):
 
-    exercise_list = models.ForeignKey(ExerciseList)
+    exercise_list = models.ForeignKey(ExerciseList, verbose_name='lista de exercício')
     finalized = models.BooleanField(False)
-    score = models.FloatField(null=True, blank=True)
-    chosen_topic = models.OneToOneField(Topic, null=True, blank=True)
+    score = models.FloatField(null=True, blank=True, verbose_name='nota')
+    chosen_topic = models.OneToOneField(Topic, null=True, blank=True, verbose_name='tópico escolhido')
 
     def get_answers(self):
         return Answer.objects.filter(exercise_list_solution=self)
@@ -188,10 +188,10 @@ class ExerciseListSolution(models.Model):
 
 class Answer(models.Model):
 
-    exercise_list_solution = models.ForeignKey(ExerciseListSolution, editable=False)
-    question_answered = models.ForeignKey(Question, editable=False)
-    score = models.FloatField(null=True, blank=True, default=None)
-    comment = models.TextField(null=True, blank=True)
+    exercise_list_solution = models.ForeignKey(ExerciseListSolution, editable=False, verbose_name='lista de solução')
+    question_answered = models.ForeignKey(Question, editable=False, verbose_name='questão respondida')
+    score = models.FloatField(null=True, blank=True, default=None, verbose_name='nota')
+    comment = models.TextField(null=True, blank=True, verbose_name='comentário')
 
     ANSWER_TYPE_CHOICES = (
         ('TF', 'True/False'),
@@ -242,7 +242,7 @@ class DiscursiveQuestion(Question):
 
 class DiscursiveAnswer(Answer):
 
-    text = models.TextField(blank=True)
+    text = models.TextField(blank=True, verbose_name='resposta')
 
     def __init__(self, *args, **kargs):
         super(DiscursiveAnswer, self).__init__(*args, **kargs)
@@ -254,7 +254,7 @@ class DiscursiveAnswer(Answer):
 
 class JavaQuestion(Question):
 
-    criteria = models.TextField()
+    criteria = models.TextField(verbose_name='critério')
 
     def __init__(self, *args, **kargs):
         super(JavaQuestion, self).__init__(*args, **kargs)
@@ -263,9 +263,9 @@ class JavaQuestion(Question):
 
 class JavaAnswer(Answer):
 
-    code = models.TextField(blank=True)
-    last_submit_success = models.BooleanField(default=False)
-    last_submit_message = models.CharField(max_length=1000, default="Não houve submissão de resposta até o momento.")
+    code = models.TextField(blank=True, verbose_name='código')
+    last_submit_success = models.BooleanField(default=False, verbose_name='sucesso no último envio')
+    last_submit_message = models.CharField(max_length=1000, default="Não houve submissão de resposta até o momento.", verbose_name='mensagem da última submissão')
 
     def __init__(self, *args, **kargs):
         super(JavaAnswer, self).__init__(*args, **kargs)
@@ -292,7 +292,7 @@ class MultipleChoiceQuestion(Question):
 
 class MultipleChoiceAlternative(models.Model):
 
-    text = models.CharField(blank=False, max_length=300)
+    text = models.CharField(blank=False, max_length=300, verbose_name='texto da alternativa')
 
     def __unicode__(self):
         return self.text
@@ -300,17 +300,17 @@ class MultipleChoiceAlternative(models.Model):
 
 class MultipleChoiceCorrectAlternative(MultipleChoiceAlternative):
 
-    question = models.OneToOneField(MultipleChoiceQuestion)
+    question = models.OneToOneField(MultipleChoiceQuestion, verbose_name='questão')
 
 
 class MultipleChoiceWrongAlternative(MultipleChoiceAlternative):
 
-    question = models.ForeignKey(MultipleChoiceQuestion)
+    question = models.ForeignKey(MultipleChoiceQuestion, verbose_name='questão')
 
 
 class MultipleChoiceAnswer(Answer):
 
-    chosen_alternative = models.ForeignKey(MultipleChoiceAlternative, blank=True, null=True)
+    chosen_alternative = models.ForeignKey(MultipleChoiceAlternative, blank=True, null=True, verbose_name='alternativa escolhida')
 
     def __init__(self, *args, **kargs):
         super(MultipleChoiceAnswer, self).__init__(*args, **kargs)
@@ -336,8 +336,8 @@ class TrueFalseQuestion(Question):
 
 
 class TrueFalseItem(models.Model):
-    question = models.ForeignKey(TrueFalseQuestion)
-    text = models.TextField()
+    question = models.ForeignKey(TrueFalseQuestion, verbose_name='questão')
+    text = models.TextField('texto do item')
     is_correct = models.BooleanField(u"correto")
 
     def __unicode__(self):
@@ -367,8 +367,8 @@ class TrueFalseAnswer(Answer):
 
 class TrueFalseAnswerItem(models.Model):
     answer_group = models.ForeignKey(TrueFalseAnswer)
-    given_answer = models.BooleanField()
-    item_answered = models.ForeignKey(TrueFalseItem)
+    given_answer = models.BooleanField(verbose_name='resposta dada')
+    item_answered = models.ForeignKey(TrueFalseItem, verbose_name='item respondido')
 
     def __unicode__(self):
         if self.given_answer == True:
@@ -385,7 +385,7 @@ class FileQuestion(Question):
 
 
 class FileAnswer(Answer):
-    file = models.FileField(upload_to = manage_uploads_filenames, blank=True)
+    file = models.FileField(upload_to = manage_uploads_filenames, blank=True, verbose_name='arquivo')
 
     def __init__(self, *args, **kargs):
         super(FileAnswer, self).__init__(*args, **kargs)
@@ -401,8 +401,8 @@ class FileAnswer(Answer):
 class ExerciseListQuestionThrough(models.Model):
     exerciselist = models.ForeignKey(ExerciseList)
     question = models.ForeignKey(Question)
-    order = models.PositiveIntegerField()
-    weight = models.PositiveIntegerField()
+    order = models.PositiveIntegerField(verbose_name='ordem')
+    weight = models.PositiveIntegerField(verbose_name='peso')
 
     class Meta:
         ordering = ('order', )

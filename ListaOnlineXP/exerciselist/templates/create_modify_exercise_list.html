@@ -11,7 +11,7 @@
             </table>
 
             {% for form_data in form_list %}
-
+                <div class="question_wrapper">
                 <table>
                     {{ form_data.question_form.as_table }}
                     {{ form_data.delete_form.as_table }}
@@ -26,6 +26,7 @@
                     {% endif %}
 
                 </table>
+                </div>
             {% endfor %}
 
 
