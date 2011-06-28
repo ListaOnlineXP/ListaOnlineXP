@@ -109,6 +109,9 @@ class FileQuestionForm(forms.ModelForm):
     class Meta:
         model = FileQuestion
         exclude = ['type']
+
+class DeleteObjectForm(forms.Form):
+    delete = forms.BooleanField(required=False)
 #===END Exercise list creation forms===
 
 

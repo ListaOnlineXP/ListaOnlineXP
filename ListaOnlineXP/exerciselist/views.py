@@ -449,44 +449,51 @@ def create_modify_exercise_list(request, exercise_list_id=None):
         items_forms = []
         casted_question = through_object.question.casted()
 
-        if casted_question.type == 'MU':
-            question_form = MultipleChoiceQuestionForm(data=data, instance=casted_question, prefix =  str(casted_question.id) + '_QUESTIONMU')
-            if question_form.is_valid():
-                question_form.save()
-            correct_form = MultipleChoiceCorrectAlternativeForm(data=data, instance=casted_question.multiplechoicecorrectalternative, prefix=str(casted_question.id)+'-'+str(casted_question.multiplechoicecorrectalternative.id)+'_CORRECTMU')
-            if correct_form.is_valid():
-                correct_form.save()
-            items = casted_question.multiplechoicewrongalternative_set
-            for item in items.all():
-                item_form = MultipleChoiceWrongAlternativeForm(data=data, instance=item, prefix = str(casted_question.id)+'-'+str(item.id)+'_WRONGMU')
-                if item_form.is_valid():
-                    item_form.save()
-                items_forms.append(item_form)
-        elif casted_question.type == 'DI':
-            question_form = DiscursiveQuestionForm(data=data, instance=casted_question, prefix =  str(casted_question.id) + '_QUESTIONDI')
-            if question_form.is_valid():
-                question_form.save()
-        elif casted_question.type == 'JA':
-            question_form = JavaQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONJA')
-            if question_form.is_valid():
-                question_form.save()
-        elif casted_question.type == 'TF':
-            question_form = TrueFalseQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONTF')
-            if question_form.is_valid():
-                question_form.save()
-            items = casted_question.truefalseitem_set
-            for item in items.all():
-                item_form = TrueFalseQuestionItemForm(data=data, instance=item, prefix = str(casted_question.id)+'-'+str(item.id)+'_ITEMTF')
-                if item_form.is_valid():
-                    item_form.save()
-                items_forms.append(item_form)
-        elif casted_question.type == 'FI':
-            question_form = FileQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONFI')
-            if question_form.is_valid():
-                question_form.save()
+        delete_form = DeleteObjectForm(data=request.POST, prefix=str(casted_question.id) + '_DELETE')
+        if delete_form.is_valid():
+            if delete_form.cleaned_data['delete']:
+                through_object.delete()
 
-        through_object.save()
-        forms_list.append({'question_form': question_form, 'correct_form': correct_form, 'items_forms' : items_forms})
+            else:
+
+                if casted_question.type == 'MU':
+                    question_form = MultipleChoiceQuestionForm(data=data, instance=casted_question, prefix =  str(casted_question.id) + '_QUESTIONMU')
+                    if question_form.is_valid():
+                        question_form.save()
+                    correct_form = MultipleChoiceCorrectAlternativeForm(data=data, instance=casted_question.multiplechoicecorrectalternative, prefix=str(casted_question.id)+'-'+str(casted_question.multiplechoicecorrectalternative.id)+'_CORRECTMU')
+                    if correct_form.is_valid():
+                        correct_form.save()
+                    items = casted_question.multiplechoicewrongalternative_set
+                    for item in items.all():
+                        item_form = MultipleChoiceWrongAlternativeForm(data=data, instance=item, prefix = str(casted_question.id)+'-'+str(item.id)+'_WRONGMU')
+                        if item_form.is_valid():
+                            item_form.save()
+                        items_forms.append(item_form)
+                elif casted_question.type == 'DI':
+                    question_form = DiscursiveQuestionForm(data=data, instance=casted_question, prefix =  str(casted_question.id) + '_QUESTIONDI')
+                    if question_form.is_valid():
+                        question_form.save()
+                elif casted_question.type == 'JA':
+                    question_form = JavaQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONJA')
+                    if question_form.is_valid():
+                        question_form.save()
+                elif casted_question.type == 'TF':
+                    question_form = TrueFalseQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONTF')
+                    if question_form.is_valid():
+                        question_form.save()
+                    items = casted_question.truefalseitem_set
+                    for item in items.all():
+                        item_form = TrueFalseQuestionItemForm(data=data, instance=item, prefix = str(casted_question.id)+'-'+str(item.id)+'_ITEMTF')
+                        if item_form.is_valid():
+                            item_form.save()
+                        items_forms.append(item_form)
+                elif casted_question.type == 'FI':
+                    question_form = FileQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONFI')
+                    if question_form.is_valid():
+                        question_form.save()
+
+                through_object.save()
+                forms_list.append({'question_form': question_form, 'correct_form': correct_form, 'items_forms' : items_forms, 'delete_form' : delete_form})
 
     values['form_list'] = forms_list
 
