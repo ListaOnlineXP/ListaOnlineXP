@@ -3,10 +3,19 @@
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from models import Profile, Student, Teacher
+from exerciselist.models import *
+
+def check_lists_date():
+    late_solutions = ExerciseListSolution.objects.filter(exercise_list__due_date__lt=datetime.datetime.today())
+
+    for late_solution in late_solutions:
+        late_solution.finalized=True
 
 def profile_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url=None):
     def test_profile(user):
         return user.is_authenticated() and not user.is_staff
+
+    check_lists_date()
 
     actual_decorator = user_passes_test(
         test_profile,
@@ -26,6 +35,8 @@ def student_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, log
             return False
         return user.is_authenticated() and not user.is_staff
 
+    check_lists_date()
+
     actual_decorator = user_passes_test(
         test_student,
         login_url=login_url,
@@ -43,6 +54,8 @@ def teacher_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, log
         except:
             return False
         return user.is_authenticated() and not user.is_staff
+
+    check_lists_date()
 
     actual_decorator = user_passes_test(
         test_teacher,

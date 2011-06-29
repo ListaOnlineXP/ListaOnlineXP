@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from models import *
+from datetime import datetime
 from django.contrib.auth.models import User
 
 class Profile(models.Model):
