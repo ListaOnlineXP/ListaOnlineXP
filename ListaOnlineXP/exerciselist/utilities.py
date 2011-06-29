@@ -41,7 +41,7 @@ def test_code(test, code):
     if result_code == "CODE_ERROR":
         return False, "Erro no código: " + result_message
     elif result_code == "TEST_ERROR":
-        return False, result_message
+        return False, result_message + result_message_remainder
     elif result_code == "CORRECT":
         return True, "Sucesso: " + result_message
     elif result_code == "TESTCODE_ERROR":
