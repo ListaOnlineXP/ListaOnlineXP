@@ -169,7 +169,7 @@ class ExerciseListSolution(models.Model):
             weight = ExerciseListQuestionThrough.objects.get(exerciselist=self.exercise_list, question=answer.question_answered).weight
             max_score += 100*weight
             # types with auto correction
-            if answer.type == 'MU' or answer.type == 'TF':
+            if answer.type == 'MU' or answer.type == 'TF' or answer.type == 'JA':
                 casted_answer = answer.casted()
                 score += weight * casted_answer.correct()
 
@@ -274,6 +274,15 @@ class JavaAnswer(Answer):
     def __init__(self, *args, **kargs):
         super(JavaAnswer, self).__init__(*args, **kargs)
         self.type = 'JA'
+
+    # Returns 100 score only if all of tests passed
+    def correct(self):
+        if self.last_submit_success:
+            self.score = 100.0
+            self.save()
+            return 100.0
+        else:
+            return 0.0
 
     def __unicode__(self):
         return self.code
