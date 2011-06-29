@@ -1,6 +1,13 @@
-Versions:
+Requirements:
 
 Django 1.3
 Python 2.6
-JQuery: 1.5.1 (Minimal build from JQuery UI)
+JQuery: 1.6.1
 JQuery UI: 1.8.1 (custom build: Core + Widget + Mouse + Sortable)
+
+Installation and execution:
+
+_Download and extract source
+_From ListaOnlineXP/ListaOnlineXP/ run: python manage.py syncdb
+_From ListaOnlineXP/ListaOnlineXP/exerciselist/java run: sh compilar_classes.sh
+_From ListaOnlineXP/ListaonlineXP/ run: python manage.py runserver
