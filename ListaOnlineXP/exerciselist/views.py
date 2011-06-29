@@ -94,7 +94,7 @@ def answer_list(request, question_id, exercise_list_id):
     exercise_list = ExerciseList.objects.get(id=exercise_list_id)
     answers = []
     for solution in ExerciseListSolution.objects.filter(exercise_list=exercise_list):
-	    answers.append(Answer.objects.get(question_answered=question, exercise_list_solution=solution))
+        answers.append(Answer.objects.get(question_answered=question, exercise_list_solution=solution))
     if request.method == 'POST':
         for a in answers:
             save_answer(request, a.id)
