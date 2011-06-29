@@ -12,7 +12,10 @@
             <div id="questions_wrapper">
             {% for form_data in form_list %}
                 <div class="question_wrapper">
-                <p class="question_index"></p>
+                <p class="question_index">Questão #{{ form_data.order }}</p>
+                {% for hidden in form_data.order_form.hidden_fields %}
+                    {{ hidden }}
+                {% endfor %}
                 <table>
                     {{ form_data.question_form.as_table }}
                     {{ form_data.delete_form.as_table }}
@@ -32,6 +35,7 @@
             {% endfor %}
             </div>
 
+            <div id="to_delete"></div>
 
 
             <input type="hidden" name="new_tf_count" value="0">
@@ -189,8 +193,11 @@
             });
 
             function update_indexes() {
-                $('p.question_index').each(function(i) {
+                $('p.question_index').each(function() {
                    $(this).html('Questão #'+($(this).parent().index()+1)+':');
+                });
+                $('input[type=hidden][name*=ORDER]').each(function() {
+                   $(this).val($(this).parent().index()+1);
                 });
             }
 

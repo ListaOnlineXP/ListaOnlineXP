@@ -455,6 +455,7 @@ def create_modify_exercise_list(request, exercise_list_id=None):
         casted_question = through_object.question.casted()
 
         delete_form = DeleteObjectForm(data=request.POST, prefix=str(casted_question.id) + '_DELETE')
+
         if delete_form.is_valid():
             if delete_form.cleaned_data['delete']:
                 through_object.delete()
@@ -497,9 +498,16 @@ def create_modify_exercise_list(request, exercise_list_id=None):
                     if question_form.is_valid():
                         question_form.save()
 
-                through_object.save()
-                forms_list.append({'question_form': question_form, 'correct_form': correct_form, 'items_forms' : items_forms, 'delete_form' : delete_form})
+                #Update order
+                order_form = OrderForm(data=request.POST, prefix=str(casted_question.id)+ '_ORDER')
+                if order_form.is_valid():
+                    through_object.order = order_form.cleaned_data['order']
 
+                through_object.save()
+                forms_list.append({'question_form': question_form, 'order_form': order_form, 'correct_form': correct_form, 'items_forms' : items_forms, 'delete_form' : delete_form, 'order': through_object.order})
+
+    #Reorder form_list to the new values of order
+    forms_list = sorted(forms_list, key=lambda k: k['order'])
     values['form_list'] = forms_list
 
 

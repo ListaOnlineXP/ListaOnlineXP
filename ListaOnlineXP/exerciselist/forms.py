@@ -112,6 +112,9 @@ class FileQuestionForm(forms.ModelForm):
 
 class DeleteObjectForm(forms.Form):
     delete = forms.BooleanField(required=False)
+
+class OrderForm(forms.Form):
+    order = forms.IntegerField(widget=forms.HiddenInput)
 #===END Exercise list creation forms===
 
 
