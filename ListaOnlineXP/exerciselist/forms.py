@@ -77,7 +77,7 @@ class ExerciseListForm(forms.ModelForm):
 class MultipleChoiceQuestionForm(forms.ModelForm):
     class Meta:
         model = MultipleChoiceQuestion
-        exclude = ['type']
+        exclude = ['type', 'tags']
 
 class MultipleChoiceCorrectAlternativeForm(forms.ModelForm):
     class Meta:
@@ -92,17 +92,17 @@ class MultipleChoiceWrongAlternativeForm(forms.ModelForm):
 class DiscursiveQuestionForm(forms.ModelForm):
     class Meta:
         model = DiscursiveQuestion
-        exclude = ['type']
+        exclude = ['type', 'tags']
 
 class JavaQuestionForm(forms.ModelForm):
     class Meta:
         model = JavaQuestion
-        exclude = ['type']
+        exclude = ['type', 'tags']
 
 class TrueFalseQuestionForm(forms.ModelForm):
     class Meta:
         model = TrueFalseQuestion
-        exclude = ['type']
+        exclude = ['type', 'tags']
 
 class TrueFalseQuestionItemForm(forms.ModelForm):
     class Meta:
@@ -113,7 +113,7 @@ class TrueFalseQuestionItemForm(forms.ModelForm):
 class FileQuestionForm(forms.ModelForm):
     class Meta:
         model = FileQuestion
-        exclude = ['type']
+        exclude = ['type', 'tags']
 
 class DeleteObjectForm(forms.Form):
     delete = forms.BooleanField(required=False)
