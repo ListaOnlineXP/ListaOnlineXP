@@ -272,7 +272,7 @@ class JavaAnswer(Answer):
         self.type = 'JA'
 
     def __unicode__(self):
-        self.code
+        return self.code
 
 
 class MultipleChoiceQuestion(Question):
