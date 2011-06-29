@@ -2,16 +2,17 @@
 
 {% block content_sidebar %}
 
-    <div id="questions_wrapper">
+
 
         <form name=data action="." method="post" id="questions_form"> {% csrf_token %}
 
             <table>
                 {{ exercise_list_form.as_table }}
             </table>
-
+            <div id="questions_wrapper">
             {% for form_data in form_list %}
                 <div class="question_wrapper">
+                <p class="question_index"></p>
                 <table>
                     {{ form_data.question_form.as_table }}
                     {{ form_data.delete_form.as_table }}
@@ -27,7 +28,9 @@
 
                 </table>
                 </div>
+
             {% endfor %}
+            </div>
 
 
 
@@ -56,7 +59,7 @@
         </ul>
         <input type="button" id="add_question" value="Nova questão" />
 
-    </div>
+
 
 
 
@@ -94,7 +97,7 @@
                 form = "";
 
                 form += '<div class="question_wrapper" id="'+ new_chosen_id + '">';
-
+                form += '<p class="question_index"></p>';
                 form += '<p>'+question_label+ '</p>';
                 if(selected_question_type == 'mu') {
                     form += '{{ empty_forms.multiple.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
@@ -125,8 +128,10 @@
                 $('input[name=new_'+selected_question_type+'_count]').val(current_new_chosen_count+1);
 
                 if(form != "") {
-                    $(form).appendTo('form#questions_form');
+                    $(form).appendTo('div#questions_wrapper');
                 }
+
+                update_indexes();
 
             });
 
@@ -166,12 +171,28 @@
                     $('input[name='+clicked_type+'_count]').val(current_new_count-1);
 
                     $tgt.parent().remove();
+
+                    update_indexes();
+                    
                 } else if($tgt.is('.del_item')) {
                     $tgt.siblings('div.question_item').last().remove();
                     var num_items = $tgt.siblings('div[class=question_item]').size();
                     $tgt.siblings('input[type=hidden][name$=_item_count]').val(num_items-11);
                 }
             });
+
+            $(function() {
+               $('#questions_wrapper').sortable({
+                   stop: update_indexes
+               });
+               $('#questions_wrapper').disableSelection();
+            });
+
+            function update_indexes() {
+                $('p.question_index').each(function(i) {
+                   $(this).html('Questão #'+($(this).parent().index()+1)+':');
+                });
+            }
 
         });
     </script>
