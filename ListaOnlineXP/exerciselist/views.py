@@ -309,6 +309,7 @@ def create_modify_exercise_list(request, exercise_list_id=None):
 
     if request.method == "POST":
         data = request.POST
+        values['request_post'] = request.POST
     else:
         data = None
 
@@ -347,9 +348,16 @@ def create_modify_exercise_list(request, exercise_list_id=None):
         if 'new_mu_question-'+unicode(new_mu_index)+'-text' in post_keys:
             new_mu_prefix = 'new_mu_question-'+unicode(new_mu_index)
             new_mu_question_form = MultipleChoiceQuestionForm(data=data, prefix=new_mu_prefix)
+
+            order_form = OrderForm(data=data, prefix=new_mu_prefix+'_ORDER')
+            if order_form.is_valid():
+                order = order_form.cleaned_data['order']
+            else:
+                order = 1
+
             if new_mu_question_form.is_valid():
                 new_mu_question = new_mu_question_form.save()
-                relationship = ExerciseListQuestionThrough(question=new_mu_question, exerciselist=exercise_list, order=1, weight=1)
+                relationship = ExerciseListQuestionThrough(question=new_mu_question, exerciselist=exercise_list, order=order, weight=1)
                 relationship.save()
             processed_new_mu += 1
 
@@ -380,9 +388,16 @@ def create_modify_exercise_list(request, exercise_list_id=None):
         if 'new_di_question-'+unicode(new_di_index)+'-text' in post_keys:
             new_di_prefix = 'new_di_question-'+unicode(new_di_index)
             new_di_question_form = DiscursiveQuestionForm(data=data, prefix=new_di_prefix)
+
+            order_form = OrderForm(data=data, prefix=new_di_prefix+'_ORDER')
+            if order_form.is_valid():
+                order = order_form.cleaned_data['order']
+            else:
+                order = 1
+
             if new_di_question_form.is_valid():
                 new_di_question = new_di_question_form.save()
-                relationship = ExerciseListQuestionThrough(question=new_di_question, exerciselist=exercise_list, order=1, weight=1)
+                relationship = ExerciseListQuestionThrough(question=new_di_question, exerciselist=exercise_list, order=order, weight=1)
                 relationship.save()
             processed_new_di += 1
         new_di_index +=1
@@ -394,9 +409,16 @@ def create_modify_exercise_list(request, exercise_list_id=None):
         if 'new_ja_question-'+unicode(new_ja_index)+'-text' in post_keys:
             new_ja_prefix = 'new_ja_question-'+unicode(new_ja_index)
             new_ja_question_form = JavaQuestionForm(data=data, prefix=new_ja_prefix)
+
+            order_form = OrderForm(data=data, prefix=new_ja_prefix+'_ORDER')
+            if order_form.is_valid():
+                order = order_form.cleaned_data['order']
+            else:
+                order = 1
+
             if new_ja_question_form.is_valid():
                 new_ja_question = new_ja_question_form.save()
-                relationship = ExerciseListQuestionThrough(question=new_ja_question, exerciselist=exercise_list, order=1, weight=1)
+                relationship = ExerciseListQuestionThrough(question=new_ja_question, exerciselist=exercise_list, order=order, weight=1)
                 relationship.save()
             processed_new_ja += 1
         new_ja_index +=1
@@ -408,9 +430,16 @@ def create_modify_exercise_list(request, exercise_list_id=None):
         if 'new_fi_question-'+unicode(new_fi_index)+'-text' in post_keys:
             new_fi_prefix = 'new_fi_question-'+unicode(new_fi_index)
             new_fi_question_form = FileQuestionForm(data=data, prefix=new_fi_prefix)
+
+            order_form = OrderForm(data=data, prefix=new_fi_prefix+'_ORDER')
+            if order_form.is_valid():
+                order = order_form.cleaned_data['order']
+            else:
+                order = 1
+
             if new_fi_question_form.is_valid():
                 new_fi_question = new_fi_question_form.save()
-                relationship = ExerciseListQuestionThrough(question=new_fi_question, exerciselist=exercise_list, order=1, weight=1)
+                relationship = ExerciseListQuestionThrough(question=new_fi_question, exerciselist=exercise_list, order=order, weight=1)
                 relationship.save()
             processed_new_fi += 1
         new_fi_index +=1
@@ -422,9 +451,16 @@ def create_modify_exercise_list(request, exercise_list_id=None):
         if 'new_tf_question-'+unicode(new_tf_index)+'-text' in post_keys:
             new_tf_prefix = 'new_tf_question-'+unicode(new_tf_index)
             new_tf_question_form = TrueFalseQuestionForm(data=data, prefix=new_tf_prefix)
+
+            order_form = OrderForm(data=data, prefix=new_tf_prefix+'_ORDER')
+            if order_form.is_valid():
+                order = order_form.cleaned_data['order']
+            else:
+                order = 1
+
             if new_tf_question_form.is_valid():
                 new_tf_question = new_tf_question_form.save()
-                relationship = ExerciseListQuestionThrough(question=new_tf_question, exerciselist=exercise_list, order=1, weight=1)
+                relationship = ExerciseListQuestionThrough(question=new_tf_question, exerciselist=exercise_list, order=order, weight=1)
                 relationship.save()
             processed_new_tf += 1
 
@@ -446,7 +482,6 @@ def create_modify_exercise_list(request, exercise_list_id=None):
     #Update old questions or display on GET.
     through_objects = ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)
     forms_list = []
-    data = None
     for through_object in through_objects:
 
         question_form = None
@@ -461,7 +496,6 @@ def create_modify_exercise_list(request, exercise_list_id=None):
                 through_object.delete()
 
             else:
-
                 if casted_question.type == 'MU':
                     question_form = MultipleChoiceQuestionForm(data=data, instance=casted_question, prefix =  str(casted_question.id) + '_QUESTIONMU')
                     if question_form.is_valid():
@@ -478,6 +512,7 @@ def create_modify_exercise_list(request, exercise_list_id=None):
                 elif casted_question.type == 'DI':
                     question_form = DiscursiveQuestionForm(data=data, instance=casted_question, prefix =  str(casted_question.id) + '_QUESTIONDI')
                     if question_form.is_valid():
+                        print 'é válido'
                         question_form.save()
                 elif casted_question.type == 'JA':
                     question_form = JavaQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONJA')
@@ -524,7 +559,11 @@ def create_modify_exercise_list(request, exercise_list_id=None):
 
     empty_forms['truefalse'] = TrueFalseQuestionForm(prefix='__prefix__')
     empty_forms['truefalse_item'] = TrueFalseQuestionItemForm(prefix='__prefix__')
+    empty_forms['order'] = OrderForm(prefix='__prefix__')
 
     values['empty_forms'] = empty_forms
     
-    return render_to_response('create_modify_exercise_list.html', values)
+    if request.method == 'POST':
+        return HttpResponseRedirect('/create_modify_exercise_list'+'/'+str(exercise_list.id))
+    else:
+        return render_to_response('create_modify_exercise_list.html', values)
