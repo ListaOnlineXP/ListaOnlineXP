@@ -144,7 +144,12 @@ class GetMyExerciseList(ListView):
 
     def get_context_data(self, **kargs):
         context = super(GetMyExerciseList, self).get_context_data(**kargs)
-        context['user'] = Profile.objects.get(user=self.request.user)
+        user = Profile.objects.get(user=self.request.user)
+        if user.is_student():
+            context['student'] = True
+        elif user.is_teacher():
+            context['teacher'] = True
+        context['user'] = user
         return context
 
     @method_decorator(profile_required)
@@ -572,7 +577,7 @@ def create_modify_exercise_list(request, exercise_list_id=None):
     empty_forms['order'] = OrderForm(prefix='__prefix__')
 
     values['empty_forms'] = empty_forms
-    
+
     if request.method == 'POST':
         return HttpResponseRedirect('/create_modify_exercise_list'+'/'+str(exercise_list.id))
     else:
