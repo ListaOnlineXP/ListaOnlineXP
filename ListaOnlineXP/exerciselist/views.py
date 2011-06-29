@@ -192,7 +192,7 @@ def exercise_list(request, exercise_list_id):
     #If this list's solution has already a chosen topic, send it instead, and remove it from the exercise list
     if exercise_list_solution.chosen_topic:
         values['chosen_topic'] = exercise_list_solution.chosen_topic
-        print exercise_list_solution.chosen_topic.name
+
         if topics:
             exercise_list.topics.remove(exercise_list_solution.chosen_topic)
             exercise_list.save()
@@ -298,7 +298,7 @@ def view_exercise_list_solution(request, exercise_list_solution_id):
     values['student_name'] = student.name
     values['exercise_list_title'] = exercise_list_solution.exercise_list.name
     values['chosen_topic'] = exercise_list_solution.chosen_topic
-    print exercise_list_solution.chosen_topic.name
+
     return render_to_response('view_exercise_list_solution.html', values)
 
 @teacher_required
