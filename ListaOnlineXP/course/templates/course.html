@@ -10,7 +10,7 @@
 
 {% else %}
   {% if teacher %}
-    <a href="/exercise_list/add/" class="addlink">Adicionar Lista</a>
+    <a href="/create_modify_exercise_list/" class="addlink">Adicionar Lista</a>
   {% endif %}
 
   <table cellspacing="0">
@@ -27,12 +27,18 @@
   <tbody>
   {% for list in exercise_list %}
     <tr>
-    <th><a href=/exercise_list/{{ list.id }}>{{ list.name }}</a></th>
-    <th>{{ list.pub_date }}</th>
+        {% if student %}
+            <th><a href=/exercise_list/{{ list.id }}>{{ list.name }}</a></th>
+        {% endif %}
+        {% if teacher %}
+            <th>{{ list.name }}</th>
+        {% endif %}
+
+        <th>{{ list.pub_date }}</th>
     <th>{{ list.due_date }}</th>
     {% if teacher %}
-    <th><a href="/exercise_list/update/{{ list.id }}">update</a></th>
-    <th><a href="/exercise_list/delete/{{ list.id }}">delete</a></th>
+    <th><a href="/create_modify_exercise_list/{{ list.id }}">Modificar</a></th>
+    <th><a href="/exercise_list/delete/{{ list.id }}">Apagar</a></th>
     {% endif %}
     </tr>
   {% endfor %}

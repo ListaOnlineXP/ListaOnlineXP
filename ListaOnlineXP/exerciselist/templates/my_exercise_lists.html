@@ -30,8 +30,12 @@
     <tbody>
     {% for list in exercise_list_list %}
       <tr>
-     <th>{{ list.name }}</th>
-      <th>{{ list.pub_date }}</th>
+        {% if student %}
+            <th><a href=/exercise_list/{{ list.id }}>{{ list.name }}</a></th>
+        {% endif %}
+        {% if teacher %}
+            <th>{{ list.name }}</th>
+        {% endif %}      <th>{{ list.pub_date }}</th>
       <th>{{ list.due_date }}</th>
       <th>{{ list.course }}</th>
       {% if teacher %}
