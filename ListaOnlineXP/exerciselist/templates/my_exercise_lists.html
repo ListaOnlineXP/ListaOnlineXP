@@ -2,6 +2,9 @@
 
 {% block content_sidebar %}
 <h1>Minhas listas de exercícios</h1>
+    {% if teacher %}
+      <a href="/create_modify_exercise_list/" class="addlink">Adicionar Lista</a>
+    {% endif %}
 {% if subscribe %}
   <form action="." method="post">
   {% csrf_token %}
@@ -10,9 +13,7 @@
 
 {% else %}
   {% if exercise_list_list %}
-    {% if teacher %}
-      <a href="/exercise_list/add/" class="addlink">Adicionar Lista</a>
-    {% endif %}
+
 
     <table cellspacing="0">
       <thead><tr>
