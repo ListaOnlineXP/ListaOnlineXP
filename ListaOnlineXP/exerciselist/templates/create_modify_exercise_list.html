@@ -105,8 +105,6 @@
 
                 form += '<div class="question_wrapper" id="'+ new_chosen_id + '">';
                 form += '<p class="question_index"></p>';
-                //TODO : Make it so that new questions also have the order field filled correctly
-                //and change the view to receive that value.
                 form += '{{ empty_forms.order.as_p }}'.replace(/__prefix__/g, new_chosen_id + '_ORDER');
                 form += '<p>'+question_label+ '</p>';
                 if(selected_question_type == 'mu') {
