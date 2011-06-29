@@ -238,8 +238,9 @@ def exercise_list(request, exercise_list_id):
                     #Testing is an expensive operation.
                     if not code == code_in_database:
                         java_result_success, java_result_message = test_code(test=test, code=code)
-                        casted_answer.last_submit_result = java_result_success
+                        casted_answer.last_submit_success = java_result_success
                         casted_answer.last_submit_message = java_result_message
+                        casted_answer.save()
             java_result = casted_answer.last_submit_message
 
         elif casted_answer.type == 'TF':

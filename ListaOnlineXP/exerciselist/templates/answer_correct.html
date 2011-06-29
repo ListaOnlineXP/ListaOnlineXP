@@ -5,14 +5,14 @@
         {% csrf_token %}
         {% for group, question, answer, form, tf in answer_data %}
         <h3>Questão:</h3>
-        <p style="font-weight: bold">{{ question }}</p>
+        <p style="font-weight: bold">{{ question|linebreaksbr }}</p>
         <h3>Resposta:</h3>
         {% if tf %}
             {% for item, q in answer %}
-            <p>{{ item }}: {{ q }}</p>
+            <p>{{ item|linebreaksbr }}: {{ q }}</p>
             {% endfor %}
         {% else %}
-            <p>{{ answer }}</p>
+            <p>{{ answer|linebreaksbr }}</p>
         {% endif %}
         {{ form.as_p }}
         {% endfor %}
