@@ -187,6 +187,15 @@
                     var num_items = $tgt.siblings('div[class=question_item]').size();
                     $tgt.siblings('input[type=hidden][name$=_item_count]').val(num_items-11);
                 }
+
+                else if($tgt.is('input[type=checkbox][name*=DELETE]')) {
+                    //May need some improvement. It is immediately hidden. Maybe ask if the user is sure
+                    //or change to_delete so that it is a bin where everything inside will be deleted.
+                    if($tgt.is(':checked')) {
+                        $tgt.parents('div.question_wrapper').appendTo('div#to_delete').hide();
+                    }
+                    update_indexes();
+                }
             });
 
             $(function() {
@@ -205,15 +214,8 @@
                 });
             }
 
-            //TODO : work out how to move the whole div to to_delete
-            //$('input[type=checkbox][name*=DELETE]').change(function() {
-            //    if($(this).checked) {
-            //        $(this).appendTo('div#to_delete');
-            //    } else {
-            //        $(this).appendTo('div#questions_wrapper');
-            //    }
-            //    update_indexes();
-            //});
+
+
 
 
         });
