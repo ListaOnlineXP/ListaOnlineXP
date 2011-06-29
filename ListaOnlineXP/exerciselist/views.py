@@ -177,7 +177,7 @@ def exercise_list(request, exercise_list_id):
 
     #Get or create the exercise list solution and its questions
     exercise_list_solution = group.solution
-    exercise_list_solution.populate_blank()
+    #exercise_list_solution.populate_blank()
 
     if exercise_list_solution.finalized is True:
         return HttpResponseRedirect('/exercise_list_solution/' + str(exercise_list_solution.id))
@@ -286,7 +286,8 @@ def view_exercise_list_solution(request, exercise_list_solution_id):
             if not casted_answer.file == '':
                 given_answer = casted_answer.file.url
         elif casted_answer.type == 'MU':
-            given_answer = casted_answer.chosen_alternative.text
+            if casted_answer.chosen_alternative:
+                given_answer = casted_answer.chosen_alternative.text
         elif casted_answer.type == 'DI':
             given_answer = casted_answer.text
         elif casted_answer.type == 'JA':

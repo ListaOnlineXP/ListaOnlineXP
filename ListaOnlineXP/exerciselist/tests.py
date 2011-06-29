@@ -11,28 +11,31 @@ class ExerciseListTestCase(TestCase):
     def setUp(self):
 
         #Setup for Teacher tests
-        self.teacher1 = Teacher.objects.create(name=u"Alfredo")
-        self.teacher2 = Teacher.objects.create(name=u"Gerosa")
-        self.teacher3 = Teacher.objects.create(name=u"Flávio")
+        self.user1 = User.objects.create(username=u"alfredo", password=u"alf")
+        self.user2 = User.objects.create(username=u"gerosa", password=u"weasd")
+        self.user3 = User.objects.create(username=u"flavio", password=u"1234")
+        self.teacher1 = Teacher.objects.create(name=u"Alfredo", nusp=u"6431089", user=User.objects.get(id=2))
+        self.teacher2 = Teacher.objects.create(name=u"Gerosa", nusp=u"6797000", user=User.objects.get(id=3))
+        self.teacher3 = Teacher.objects.create(name=u"Flávio", nusp=u"123456", user=User.objects.get(id=4))
 
         #Setup for Course tests
         self.course1 = Course.objects.create(code=u"MAC0110", name=u"Introdução à Computação", teacher=Teacher.objects.get(id=1))
         self.course2 = Course.objects.create(code=u"MAC0342", name=u"XP", teacher=Teacher.objects.get(id=1))
         self.course3 = Course.objects.create(code=u"MAC0122", name=u"Algoritmos", teacher=Teacher.objects.get(id=2))
 
-               
         #Setup for Student tests
-        self.user1 = User.objects.create(username=u"koiti", password=u"lalala")
-        self.user2 = User.objects.create(username=u"tsp", password=u"weasd")
-        self.user3 = User.objects.create(username=u"milan", password=u"1234")
-        self.student1 = Student.objects.create(name=u"Steven Koiti Tsukamoto", nusp=u"6431089", user=User.objects.get(id=1))
-        self.student2 = Student.objects.create(name=u"Thiago da Silva Pinheiro", nusp=u"6797000", user=User.objects.get(id=2))
-        self.student3 = Student.objects.create(name=u"Bruno Milan Perfetto", nusp=u"123456", user=User.objects.get(id=3))
+        self.user4 = User.objects.create(username=u"koiti", password=u"lalala")
+        self.user5 = User.objects.create(username=u"tsp", password=u"weasd")
+        self.user6 = User.objects.create(username=u"milan", password=u"1234")
+        self.student1 = Student.objects.create(name=u"Steven Koiti Tsukamoto", nusp=u"6431089", user=User.objects.get(id=5))
+        self.student2 = Student.objects.create(name=u"Thiago da Silva Pinheiro", nusp=u"6797000", user=User.objects.get(id=6))
+        self.student3 = Student.objects.create(name=u"Bruno Milan Perfetto", nusp=u"123456", user=User.objects.get(id=7))
 
         #Setup for MultipleChoiceQuestion tests
         self.multichoicequestion1 = MultipleChoiceQuestion.objects.create(text=u"1+1?")
         self.multichoicequestion2 = MultipleChoiceQuestion.objects.create(text=u"O que é Refatoração?")
         self.multichoicequestion3 = MultipleChoiceQuestion.objects.create(text=u"")
+
 
         #Setup for MultipleChoiceCorrectAlternative tests
         self.multichoicecorrectalternative1 = MultipleChoiceCorrectAlternative.objects.create(question=MultipleChoiceQuestion.objects.get(id=1))
@@ -88,3 +91,10 @@ class ExerciseListTestCase(TestCase):
         self.assertEqual(JavaQuestion.objects.get(text=u"Crie o helloworld.").criteria, u"Hello World!")
         self.assertEqual(JavaQuestion.objects.get(criteria=u"1+2=3").text, u"Crie um programa que some dois números.")
         self.assertEqual(JavaQuestion.objects.count(), 2)
+
+    def testTeacherDB(self):
+        self.assertEqual(Teacher.objects.get(name=u"Alfredo").name, u"Alfredo")
+        self.assertEqual(Teacher.objects.get(name=u"Gerosa").id, 2)
+        self.assertNotEqual(Teacher.objects.get(id=u"3").name,u"Alfredo")
+        self.assertNotEqual(Teacher.objects.get(id=u"3").name,u"Gerosa")
+        self.assertEqual(Teacher.objects.count(), 3)

@@ -121,6 +121,10 @@ class ExerciseListSolution(models.Model):
     score = models.FloatField(null=True, blank=True, verbose_name='nota')
     chosen_topic = models.OneToOneField(Topic, null=True, blank=True, verbose_name='tópico escolhido')
 
+    def __init__(self, *args, **kwargs):
+        super(ExerciseListSolution, self).__init__(*args, **kwargs)
+        self.populate_blank()
+
     def get_answers(self):
         return Answer.objects.filter(exercise_list_solution=self)
 
