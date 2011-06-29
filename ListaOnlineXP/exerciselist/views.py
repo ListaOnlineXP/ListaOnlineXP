@@ -326,6 +326,8 @@ def create_modify_exercise_list(request, exercise_list_id=None):
     values = {}
     empty_forms = {}
     values.update(csrf(request))
+    values['user'] = Profile.objects.get(user=request.user)
+
 
     if request.method == "POST":
         data = request.POST
