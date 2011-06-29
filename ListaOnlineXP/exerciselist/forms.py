@@ -69,6 +69,11 @@ class ExerciseListForm(forms.ModelForm):
         model = ExerciseList
         exclude=['questions']
 
+    def __init__(self, *args, **kargs):
+        super(ExerciseListForm, self).__init__(*args, **kargs)
+        self.fields['course'].empty_label=None
+        
+
 class MultipleChoiceQuestionForm(forms.ModelForm):
     class Meta:
         model = MultipleChoiceQuestion

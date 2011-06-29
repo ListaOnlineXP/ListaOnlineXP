@@ -13,9 +13,9 @@ class ExerciseList(models.Model):
     pub_date = models.DateField(default=datetime.datetime.today, verbose_name='data de publicação')
     due_date = models.DateField(default=(datetime.datetime.today() + datetime.timedelta(days=7)), verbose_name='data de entrega')
     questions = models.ManyToManyField('Question', through='ExerciseListQuestionThrough', verbose_name='questões')
-    min_number_of_students = models.PositiveIntegerField(verbose_name='número mínimo de alunos')
-    max_number_of_students = models.PositiveIntegerField(verbose_name='número máximo de alunos')
-    create_random_groups = models.BooleanField(verbose_name='criar grupos aleatoriamente')
+    min_number_of_students = models.PositiveIntegerField(verbose_name='número mínimo de alunos', default=1)
+    max_number_of_students = models.PositiveIntegerField(verbose_name='número máximo de alunos', default=1)
+    create_random_groups = models.BooleanField(verbose_name='criar grupos aleatoriamente', default=True)
     topics = models.ManyToManyField('Topic', blank=True, verbose_name='tópicos')
 
     def save(self):
