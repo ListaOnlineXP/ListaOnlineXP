@@ -29,8 +29,14 @@ def test_code(test, code):
     test = Popen(test_args, stdout=PIPE, stderr=PIPE)
     test_output = test.stdout.read()
 
+    #DEBUG
+    print test_output
+    #DEBUG
+
     result_code, separator, result_message = test_output.partition("!:!")
     result_message, separator, result_message_remainder = result_message.partition("\n")
+
+        
 
     if result_code == "CODE_ERROR":
         return False, "Erro no código: " + result_message
