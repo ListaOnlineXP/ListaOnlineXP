@@ -2,11 +2,17 @@
 
 {% block content_sidebar %}
 
-    <h1>Responder lista de exercícios</h1>
+    <h1>Responder lista de exercícios</h1><br />
     <form name=data action="." method="post" enctype="multipart/form-data"> {% csrf_token %}
-    {% if topics %}
-    {{ topics_form }}
+    {% if chosen_topic %}
+        <p>Tema escolhido: {{ chosen_topic }}</p>
+    {% else %}
+        {% if topics %}
+            {{ topics_form }}
+            <input type="button" value="Limpar" id="{{ topics_form.prefix }}"/><br />
+        {% endif %}
     {% endif %}
+    <br />
 
     {% for question_and_form in questions_and_forms_list %}
         <table border="1">
@@ -35,6 +41,10 @@
 
     <script type="text/javascript">
         $("input[id$=ANSWERMU]").click(function () {
+            var radioname = (this).id;
+            $("input[type=radio][id*=" + radioname + "]:checked").attr("checked", false);
+        });
+        $("input[id=TOPICSFORM]").click(function () {
             var radioname = (this).id;
             $("input[type=radio][id*=" + radioname + "]:checked").attr("checked", false);
         });

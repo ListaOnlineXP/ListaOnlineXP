@@ -150,6 +150,7 @@ def exercise_list(request, exercise_list_id):
     values['user'] = user = Profile.objects.get(user=request.user)
     exercise_list = get_object_or_404(ExerciseList, pk=exercise_list_id)
     values['topics'] = topics = exercise_list.topics.all()
+    values['chosen_topic'] = None
 
     if not user.is_student():
         return HttpResponseRedirect('/exercise_list/correct/' + str(exercise_list.id))
@@ -170,7 +171,7 @@ def exercise_list(request, exercise_list_id):
     exercise_list_solution.populate_blank()
 
     if exercise_list_solution.finalized is True:
-        return HttpResponseRedirect('/exercise_list_solution/' + str(exercise_list_id))
+        return HttpResponseRedirect('/exercise_list_solution/' + str(exercise_list_solution.id))
     
     #If the request method is GET, don't pass any data to the forms.
     #Else, pass request.POST.
@@ -181,15 +182,18 @@ def exercise_list(request, exercise_list_id):
 
     #Check this exercise list's topics and if the respective list solution has already a chosen topic
     if topics:
-        form = TopicsChoiceForm(data=data, instance=exercise_list_solution)
+        form = TopicsChoiceForm(data=data, instance=exercise_list_solution, prefix='TOPICSFORM')
 
         if request.method == 'POST':
             if form.is_valid():
                 form.save()
         values['topics_form'] = form
-        
-        if exercise_list_solution.chosen_topic:
-            values['topics'] = None
+
+    #If this list's solution has already a chosen topic, send it instead, and remove it from the exercise list
+    if exercise_list_solution.chosen_topic:
+        values['chosen_topic'] = exercise_list_solution.chosen_topic
+        print exercise_list_solution.chosen_topic.name
+        if topics:
             exercise_list.topics.remove(exercise_list_solution.chosen_topic)
             exercise_list.save()
 
@@ -245,7 +249,7 @@ def exercise_list(request, exercise_list_id):
         values['score'] = exercise_list_solution.score
         exercise_list_solution.finalized = True
         exercise_list_solution.save()
-        return HttpResponseRedirect('/exercise_list_solution/' + str(exercise_list_id))
+        return HttpResponseRedirect('/exercise_list_solution/' + str(exercise_list_solution.id))
 
     exercise_list_solution.save()
     values['finalized'] = exercise_list_solution.finalized
@@ -294,6 +298,7 @@ def view_exercise_list_solution(request, exercise_list_solution_id):
     values['student_name'] = student.name
     values['exercise_list_title'] = exercise_list_solution.exercise_list.name
     values['chosen_topic'] = exercise_list_solution.chosen_topic
+    print exercise_list_solution.chosen_topic.name
     return render_to_response('view_exercise_list_solution.html', values)
 
 @teacher_required

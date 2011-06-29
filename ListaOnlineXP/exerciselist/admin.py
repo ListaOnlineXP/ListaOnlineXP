@@ -79,7 +79,8 @@ class TrueFalseQuestionAdmin(admin.ModelAdmin):
 class ExerciseListSolutionAdmin(admin.ModelAdmin):
     fields = [
         'exercise_list',
-        'chosen_topic'
+        'chosen_topic',
+        'finalized'
     ]
 
 

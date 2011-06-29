@@ -49,7 +49,7 @@ class TopicsChoiceForm(forms.ModelForm):
 
     def __init__(self, *args, **kargs):
         super(TopicsChoiceForm, self).__init__(*args, **kargs)
-        self.fields['chosen_topic'].queryset = self.instance.exercise_list.topics.order_by('?')
+        self.fields['chosen_topic'].queryset = self.instance.exercise_list.topics.order_by('name')
         self.fields['chosen_topic'].empty_label=None
         self.fields['chosen_topic'].label='Escolha um tema:'
 
