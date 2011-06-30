@@ -2,6 +2,7 @@
 from django.db import models
 from django.db.models import Q
 from authentication.models import Group
+from course.models import Course
 import datetime
 import random
 
@@ -9,7 +10,7 @@ from utilities import manage_uploads_filenames
 
 class ExerciseList(models.Model):
     name = models.CharField(blank=False, max_length=100, verbose_name="titulo")
-    course = models.ForeignKey('course.Course', verbose_name='curso')
+    course = models.ForeignKey(Course, verbose_name='curso')
     pub_date = models.DateField(default=datetime.datetime.today, verbose_name='data de publicação')
     due_date = models.DateField(default=(datetime.datetime.today() + datetime.timedelta(days=7)), verbose_name='data de entrega')
     questions = models.ManyToManyField('Question', through='ExerciseListQuestionThrough', verbose_name='questões')
@@ -18,8 +19,8 @@ class ExerciseList(models.Model):
     create_random_groups = models.BooleanField(verbose_name='criar grupos aleatoriamente', default=True)
     topics = models.ManyToManyField('Topic', blank=True, verbose_name='tópicos')
 
-    def save(self):
-        super(ExerciseList, self).save()
+    def save(self, **kwargs):
+        super(ExerciseList, self).save(**kwargs)
         randomize = self.create_random_groups or (self.max_number_of_students==1)
         students = []
         for student in self.course.student.all():
