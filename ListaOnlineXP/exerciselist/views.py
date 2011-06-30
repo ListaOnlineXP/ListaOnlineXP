@@ -66,8 +66,8 @@ def exercise_list_correct(request, list_id):
 
     values['student_answers']=[]
     for s in students:
-        if s.get_group(exercise_list).solution.finalized:
-            values['student_answers'].append((s, [s.get_group(exercise_list).solution.answer_set.get(question_answered = q) for (o, q) in values['ordered_questions']], s.get_group(exercise_list).solution.score))
+        solution = s.get_group(exercise_list).solution
+        values['student_answers'].append((s, [solution.answer_set.get(question_answered = q) for (o, q) in values['ordered_questions']], solution.score, solution.finalized))
         
     return render_to_response('question_list.html', values)
 

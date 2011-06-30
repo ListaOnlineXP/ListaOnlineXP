@@ -10,27 +10,26 @@
         <th><a href="/answer_list/{{ question.id }}/{{ exercise_list.id }}">Questão {{ number }}</a></th>
         {% endfor %}
 	<th>Total</th>
+    <th>Finalizada?</th>
     </tr>
     <tr><th>Pesos:</th>
         {% for weight in weights %}
         <th style="text-align: center;">{{ weight }}</th>
         {% endfor %}
 	<th></th>
+	<th></th>
     </tr></thead>
     <tbody>
     
-    {% for student, answers, score in student_answers %}
+    {% for student, answers, score, finalized in student_answers %}
     <tr>
         <th><a href="/answer_student/{{ student.id }}/{{ exercise_list.id }}/">{{ student }}</a></th>
         {% for answer in answers %}
-        <th style="text-align: center;"><a href="/answer_correct/{{ answer.id }}/">
-                {% if answer.score %} {{ answer.score|floatformat }}
-                {% else %} -
-                {% endif %}
-        </a></th>
-
+        <th style="text-align: center;">
+            <a href="/answer_correct/{{ answer.id }}/">{% if answer.score %}{{ answer.score|floatformat }}{% else %}-{% endif %}</a></th>
         {% endfor %}
-	<th>{{ score|floatformat }}</th>
+        <th>{{ score|floatformat }}</th>
+        <th style="text-align: center;">{% if finalized %}Sim{% else %}Não{% endif %}</th>
     </tr>
     {% endfor %}
     </tbody>
