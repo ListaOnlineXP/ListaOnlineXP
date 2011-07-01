@@ -5,7 +5,7 @@
     <thead><tr>
       <th>Aluno</th>
       {% for exercise_list in exercise_lists %} 
-        <th>{{ exercise_list.name|linebreaksbr }}</th>
+      <th><a href="/exercise_list/correct/{{ exercise_list.id }}">{{ exercise_list.name|linebreaksbr }}</a></th>
       {% endfor %}
     </tr></thead>
 
@@ -30,6 +30,12 @@
             <th>Número de alunos: {{ forloop.counter }}</th>
             {% for exercise_list in exercise_lists %} 
               <th></th>
+            {% endfor %}
+          </tr>
+          <tr>
+            <th>Opções</th>
+            {% for exercise_list in exercise_lists %} 
+            <th><a href="/answer_new/{{ exercise_list.id }}">Corrigir novas</a></th>
             {% endfor %}
           </tr>
         </tfoot>

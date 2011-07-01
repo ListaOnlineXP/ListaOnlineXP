@@ -119,7 +119,7 @@ def answer_correct(request, answer_id):
     values['answer_data'] = [get_answer_data(answer_id)]
     return render_to_response('answer_correct.html', values)
 
-# Viewer for questions that haven't been corrected ye:
+# Viewer for questions that haven't been corrected yet:
 @teacher_required
 def answer_new(request, exercise_list_id):
     values = {}
