@@ -55,7 +55,10 @@ class ExerciseList(models.Model):
         for solution in solutions:
             if solution.score is not None:
                 total_score += solution.score
-        return total_score/solutions.count()
+        if solutions.count() != 0:
+            return total_score/solutions.count()
+        else:
+            return 0
 
     def question_mean(self, question):
         solutions = ExerciseListSolution.objects.filter(exercise_list=self)
@@ -64,7 +67,10 @@ class ExerciseList(models.Model):
         for answer in answers:
             if answer.score is not None:
                 total_score += answer.score
-        return total_score/solutions.count()
+        if solutions.count() != 0:
+            return total_score/solutions.count()
+        else:
+            return 0
 
     def __unicode__(self):
         return self.name
