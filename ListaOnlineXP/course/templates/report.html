@@ -13,10 +13,10 @@
     {% for student, solutions in students_report %}
       <tr>
         <th>{{ forloop.counter}}. {{ student }}</th>
-        {% for solution in solutions %}
+        {% for solution, not_corrected in solutions %}
         <th><a href="/answer_student/{{ student.id }}/{{ solution.exercise_list.id}}">
         {% if solution.finalized %}
-          {{ solution.score }}
+        {{ solution.score }} ({{ not_corrected }})
         {% else %}
           Não finalizada
         {% endif %}

@@ -72,6 +72,14 @@ def my_course_list(request):
     return object_list(request, queryset=course_list, template_object_name='course', 
             template_name='course_list.html', extra_context=values)
 
+def student_report(student, exercise_lists):
+    student_solution = []
+    for exercise_list in exercise_lists:
+        solution = student.get_group(exercise_list).solution
+        not_corrected_answers = solution.get_not_corrected_answers().count
+        student_solution.append((solution, not_corrected_answers))
+    return student_solution
+
 @teacher_required
 def report(request, course_id):
     values = {}
@@ -79,5 +87,5 @@ def report(request, course_id):
     course = Course.objects.get(id=course_id)
     students = course.student.all()
     values['exercise_lists'] = exercise_lists = ExerciseList.objects.filter(course=course)
-    values['students_report'] = [(student, [student.get_group(exercise_list).solution for exercise_list in exercise_lists]) for student in students]
+    values['students_report'] = [(student, student_report(student, exercise_lists)) for student in students]
     return render_to_response('report.html', values)

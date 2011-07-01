@@ -129,6 +129,9 @@ class ExerciseListSolution(models.Model):
     def get_answers(self):
         return Answer.objects.filter(exercise_list_solution=self)
 
+    def get_not_corrected_answers(self):
+        return Answer.objects.filter(exercise_list_solution=self, score=None)
+
     def get_group(self):
         return Group.objects.get(solution=self)
 
