@@ -32,6 +32,8 @@ class ExerciseList(models.Model):
         while students:
             solution = ExerciseListSolution(exercise_list=self, finalized=False)
             solution.save()
+            solution.populate_blank()
+            solution.save()
             group = Group(solution = solution)
             group.save()
             if randomize:
@@ -144,10 +146,6 @@ class ExerciseListSolution(models.Model):
     finalized = models.BooleanField(False)
     score = models.FloatField(null=True, blank=True, verbose_name='nota')
     chosen_topic = models.OneToOneField(Topic, null=True, blank=True, verbose_name='tópico escolhido')
-
-    def __init__(self, *args, **kwargs):
-        super(ExerciseListSolution, self).__init__(*args, **kwargs)
-        self.populate_blank()
 
     def get_answers(self):
         return Answer.objects.filter(exercise_list_solution=self)
