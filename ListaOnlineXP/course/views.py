@@ -61,8 +61,7 @@ def course_delete(request, course_id):
 @profile_required
 def my_course_list(request):
     values = {}
-    user = Profile.objects.get(user=request.user)
-    values['user'] = user
+    values['user'] = user = Profile.objects.get(user=request.user)
     if user.is_student():
         student = Student.objects.get(id=user.id)
         course_list = Course.objects.filter(student=student)
@@ -73,3 +72,12 @@ def my_course_list(request):
     return object_list(request, queryset=course_list, template_object_name='course', 
             template_name='course_list.html', extra_context=values)
 
+@teacher_required
+def report(request, course_id):
+    values = {}
+    values['user'] = Profile.objects.get(user=request.user)
+    course = Course.objects.get(id=course_id)
+    students = course.student.all()
+    values['exercise_lists'] = exercise_lists = ExerciseList.objects.filter(course=course)
+    values['students_report'] = [(student, [student.get_group(exercise_list).solution for exercise_list in exercise_lists]) for student in students]
+    return render_to_response('report.html', values)

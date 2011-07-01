@@ -10,7 +10,7 @@
 
 {% else %}
   {% if teacher %}
-    <a href="/create_modify_exercise_list/" class="addlink">Adicionar Lista</a>
+    <h2>Listas</h2>
   {% endif %}
 
   <table cellspacing="0">
@@ -23,20 +23,26 @@
     <th></th>
     {% endif %}
   </tr></thead>
+    <tbody>
+    {% for list in exercise_list %}
+      <tr>
+          <th><a href=/exercise_list/{{ list.id }}>{{ list.name }}</a></th>
+          <th>{{ list.pub_date }}</th>
+      <th>{{ list.due_date }}</th>
+      {% if teacher %}
+      <th><a href="/create_modify_exercise_list/{{ list.id }}">Modificar</a></th>
+      <th><a href="/exercise_list/delete/{{ list.id }}">Apagar</a></th>
+      {% endif %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
 
-  <tbody>
-  {% for list in exercise_list %}
-    <tr>
-        <th><a href=/exercise_list/{{ list.id }}>{{ list.name }}</a></th>
-        <th>{{ list.pub_date }}</th>
-    <th>{{ list.due_date }}</th>
-    {% if teacher %}
-    <th><a href="/create_modify_exercise_list/{{ list.id }}">Modificar</a></th>
-    <th><a href="/exercise_list/delete/{{ list.id }}">Apagar</a></th>
-    {% endif %}
-    </tr>
-  {% endfor %}
-  </tbody>
+  {% if teacher %}
+  <h2>Outras opções</h2>
+  <p><a href="report">Relatório de nota</a></p>
+  <p><a href="/create_modify_exercise_list/">Adicionar Lista</a></p>
+  {% endif %}
 {% endif %}
 
 {% endblock %}

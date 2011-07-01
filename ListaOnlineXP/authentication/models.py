@@ -34,8 +34,8 @@ class Student(Profile):
         for gr in groups:
             if self in gr.students.all():
                 group = gr
-                
         return group
+
 
 class Teacher(Profile):
     pass

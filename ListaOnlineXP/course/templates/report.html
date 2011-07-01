@@ -1,0 +1,28 @@
+{% extends "base_site.html" %}
+
+{% block content_sidebar %}
+  <table cellspacing="0">
+    <thead><tr>
+      <th>Aluno</th>
+      {% for exercise_list in exercise_lists %} 
+        <th>{{ exercise_list.name|linebreaksbr }}</th>
+      {% endfor %}
+    </tr></thead>
+
+    <tbody>
+    {% for student, solutions in students_report %}
+      <tr>
+        <th>{{ student }}</th>
+        {% for solution in solutions %}
+        {% if solution.finalized %}
+          <th>{{ solution.score }}</th>
+        {% else %}
+          <th>Não finalizada</th>
+        {% endif %}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}
