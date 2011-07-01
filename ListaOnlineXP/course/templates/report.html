@@ -12,17 +12,31 @@
     <tbody>
     {% for student, solutions in students_report %}
       <tr>
-        <th>{{ student }}</th>
+        <th>{{ forloop.counter}}. {{ student }}</th>
         {% for solution in solutions %}
+        <th><a href="/answer_student/{{ student.id }}/{{ solution.exercise_list.id}}">
         {% if solution.finalized %}
-          <th>{{ solution.score }}</th>
+          {{ solution.score }}
         {% else %}
-          <th>Não finalizada</th>
+          Não finalizada
         {% endif %}
+        </a></th>
         {% endfor %}
       </tr>
+
+      {% if forloop.last %}
+        <tfoot>
+          <tr>
+            <th>Número de alunos: {{ forloop.counter }}</th>
+            {% for exercise_list in exercise_lists %} 
+              <th></th>
+            {% endfor %}
+          </tr>
+        </tfoot>
+      {% endif %}
       {% endfor %}
     </tbody>
+    
   </table>
 
 {% endblock %}
