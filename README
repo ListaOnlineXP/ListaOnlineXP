@@ -7,7 +7,13 @@ JQuery UI: 1.8.1 (custom build: Core + Widget + Mouse + Sortable)
 
 Installation and execution:
 
-_Download and extract source
+_Download and extract source (or clone from git@github.com:ListaOnlineXP/ListaOnlineXP.git)
+
+Synchronize the DB:
 _From ListaOnlineXP/ListaOnlineXP/ run: python manage.py syncdb
+
+Compile java classes:
 _From ListaOnlineXP/ListaOnlineXP/exerciselist/java run: sh compilar_classes.sh
+
+Run server:
 _From ListaOnlineXP/ListaonlineXP/ run: python manage.py runserver
