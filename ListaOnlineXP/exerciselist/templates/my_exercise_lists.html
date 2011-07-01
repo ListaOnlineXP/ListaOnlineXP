@@ -1,51 +1,43 @@
 {% extends "base_site.html" %}
 
 {% block content_sidebar %}
-<h1>Minhas listas de exercícios</h1>
-    {% if teacher %}
-      <a href="/create_modify_exercise_list/" class="addlink">Adicionar Lista</a>
-    {% endif %}
-{% if subscribe %}
-  <form action="." method="post">
-  {% csrf_token %}
-    <input type="submit" value="Cadastrar" />
-  </form>
-
-{% else %}
+  <h1>Minhas listas de exercícios</h1>
+  {% if teacher %}
+    <h2>Listas</h2>
+  {% endif %}
   {% if exercise_list_list %}
-
-
-    <table cellspacing="0">
-      <thead><tr>
+  <table cellspacing="0">
+    <thead><tr>
       <th>Lista</th>
       <th>Data da publicação</th>
       <th>Data de entrega</th>
       <th>Curso</th>
       {% if teacher %}
-      <th></th>
-      <th></th>
+        <th></th>
+        <th></th>
       {% endif %}
     </tr></thead>
 
     <tbody>
-    {% for list in exercise_list_list %}
+      {% for list in exercise_list_list %}
       <tr>
-        {% if student %}
-            <th><a href=/exercise_list/{{ list.id }}>{{ list.name }}</a></th>
-        {% endif %}
+        <th><a href=/exercise_list/{{ list.id }}>{{ list.name|linebreaksbr }}</a></th>
+        <th>{{ list.pub_date }}</th>
+        <th>{{ list.due_date }}</th>
+        <th><a href="/course/{{ list.course.id }}">{{ list.course|linebreaksbr }}</a></th>
         {% if teacher %}
-            <th>{{ list.name }}</th>
-        {% endif %}      <th>{{ list.pub_date }}</th>
-      <th>{{ list.due_date }}</th>
-      <th>{{ list.course }}</th>
-      {% if teacher %}
-      <th><a href="/create_modify_exercise_list/{{ list.id }}">Modificar</a></th>
-      <th><a href="/exercise_list/delete/{{ list.id }}">Apagar</a></th>
-      {% endif %}
+          <th><a href="/create_modify_exercise_list/{{ list.id }}">Modificar</a></th>
+          <th><a href="/exercise_list/delete/{{ list.id }}">Apagar</a></th>
+        {% endif %}
       </tr>
-    {% endfor %}
+      {% endfor %}
     </tbody>
+  </table>
   {% endif %}
-{% endif %}
+
+  {% if teacher %}
+  <h2>Outras opções</h2>
+  <p><a href="/create_modify_exercise_list/">Adicionar Lista</a></p>
+  {% endif %}
 
 {% endblock %}
