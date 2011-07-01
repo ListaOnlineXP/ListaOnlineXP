@@ -49,6 +49,14 @@ class ExerciseList(models.Model):
     def get_discursive_questions(self):
         return DiscursiveQuestion.objects.filter(exerciselist=self)
 
+    def mean(self):
+        solutions = ExerciseListSolution.objects.filter(exercise_list=self)
+        total_score = 0
+        for solution in solutions:
+            if solution.score is not None:
+                total_score += solution.score
+        return total_score/solutions.count()
+
     def __unicode__(self):
         return self.name
 
