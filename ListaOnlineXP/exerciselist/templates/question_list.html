@@ -33,6 +33,17 @@
     </tr>
     {% endfor %}
     </tbody>
+
+    <tfoot>
+      <tr>
+        <th>Média</th>
+        {% for mean in questions_mean %}
+          <th> {{ mean }}</th>
+        {% endfor %}
+        <th>{{ exercise_list_score }}</th>
+        <th></th>
+      </tr>
+    </tfoot>
     </table>
 
     <h2>Outras opções</h2>

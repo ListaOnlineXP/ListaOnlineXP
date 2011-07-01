@@ -59,16 +59,18 @@ def exercise_list_correct(request, list_id):
     values = {}
     values['user'] = Profile.objects.get(user=request.user)
     values['exercise_list'] = exercise_list = ExerciseList.objects.get(id=list_id)
+    values['exercise_list_score'] = exercise_list.mean()
     through_objects = ExerciseListQuestionThrough.objects.filter(exerciselist=exercise_list)
-    values['ordered_questions'] = [(t.order, t.question) for t in through_objects]
+    values['ordered_questions'] = ordered_questions = [(t.order, t.question) for t in through_objects]
     values['weights'] = [t.weight for t in through_objects]
     students = exercise_list.course.student.all()
 
     values['student_answers']=[]
     for s in students:
         solution = s.get_group(exercise_list).solution
-        values['student_answers'].append((s, [solution.answer_set.get(question_answered = q) for (o, q) in values['ordered_questions']], solution.score, solution.finalized))
-        
+        values['student_answers'].append((s, [solution.answer_set.get(question_answered = q) for (o, q) in ordered_questions], solution.score, solution.finalized))
+
+    values['questions_mean'] = [exercise_list.question_mean(q) for (o, q) in ordered_questions]
     return render_to_response('question_list.html', values)
 
 # Viewer for student exercise list correction
