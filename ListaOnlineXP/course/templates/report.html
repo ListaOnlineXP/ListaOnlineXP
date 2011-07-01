@@ -25,30 +25,22 @@
         </a></th>
         {% endfor %}
       </tr>
-
-      {% if forloop.last %}
-        <tfoot>
-          <tr>
-            <th>Número de alunos: {{ forloop.counter }}</th>
-            {% for exercise_list in exercise_lists %} 
-              <th></th>
-            {% endfor %}
-          </tr>
-          <tr>
-            <th>Média</th>
-            {% for mean in mean_lists %} 
-              <th>{{ mean }}</th>
-            {% endfor %}
-          </tr>
-          <tr>
-            <th>Opções</th>
-            {% for exercise_list in exercise_lists %} 
-              <th><a href="/answer_new/{{ exercise_list.id }}">Corrigir novas</a></th>
-            {% endfor %}
-          </tr>
-        </tfoot>
-      {% endif %}
       {% endfor %}
+
+      <tfoot>
+        <tr>
+          <th>Média</th>
+          {% for mean in mean_lists %} 
+            <th>{{ mean }}</th>
+          {% endfor %}
+        </tr>
+        <tr>
+          <th>Opções</th>
+          {% for exercise_list in exercise_lists %} 
+            <th><a href="/answer_new/{{ exercise_list.id }}">Corrigir novas</a></th>
+          {% endfor %}
+        </tr>
+      </tfoot>
     </tbody>
     
   </table>
