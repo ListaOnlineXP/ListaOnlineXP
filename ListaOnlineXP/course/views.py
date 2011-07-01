@@ -77,7 +77,7 @@ def my_course_list(request):
 def report(request, course_id):
     values = {}
     values['user'] = Profile.objects.get(user=request.user)
-    course = Course.objects.get(id=course_id)
+    values['course'] = course = Course.objects.get(id=course_id)
     students = course.student.all()
     values['exercise_lists'] = exercise_lists = ExerciseList.objects.filter(course=course)
     values['students_report'] = [(student, student_report(student, exercise_lists)) for student in students]

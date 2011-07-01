@@ -2,9 +2,6 @@
 
 {% block content_sidebar %}
 <h1>Cursos</h1>
-{% if teacher %}
-  <a href="/course/add/" class="addlink">Adicionar Curso</a>
-{% endif %}
 
 {% if course_list %}
   <table cellspacing="0">
@@ -29,9 +26,15 @@
     </tr>
   {% endfor %}
   </tbody>
+  </table>
 
 {% else %}
   <p> Nenhum curso disponível </p>
+{% endif %}
+
+{% if teacher %}
+  <h2>Outras opções</h2>
+  <p><a href="/course/add/">Adicionar Curso</a></p>
 {% endif %}
 
 {% endblock %}
