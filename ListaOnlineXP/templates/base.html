@@ -11,7 +11,7 @@
 
 {% load i18n %}
 
-<body class="{% block bodyclass %}{% endblock %}">
+<body>
   <!-- Header -->
   <div id="header">
     <div id="branding">
@@ -31,23 +31,12 @@
   </div>
 <!-- END Header -->
 
-<!-- Content -->
-  <div id="content" class="{% block coltype %}colM{% endblock %}">
-    {% block pretitle %}{% endblock %}
-    {% block content_title %}{% if title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
+  <div id="content_sidebar_wrapper">
     {% block content %}
-      {% block object-tools %}{% endblock %}
-      {{ content }}
     {% endblock %}
+  </div>
     <br class="clear" />
-  </div>
-<!-- END Content -->
 
-<!-- Footer -->
-  <div id="footer">
-    {% block footer %}{% endblock %}
-  </div>
-<!-- END Footer -->
 
 </body>
 </html>

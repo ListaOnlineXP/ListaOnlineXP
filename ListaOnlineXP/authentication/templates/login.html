@@ -13,10 +13,12 @@
 {% if form.errors %}
 <p>Usuário ou senha inválidos. Tente novamente.</p>
 {% endif %}
-
+<div id="login_table">
 <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
-{% csrf_token %}
-<table>
+    {% csrf_token %}
+    <table>
+        <th id="login_head" colspan=2>Login de usuário</th>
+        <tbody>
 <tr>
     <td>{{ form.username.label_tag }}</td>
     <td>{{ form.username }}</td>
@@ -25,11 +27,12 @@
     <td>{{ form.password.label_tag }}</td>
     <td>{{ form.password }}</td>
 </tr>
+</tbody>
 </table>
-
 <input type="submit" value="login" />
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 <p><a href="/signup">Cadastrar</a><p>
+</div>
 {% endblock %}
 
