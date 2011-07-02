@@ -16,7 +16,7 @@ class ExerciseList(models.Model):
     min_number_of_students = models.PositiveIntegerField(verbose_name='número mínimo de alunos', default=1)
     max_number_of_students = models.PositiveIntegerField(verbose_name='número máximo de alunos', default=1)
     create_random_groups = models.BooleanField(verbose_name='criar grupos aleatoriamente', default=True)
-    topics = models.ManyToManyField('Topic', blank=True, verbose_name='tópicos')
+    topics = models.ManyToManyField('Topic', blank=True, verbose_name='temas')
 
     def save(self):
         super(ExerciseList, self).save()
@@ -119,7 +119,7 @@ class ExerciseListSolution(models.Model):
     exercise_list = models.ForeignKey(ExerciseList, verbose_name='lista de exercício')
     finalized = models.BooleanField(False)
     score = models.FloatField(null=True, blank=True, verbose_name='nota')
-    chosen_topic = models.OneToOneField(Topic, null=True, blank=True, verbose_name='tópico escolhido')
+    chosen_topic = models.OneToOneField(Topic, null=True, blank=True, verbose_name='tema escolhido')
 
     def __init__(self, *args, **kwargs):
         super(ExerciseListSolution, self).__init__(*args, **kwargs)
