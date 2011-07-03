@@ -3,31 +3,56 @@
 {% block content_sidebar %}
 
 
-
+        <h1>Edição de lista de exercício</h1>
+        
         <form name=data action="." method="post" id="questions_form"> {% csrf_token %}
 
-            <table>
+            <table class="form_table">
                 {{ exercise_list_form.as_table }}
             </table>
+            <h3>Arraste as questões para alterar a ordem</h3>
             <div id="questions_wrapper">
             {% for form_data in form_list %}
                 <div class="question_wrapper">
-                <p class="question_index">Questão #{{ form_data.order }}</p>
+                <div class="question_index">Questão #{{ form_data.order }}</div>
                 {% for hidden in form_data.order_form.hidden_fields %}
                     {{ hidden }}
                 {% endfor %}
-                <table>
+                <table class="form_table">
                     {{ form_data.question_form.as_table }}
-                    {{ form_data.delete_form.as_table }}
                     {% if form_data.correct_form %}
                         {{ form_data.correct_form }}
                     {% endif %}
                     {% if form_data.items_forms %}
                         {% for item_form in form_data.items_forms %}
-                            {{ item_form }}
+                            <tr>
+                            {% for field in item_form.visible_fields %}
+
+                                {% if forloop.first %}
+                                    {% for hidden_field in item_form.hidden_fields %}
+                                        {{ hidden_field }}
+                                    {% endfor %}
+                                {% endif %}
+
+                                {{ field.errors }}
+
+                                    {% if forloop.counter == 1 %}
+                                        <th>{{ field.label_tag }}:</th> <td>{{ field }}
+                                    {% endif %}
+                                    {% if forloop.counter == 2 %}
+                                         {{ field.label_tag }}: {{ field }}
+                                    {% endif %}
+
+
+
+                            {% endfor %}
+                            </td>
+                            </tr>
                         {% endfor %}
 
                     {% endif %}
+                {{ form_data.delete_form.as_table }}
+
 
                 </table>
                 </div>
@@ -50,10 +75,8 @@
             <input type="hidden" name="ja_seq_count" value="0">
             <input type="hidden" name="fi_seq_count" value="0">
             
-            <input type="submit" name="send" value="Enviar" />
 
-        </form>
-
+        <div class="question_selection">
         <ul>
             <li><input type="radio" name="question_type_selection" value="MU" id="question_type_selection_mu"><label for="question_type_selection_mu">Múltipla escolha</label></li>
             <li><input type="radio" name="question_type_selection" value="TF" id="question_type_selection_tf"><label for="question_type_selection_tf">Verdadeiro ou Falso</label></li>
@@ -61,8 +84,11 @@
             <li><input type="radio" name="question_type_selection" value="JA" id="question_type_selection_ja"><label for="question_type_selection_ja">Java</label></li>
             <li><input type="radio" name="question_type_selection" value="DI" id="question_type_selection_di"><label for="question_type_selection_di">Discursiva</label></li>
         </ul>
-        <input type="button" id="add_question" value="Nova questão" />
+        <input type="button" id="add_question" value="Nova questão" /><br /> <br />
+        </div>
+        <input type="submit" name="send" value="Salvar" />
 
+        </form>
 
 
 
@@ -104,32 +130,33 @@
                 form = "";
 
                 form += '<div class="question_wrapper" id="'+ new_chosen_id + '">';
-                form += '<p class="question_index"></p>';
+                form += '<div class="question_index"></div>';
                 form += '{{ empty_forms.order.as_p }}'.replace(/__prefix__/g, new_chosen_id + '_ORDER');
-                form += '<p>'+question_label+ '</p>';
+                form += '<table class="form_table">';
                 if(selected_question_type == 'mu') {
-                    form += '{{ empty_forms.multiple.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
+                    form += '{{ empty_forms.multiple.as_table|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
                 } else if(selected_question_type == 'tf') {
-                    form += '{{ empty_forms.truefalse.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
+                    form += '{{ empty_forms.truefalse.as_table|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
                 } else if(selected_question_type == 'fi') {
-                    form += '{{ empty_forms.file.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
+                    form += '{{ empty_forms.file.as_table|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
                 } else if(selected_question_type == 'ja') {
-                    form += '{{ empty_forms.java.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
+                    form += '{{ empty_forms.java.as_table|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
                 } else if(selected_question_type == 'di') {
-                    form += '{{ empty_forms.discursive.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
+                    form += '{{ empty_forms.discursive.as_table|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
                 }
 
-                form += '<input type="button" value="Apagar" class="del_question" id="'+ new_chosen_id + '" />';
+
 
                 if(selected_question_type == 'mu' || selected_question_type == 'tf') {
                     if(selected_question_type == 'mu') {
-                        form += '{{ empty_forms.multiple_correct.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id + "_correct");
+                        form += '{{ empty_forms.multiple_correct.as_table|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id + "_correct");
                     }
-                    form += '<input type="button" value="Adicionar item" class="add_item" id="'+ new_chosen_id + '" />';
-                    form += '<input type="button" value="Remover item" class="del_item" id="'+ new_chosen_id + '" />';
+                    form += '<tr><th><input type="button" value="Adicionar item" class="add_item" id="'+ new_chosen_id + '" />';
+                    form += '<input type="button" value="Remover item" class="del_item" id="'+ new_chosen_id + '" /></th><td></td></tr>';
                     form += '<input type="hidden" value="0" name="' + new_chosen_id + '_item_count"/>'
                 }
-
+                form += '</table>';
+                form += '<input type="button" value="Apagar questão" class="del_question" id="'+ new_chosen_id + '" />';
                 form += '</div>';
 
                 var current_new_chosen_count = parseInt($('input[name=new_'+selected_question_type+'_count]').val(), 10);
@@ -150,27 +177,29 @@
                 //See http://www.learningjquery.com/2008/03/working-with-events-part-1 for reference.
                 if($tgt.is('.add_item')) {
 
-                    var parent_id = $tgt.parent().attr('id');
+                    var parent_id = $tgt.parents('.question_wrapper').attr('id');
 
                     var question_type = '';
 
                     if(parent_id.substring(4,6) == 'mu') question_type = 'mu';
                     if(parent_id.substring(4,6) == 'tf') question_type = 'tf';
 
-                    var num_items = $tgt.siblings('div[class=question_item]').size();
+                    var num_items = $tgt.parents('.question_wrapper').children('.question_item').size();
                     var new_item_id = parent_id + '_item-'+(num_items+1);
-                    $tgt.siblings('input[type=hidden][name$=_item_count]').val(num_items+1);
+                    $tgt.parents('.form_table').find('input[type=hidden][name$=item_count]').val(num_items+1);
 
-                    var form = '<div class="question_item" id="' + new_item_id + '">';
-
+                    var form = '<table class="question_item" id="' + new_item_id + '">';
+                    
                     if(question_type == 'mu') {
-                        form += '{{ empty_forms.multiple_wrong.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_item_id);
+                        form += '{{ empty_forms.multiple_wrong.as_table|linebreaksbr }}'.replace(/__prefix__/g, new_item_id);
                     } else if (question_type == 'tf') {
-                        form += '{{ empty_forms.truefalse_item.as_p|linebreaksbr }}'.replace(/__prefix__/g, new_item_id);
+                        //Ugly, hackety hack
+                        form += '{{ empty_forms.truefalse_item.as_table|linebreaksbr }}'.replace(/__prefix__/g, new_item_id).replace(/<\/td><\/tr><br \/><tr><th>(.*?){1}<\/th><td>/g, "$1 ").replace(/<br \/>/,'').replace('Correto',' Correto');
                     }
 
-                    form += '</div>';
-                    $tgt.before(form);
+
+                    form += '</table>';
+                    $tgt.parents('.question_wrapper').find('.del_question').before(form);
 
                 } else if($tgt.is('.del_question')) {
                     var clicked_type = $tgt.attr('id').substring(0,6);
@@ -178,14 +207,14 @@
                     var current_new_count = parseInt($('input[name='+clicked_type+'_count]').val(), 10);
                     $('input[name='+clicked_type+'_count]').val(current_new_count-1);
 
-                    $tgt.parent().remove();
+                    $tgt.parents('.question_wrapper').remove();
 
                     update_indexes();
                     
                 } else if($tgt.is('.del_item')) {
-                    $tgt.siblings('div.question_item').last().remove();
-                    var num_items = $tgt.siblings('div[class=question_item]').size();
-                    $tgt.siblings('input[type=hidden][name$=_item_count]').val(num_items-11);
+                    $tgt.parents('.question_wrapper').children('.question_item').last().remove();
+                    var num_items = $tgt.parents('.question_wrapper').children('.question_item').size();
+                    $tgt.parents('.form_table').find('input[type=hidden][name$=item_count]').val(num_items);
                 }
 
                 else if($tgt.is('input[type=checkbox][name*=DELETE]')) {
@@ -202,11 +231,11 @@
                $('#questions_wrapper').sortable({
                    stop: update_indexes
                });
-               $('#questions_wrapper').disableSelection();
+               //$('#questions_wrapper').disableSelection();
             });
 
             function update_indexes() {
-                $('p.question_index').each(function() {
+                $('.question_index').each(function() {
                    $(this).html('Questão #'+($(this).parent().index()+1)+':');
                 });
                 $('input[type=hidden][name*=ORDER]').each(function() {

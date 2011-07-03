@@ -84,10 +84,17 @@ class MultipleChoiceCorrectAlternativeForm(forms.ModelForm):
         model = MultipleChoiceCorrectAlternative
         exclude = ['question']
 
+    def __init__(self, *args, **kargs):
+        super(MultipleChoiceCorrectAlternativeForm, self).__init__(*args, **kargs)
+        self.fields['text'].label = 'Alternativa correta'
+
 class MultipleChoiceWrongAlternativeForm(forms.ModelForm):
     class Meta:
         model = MultipleChoiceWrongAlternative
         exclude = ['question']
+    def __init__(self, *args, **kargs):
+        super(MultipleChoiceWrongAlternativeForm, self).__init__(*args, **kargs)
+        self.fields['text'].label = 'Alternativa incorreta'
 
 class DiscursiveQuestionForm(forms.ModelForm):
     class Meta:
@@ -116,7 +123,7 @@ class FileQuestionForm(forms.ModelForm):
         exclude = ['type', 'tags']
 
 class DeleteObjectForm(forms.Form):
-    delete = forms.BooleanField(required=False)
+    delete = forms.BooleanField(required=False, label='Apagar questão')
 
 class OrderForm(forms.Form):
     order = forms.IntegerField(widget=forms.HiddenInput)

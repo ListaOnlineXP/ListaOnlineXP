@@ -3,7 +3,9 @@
 {% block content_sidebar %}
   <form action="" method="POST">
     {% csrf_token %}
-    {{ form.as_p }}
+    <table class='form_table'>
+    {{ form.as_table }}
+    </table>
     <input type="submit" value="Gravar" />
   </form>
 {% endblock %}
