@@ -20,6 +20,7 @@
                 {% endfor %}
                 <table class="form_table">
                     {{ form_data.question_form.as_table }}
+                    {{ form_data.weight_form.as_table }}
                     {% if form_data.correct_form %}
                         {{ form_data.correct_form }}
                     {% endif %}
@@ -145,7 +146,7 @@
                     form += '{{ empty_forms.discursive.as_table|linebreaksbr }}'.replace(/__prefix__/g, new_chosen_id);
                 }
 
-
+                form += '{{ empty_forms.weight.as_table }}'.replace(/__prefix__/g, new_chosen_id + '_WEIGHT');
 
                 if(selected_question_type == 'mu' || selected_question_type == 'tf') {
                     if(selected_question_type == 'mu') {

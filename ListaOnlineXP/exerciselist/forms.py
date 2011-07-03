@@ -127,6 +127,10 @@ class DeleteObjectForm(forms.Form):
 
 class OrderForm(forms.Form):
     order = forms.IntegerField(widget=forms.HiddenInput)
+
+class WeightForm(forms.Form):
+    weight = forms.IntegerField(min_value=1, label='Peso')
+    
 #===END Exercise list creation forms===
 
 

@@ -379,9 +379,15 @@ def create_modify_exercise_list(request, exercise_list_id=None):
             else:
                 order = 1
 
+            weight_form = WeightForm(data=data, prefix=new_mu_prefix+'_WEIGHT')
+            if weight_form.is_valid():
+                weight = weight_form.cleaned_data['weight']
+            else:
+                weight = 1
+
             if new_mu_question_form.is_valid():
                 new_mu_question = new_mu_question_form.save()
-                relationship = ExerciseListQuestionThrough(question=new_mu_question, exerciselist=exercise_list, order=order, weight=1)
+                relationship = ExerciseListQuestionThrough(question=new_mu_question, exerciselist=exercise_list, order=order, weight=weight)
                 relationship.save()
             processed_new_mu += 1
 
@@ -415,13 +421,20 @@ def create_modify_exercise_list(request, exercise_list_id=None):
 
             order_form = OrderForm(data=data, prefix=new_di_prefix+'_ORDER')
             if order_form.is_valid():
+                print 'é válido'
                 order = order_form.cleaned_data['order']
             else:
                 order = 1
 
+            weight_form = WeightForm(data=data, prefix=new_di_prefix+'_WEIGHT')
+            if weight_form.is_valid():
+                weight = weight_form.cleaned_data['weight']
+            else:
+                weight = 1
+
             if new_di_question_form.is_valid():
                 new_di_question = new_di_question_form.save()
-                relationship = ExerciseListQuestionThrough(question=new_di_question, exerciselist=exercise_list, order=order, weight=1)
+                relationship = ExerciseListQuestionThrough(question=new_di_question, exerciselist=exercise_list, order=order, weight=weight)
                 relationship.save()
             processed_new_di += 1
         new_di_index +=1
@@ -440,9 +453,15 @@ def create_modify_exercise_list(request, exercise_list_id=None):
             else:
                 order = 1
 
+            weight_form = WeightForm(data=data, prefix=new_ja_prefix+'_WEIGHT')
+            if weight_form.is_valid():
+                weight = weight_form.cleaned_data['weight']
+            else:
+                weight = 1
+
             if new_ja_question_form.is_valid():
                 new_ja_question = new_ja_question_form.save()
-                relationship = ExerciseListQuestionThrough(question=new_ja_question, exerciselist=exercise_list, order=order, weight=1)
+                relationship = ExerciseListQuestionThrough(question=new_ja_question, exerciselist=exercise_list, order=order, weight=weight)
                 relationship.save()
             processed_new_ja += 1
         new_ja_index +=1
@@ -461,9 +480,15 @@ def create_modify_exercise_list(request, exercise_list_id=None):
             else:
                 order = 1
 
+            weight_form = WeightForm(data=data, prefix=new_fi_prefix+'_WEIGHT')
+            if weight_form.is_valid():
+                weight = weight_form.cleaned_data['weight']
+            else:
+                weight = 1
+
             if new_fi_question_form.is_valid():
                 new_fi_question = new_fi_question_form.save()
-                relationship = ExerciseListQuestionThrough(question=new_fi_question, exerciselist=exercise_list, order=order, weight=1)
+                relationship = ExerciseListQuestionThrough(question=new_fi_question, exerciselist=exercise_list, order=order, weight=weight)
                 relationship.save()
             processed_new_fi += 1
         new_fi_index +=1
@@ -482,9 +507,15 @@ def create_modify_exercise_list(request, exercise_list_id=None):
             else:
                 order = 1
 
+            weight_form = WeightForm(data=data, prefix=new_tf_prefix+'_WEIGHT')
+            if weight_form.is_valid():
+                weight = weight_form.cleaned_data['weight']
+            else:
+                weight = 1
+
             if new_tf_question_form.is_valid():
                 new_tf_question = new_tf_question_form.save()
-                relationship = ExerciseListQuestionThrough(question=new_tf_question, exerciselist=exercise_list, order=order, weight=1)
+                relationship = ExerciseListQuestionThrough(question=new_tf_question, exerciselist=exercise_list, order=order, weight=weight)
                 relationship.save()
             processed_new_tf += 1
 
@@ -536,7 +567,6 @@ def create_modify_exercise_list(request, exercise_list_id=None):
                 elif casted_question.type == 'DI':
                     question_form = DiscursiveQuestionForm(data=data, instance=casted_question, prefix =  str(casted_question.id) + '_QUESTIONDI')
                     if question_form.is_valid():
-                        print 'é válido'
                         question_form.save()
                 elif casted_question.type == 'JA':
                     question_form = JavaQuestionForm(data=data, instance=casted_question, prefix = str(casted_question.id) + '_QUESTIONJA')
@@ -562,8 +592,16 @@ def create_modify_exercise_list(request, exercise_list_id=None):
                 if order_form.is_valid():
                     through_object.order = order_form.cleaned_data['order']
 
+                #Update weight
+                if request.method == 'GET':
+                    weight_form = WeightForm(initial = {'weight': through_object.weight}, prefix=str(casted_question.id)+ '_WEIGHT')
+                else:
+                    weight_form = WeightForm(data=request.POST, prefix=str(casted_question.id) + '_WEIGHT')
+                    if weight_form.is_valid():
+                        through_object.weight = weight_form.cleaned_data['weight']
+
                 through_object.save()
-                forms_list.append({'question_form': question_form, 'order_form': order_form, 'correct_form': correct_form, 'items_forms' : items_forms, 'delete_form' : delete_form, 'order': through_object.order})
+                forms_list.append({'question_form': question_form, 'order_form': order_form, 'correct_form': correct_form, 'items_forms' : items_forms, 'delete_form' : delete_form, 'order': through_object.order, 'weight_form' : weight_form})
 
     #Reorder form_list to the new values of order
     forms_list = sorted(forms_list, key=lambda k: k['order'])
@@ -584,6 +622,7 @@ def create_modify_exercise_list(request, exercise_list_id=None):
     empty_forms['truefalse'] = TrueFalseQuestionForm(prefix='__prefix__')
     empty_forms['truefalse_item'] = TrueFalseQuestionItemForm(prefix='__prefix__')
     empty_forms['order'] = OrderForm(prefix='__prefix__')
+    empty_forms['weight'] = WeightForm(prefix='__prefix__')
 
     values['empty_forms'] = empty_forms
 
