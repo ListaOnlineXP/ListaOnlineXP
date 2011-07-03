@@ -68,6 +68,7 @@ def exercise_list_correct(request, list_id):
     values['student_answers']=[]
     for s in students:
         solution = s.get_group(exercise_list).solution
+        solution.populate_blank()
         values['student_answers'].append((s, [solution.answer_set.get(question_answered = q) for (o, q) in ordered_questions], solution.score, solution.finalized))
 
     values['questions_mean'] = [exercise_list.question_mean(q) for (o, q) in ordered_questions]
@@ -188,7 +189,7 @@ def exercise_list(request, exercise_list_id):
 
     #Get or create the exercise list solution and its questions
     exercise_list_solution = group.solution
-    #exercise_list_solution.populate_blank()
+    exercise_list_solution.populate_blank()
 
     if exercise_list_solution.finalized is True:
         return HttpResponseRedirect('/exercise_list_solution/' + str(exercise_list_solution.id))
@@ -421,7 +422,6 @@ def create_modify_exercise_list(request, exercise_list_id=None):
 
             order_form = OrderForm(data=data, prefix=new_di_prefix+'_ORDER')
             if order_form.is_valid():
-                print 'é válido'
                 order = order_form.cleaned_data['order']
             else:
                 order = 1

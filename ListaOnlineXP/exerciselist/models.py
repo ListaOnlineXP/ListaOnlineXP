@@ -24,19 +24,15 @@ class ExerciseList(models.Model):
         randomize = self.create_random_groups or (self.max_number_of_students==1)
 
         n_students = self.course.student.all().count()
-        print n_students
         ideal_n_group = n_students/self.min_number_of_students
         if n_students%self.min_number_of_students:
             ideal_n_group += 1
-        print ideal_n_group
         n_group = Group.objects.filter(solution__exercise_list=self).count()
-        print n_group
         for i in range(ideal_n_group - n_group):
             solution = ExerciseListSolution(exercise_list=self, finalized=False)
-            solution.populate_blank()
+            solution.save()
             group = Group(solution = solution)
             group.save()
-            print "new group"
 
         if randomize:
             students = []
@@ -45,21 +41,12 @@ class ExerciseList(models.Model):
                 if not has_group:
                     students.append(student)
             random.shuffle(students)
-            print students
             groups = list(Group.objects.filter(solution__exercise_list=self))
-            print 'while'
             while students:
                 groups.sort(key=lambda group: group.students.count())
-                print 'groups'
-                print groups
                 groups[0].students.add(students[0])
-                print '0'
-                print students[0]
                 groups[0].save()
                 students = students[1:]
-                print students
-        
-
 
     def get_multiple_choice_questions(self):
         return MultipleChoiceQuestion.objects.filter(exerciselist=self)
