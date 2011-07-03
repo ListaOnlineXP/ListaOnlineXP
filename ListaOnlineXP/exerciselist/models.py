@@ -151,7 +151,7 @@ class ExerciseListSolution(models.Model):
     exercise_list = models.ForeignKey(ExerciseList, verbose_name='lista de exercício')
     finalized = models.BooleanField(False)
     score = models.FloatField(null=True, blank=True, verbose_name='nota')
-    chosen_topic = models.OneToOneField(Topic, null=True, blank=True, verbose_name='tema escolhido')
+    chosen_topic = models.ForeignKey(Topic, null=True, blank=True, verbose_name='tema escolhido')
 
     def get_answers(self):
         return Answer.objects.filter(exercise_list_solution=self)

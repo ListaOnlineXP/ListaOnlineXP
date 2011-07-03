@@ -202,7 +202,7 @@ def exercise_list(request, exercise_list_id):
         data = request.POST
 
     #Check this exercise list's topics and if the respective list solution has already a chosen topic
-    if topics:
+    if topics and not exercise_list_solution.chosen_topic:
         form = TopicsChoiceForm(data=data, instance=exercise_list_solution, prefix='TOPICSFORM')
 
         if request.method == 'POST':
