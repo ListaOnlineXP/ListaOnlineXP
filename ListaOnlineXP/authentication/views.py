@@ -16,8 +16,6 @@ def home(request):
     return HttpResponseRedirect('/course')
 
 def signup(request):
-    if request.user.is_authenticated():
-        return HttpResponseRedirect('/')
     values = {}
     values.update(csrf(request))
     if request.method == 'GET':
