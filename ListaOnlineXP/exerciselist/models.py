@@ -25,7 +25,7 @@ class ExerciseList(models.Model):
 
         n_students = self.course.student.all().count()
         ideal_n_group = n_students/self.min_number_of_students
-        if n_students%self.min_number_of_students:
+        if n_students%self.min_number_of_students != 0:
             ideal_n_group += 1
         n_group = Group.objects.filter(solution__exercise_list=self).count()
         for i in range(ideal_n_group - n_group):
