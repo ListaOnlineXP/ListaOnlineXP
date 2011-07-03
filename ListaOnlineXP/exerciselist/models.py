@@ -22,25 +22,44 @@ class ExerciseList(models.Model):
     def save(self, **kwargs):
         super(ExerciseList, self).save(**kwargs)
         randomize = self.create_random_groups or (self.max_number_of_students==1)
-        students = []
-        for student in self.course.student.all():
-            has_group = Group.objects.filter(solution__exercise_list=self, students=student).count()
-            if not has_group:
-                students.append(student)
-        if randomize:
-            random.shuffle(students)
-        while students:
+
+        n_students = self.course.student.all().count()
+        print n_students
+        ideal_n_group = n_students/self.min_number_of_students
+        if n_students%self.min_number_of_students:
+            ideal_n_group += 1
+        print ideal_n_group
+        n_group = Group.objects.filter(solution__exercise_list=self).count()
+        print n_group
+        for i in range(ideal_n_group - n_group):
             solution = ExerciseListSolution(exercise_list=self, finalized=False)
-            solution.save()
             solution.populate_blank()
-            solution.save()
             group = Group(solution = solution)
             group.save()
-            if randomize:
-                for student in students[:self.max_number_of_students]:
-                    group.students.add(student)
-            group.save()
-            students = students[self.max_number_of_students:]
+            print "new group"
+
+        if randomize:
+            students = []
+            for student in self.course.student.all():
+                has_group = Group.objects.filter(solution__exercise_list=self, students=student).count()
+                if not has_group:
+                    students.append(student)
+            random.shuffle(students)
+            print students
+            groups = list(Group.objects.filter(solution__exercise_list=self))
+            print 'while'
+            while students:
+                groups.sort(key=lambda group: group.students.count())
+                print 'groups'
+                print groups
+                groups[0].students.add(students[0])
+                print '0'
+                print students[0]
+                groups[0].save()
+                students = students[1:]
+                print students
+        
+
 
     def get_multiple_choice_questions(self):
         return MultipleChoiceQuestion.objects.filter(exerciselist=self)
